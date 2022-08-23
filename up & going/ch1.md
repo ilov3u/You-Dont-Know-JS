@@ -1,43 +1,43 @@
 # You Don't Know JS: Up & Going
-# Chapter 1: Into Programming
+# Chương 1: Tham Gia Vào Lập Trình 
 
-Welcome to the *You Don't Know JS* (*YDKJS*) series.
+Chào mừng đến loạt sách *You Don't Know JS* (*YDKJS*).
 
-*Up & Going* is an introduction to several basic concepts of programming -- of course we lean toward JavaScript (often abbreviated JS) specifically -- and how to approach and understand the rest of the titles in this series. Especially if you're just getting into programming and/or JavaScript, this book will briefly explore what you need to get *up and going*.
+*Up & Going* là phần giới thiệu về một số khái niệm cơ bản về lập trình - tất nhiên chúng tôi nghiêng về JavaScript (thường được viết tắt là JS) cụ thể - và cách tiếp cận và hiểu phần còn lại của các tiêu đề trong loạt bài này. Đặc biệt nếu bạn mới bắt đầu học lập trình và / hoặc JavaScript, cuốn sách này sẽ khám phá ngắn gọn những gì bạn cần để *phát triển và tiến lên*.
 
-This book starts off explaining the basic principles of programming at a very high level. It's mostly intended if you are starting *YDKJS* with little to no prior programming experience, and are looking to these books to help get you started along a path to understanding programming through the lens of JavaScript.
+Cuốn sách này bắt đầu giải thích các nguyên tắc cơ bản của lập trình ở cấp độ rất cao. Nó chủ yếu nhằm mục đích nếu bạn đang bắt đầu * YDKJS * với ít hoặc không có kinh nghiệm lập trình trước đó và đang tìm kiếm những cuốn sách này để giúp bạn bắt đầu con đường tìm hiểu lập trình thông qua lăng kính JavaScript.
 
-Chapter 1 should be approached as a quick overview of the things you'll want to learn more about and practice to get *into programming*. There are also many other fantastic programming introduction resources that can help you dig into these topics further, and I encourage you to learn from them in addition to this chapter.
+Chương 1 nên được tiếp cận như một tổng quan nhanh về những điều bạn sẽ muốn tìm hiểu thêm và thực hành để *tham gia vào lập trình*. Ngoài ra còn có nhiều tài nguyên giới thiệu lập trình tuyệt vời khác có thể giúp bạn tìm hiểu sâu hơn về các chủ đề này và tôi khuyến khích bạn học từ chúng ngoài chương này.
 
-Once you feel comfortable with general programming basics, Chapter 2 will help guide you to a familiarity with JavaScript's flavor of programming. Chapter 2 introduces what JavaScript is about, but again, it's not a comprehensive guide -- that's what the rest of the *YDKJS* books are for!
+Khi bạn cảm thấy thoải mái với những kiến ​​thức cơ bản về lập trình, Chương 2 sẽ giúp hướng dẫn bạn làm quen với hương vị lập trình của JavaScript. Chương 2 giới thiệu JavaScript là gì, nhưng một lần nữa, nó không phải là một hướng dẫn toàn diện - đó là phần còn lại của các cuốn sách *YDKJS* dành cho!
 
-If you're already fairly comfortable with JavaScript, first check out Chapter 3 as a brief glimpse of what to expect from *YDKJS*, then jump right in!
+Nếu bạn đã khá thoải mái với JavaScript, trước tiên hãy xem Chương 3 như một cái nhìn sơ lược về những gì mong đợi từ *YDKJS*, sau đó bắt đầu ngay!
 
 ## Code
 
-Let's start from the beginning.
+Hãy bắt đầu từ đầu.
 
-A program, often referred to as *source code* or just *code*, is a set of special instructions to tell the computer what tasks to perform. Usually code is saved in a text file, although with JavaScript you can also type code directly into a developer console in a browser, which we'll cover shortly.
+Chương trình, thường được gọi là *mã nguồn(source code)* hoặc chỉ *mã(code)*, là một tập hợp các lệnh đặc biệt để cho máy tính biết các tác vụ cần thực hiện. Thông thường, mã được lưu trong tệp văn bản, mặc dù với JavaScript, bạn cũng có thể nhập mã trực tiếp vào bảng điều khiển dành cho nhà phát triển trong trình duyệt mà chúng tôi sẽ đề cập ngay sau đây.
 
-The rules for valid format and combinations of instructions is called a *computer language*, sometimes referred to as its *syntax*, much the same as English tells you how to spell words and how to create valid sentences using words and punctuation.
+Các quy tắc cho định dạng hợp lệ và kết hợp các hướng dẫn được gọi là *ngôn ngữ máy tính*, đôi khi được gọi là *cú pháp* của nó, giống như tiếng Anh cho bạn biết cách đánh vần các từ và cách tạo câu hợp lệ bằng cách sử dụng từ và dấu câu.
 
-### Statements
+### Các câu lệnh
 
-In a computer language, a group of words, numbers, and operators that performs a specific task is a *statement*. In JavaScript, a statement might look as follows:
+Trong ngôn ngữ máy tính, một nhóm từ, số và toán tử thực hiện một tác vụ cụ thể là một *câu lệnh*. Trong JavaScript, một câu lệnh có thể trông như sau:
 
 ```js
 a = b * 2;
 ```
 
-The characters `a` and `b` are called *variables* (see "Variables"), which are like simple boxes you can store any of your stuff in. In programs, variables hold values (like the number `42`) to be used by the program. Think of them as symbolic placeholders for the values themselves.
+Các ký tự `a` và` b` được gọi là *biến* (xem "Biến"), giống như các hộp đơn giản mà bạn có thể lưu trữ bất kỳ thứ nào của mình. Trong chương trình, các biến giữ các giá trị (như số `42`) để được sử dụng bởi chương trình. Hãy coi chúng như các trình giữ chỗ tượng trưng cho chính các giá trị.
 
-By contrast, the `2` is just a value itself, called a *literal value*, because it stands alone without being stored in a variable.
+Ngược lại, `2` chỉ là một giá trị, được gọi là *giá trị theo nghĩa đen*, bởi vì nó đứng một mình mà không được lưu trữ trong một biến.
 
-The `=` and `*` characters are *operators* (see "Operators") -- they perform actions with the values and variables such as assignment and mathematic multiplication.
+Các ký tự `=` và `*` là *toán tử* (xem "Toán tử") - chúng thực hiện các hành động với các giá trị và biến như phép gán và phép nhân toán học.
 
-Most statements in JavaScript conclude with a semicolon (`;`) at the end.
+Hầu hết các câu lệnh trong JavaScript đều kết thúc bằng dấu chấm phẩy (`; ') ở cuối.
 
-The statement `a = b * 2;` tells the computer, roughly, to get the current value stored in the variable `b`, multiply that value by `2`, then store the result back into another variable we call `a`.
+Câu lệnh `a = b * 2;` nói với máy tính, đại khái, lấy giá trị hiện tại được lưu trữ trong biến `b`, nhân giá trị đó với` 2`, sau đó lưu trữ lại kết quả vào một biến khác mà chúng ta gọi là `a`.
 
 Programs are just collections of many such statements, which together describe all the steps that it takes to perform your program's purpose.
 
