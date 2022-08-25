@@ -39,46 +39,46 @@ Hầu hết các câu lệnh trong JavaScript đều kết thúc bằng dấu ch
 
 Câu lệnh `a = b * 2;` nói với máy tính, đại khái, lấy giá trị hiện tại được lưu trữ trong biến `b`, nhân giá trị đó với` 2`, sau đó lưu trữ lại kết quả vào một biến khác mà chúng ta gọi là `a`.
 
-Programs are just collections of many such statements, which together describe all the steps that it takes to perform your program's purpose.
+Chương trình chỉ là tập hợp của nhiều câu lệnh như vậy, cùng nhau mô tả tất cả các bước cần thiết để thực hiện mục đích chương trình của bạn.
 
-### Expressions
+### Biểu thức
 
-Statements are made up of one or more *expressions*. An expression is any reference to a variable or value, or a set of variable(s) and value(s) combined with operators.
+Các câu lệnh được tạo thành từ một hoặc nhiều *biểu thức*. Một biểu thức là bất kỳ tham chiếu nào đến một biến hoặc giá trị hoặc một tập hợp (các) biến và (các) giá trị được kết hợp với các toán tử.
 
-For example:
+Cho ví dụ:
 
 ```js
 a = b * 2;
 ```
 
-This statement has four expressions in it:
+Câu lệnh này có bốn biểu thức trong đó:
 
-* `2` is a *literal value expression*
-* `b` is a *variable expression*, which means to retrieve its current value
-* `b * 2` is an *arithmetic expression*, which means to do the multiplication
-* `a = b * 2` is an *assignment expression*, which means to assign the result of the `b * 2` expression to the variable `a` (more on assignments later)
+* `2` là một *biểu thức giá trị theo nghĩa đen*
+* `b` là một *biểu thức biến*, có nghĩa là lấy lại giá trị hiện tại của nó
+* `b * 2` là một *biểu thức số học*, có nghĩa là thực hiện phép nhân
+* `a = b * 2` là một *biểu thức gán*, nghĩa là gán kết quả của biểu thức `b * 2` vào biến `a` (nhiều hơn về bài tập sau này)
 
-A general expression that stands alone is also called an *expression statement*, such as the following:
+Một biểu thức tổng quát đứng một mình còn được gọi là *câu lệnh biểu thức*, chẳng hạn như sau:
 
 ```js
 b * 2;
 ```
 
-This flavor of expression statement is not very common or useful, as generally it wouldn't have any effect on the running of the program -- it would retrieve the value of `b` and multiply it by `2`, but then wouldn't do anything with that result.
+Biểu thức này không phổ biến hoặc hữu ích lắm, vì nói chung nó sẽ không ảnh hưởng gì đến việc chạy chương trình - nó sẽ lấy giá trị của `b` và nhân nó với` 2`, nhưng sau đó sẽ không làm bất cứ điều gì với kết quả đó.
 
-A more common expression statement is a *call expression* statement (see "Functions"), as the entire statement is the function call expression itself:
+Một câu lệnh biểu thức phổ biến hơn là câu lệnh *biểu thức gọi* (xem "Functions"), vì toàn bộ câu lệnh là chính biểu thức gọi hàm:
 
 ```js
 alert( a );
 ```
 
-### Executing a Program
+### Thực thi một chương trình
 
-How do those collections of programming statements tell the computer what to do? The program needs to be *executed*, also referred to as *running the program*.
+Làm thế nào để tập hợp các câu lệnh lập trình đó cho máy tính biết phải làm gì? Chương trình cần được *thực thi*, còn được gọi là *chạy chương trình*.
 
-Statements like `a = b * 2` are helpful for developers when reading and writing, but are not actually in a form the computer can directly understand. So a special utility on the computer (either an *interpreter* or a *compiler*) is used to translate the code you write into commands a computer can understand.
+Các câu lệnh như `a = b * 2` hữu ích cho các nhà phát triển khi đọc và viết, nhưng không thực sự ở dạng mà máy tính có thể hiểu trực tiếp. Vì vậy, một tiện ích đặc biệt trên máy tính (có thể là *thông dịch* hoặc *biên dịch*) được sử dụng để dịch mã bạn viết thành các lệnh mà máy tính có thể hiểu được.
 
-For some computer languages, this translation of commands is typically done from top to bottom, line by line, every time the program is run, which is usually called *interpreting* the code.
+Đối với một số ngôn ngữ máy tính, việc dịch các lệnh này thường được thực hiện từ trên xuống dưới, từng dòng một, mỗi khi chương trình được chạy, thường được gọi là *thông dịch* mã.
 
 For other languages, the translation is done ahead of time, called *compiling* the code, so when the program *runs* later, what's running is actually the already compiled computer instructions ready to go.
 
