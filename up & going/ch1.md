@@ -284,17 +284,17 @@ Máy tính của bạn chỉ quan tâm đến mã máy, một chuỗi các số 
 
 Bạn nên cố gắng không chỉ để viết các chương trình hoạt động chính xác, mà còn là các chương trình có ý nghĩa khi được kiểm tra. Bạn có thể đi một chặng đường dài trong nỗ lực đó bằng cách chọn tên hay cho các biến của mình (xem "Variables") và hàm (xem "Functions").
 
-But another important part is code comments. These are bits of text in your program that are inserted purely to explain things to a human. The interpreter/compiler will always ignore these comments.
+Tuy nhiên một phần quan trọng khác là comment code. Đây là những đoạn văn bản trong chương trình của bạn được chèn vào để giải thích cho mọi người. Trình thông dịch/trình biên dịch sẽ luôn bỏ qua những comment này.
 
-There are lots of opinions on what makes well-commented code; we can't really define absolute universal rules. But some observations and guidelines are quite useful:
+Có rất nhiều ý kiến về những gì tạo nên mã được commnent tốt; chúng ta không thể thực sự xác định các quy tắc phổ quát tuyệt đối. Nhưng một số quan sát và hướng dẫn khá hữu ích:
 
-* Code without comments is suboptimal.
-* Too many comments (one per line, for example) is probably a sign of poorly written code.
-* Comments should explain *why*, not *what*. They can optionally explain *how* if that's particularly confusing.
+* Mã không có comment là không tối ưu.
+* Quá nhiều comment (ví dụ: một comment trên mỗi dòng) có thể là dấu hiệu của mã được viết kém.
+* Nhận xét phải giải thích *tại sao(why)*, không phải *cái gì(what)*. Họ có thể tùy ý giải thích *cách làm(how)* nếu điều đó đặc biệt khó hiểu.
 
-In JavaScript, there are two types of comments possible: a single-line comment and a multiline comment.
+Trong JavaScript, có thể có hai loại comment: comment một dòng và comment nhiều dòng.
 
-Consider:
+Để ý:
 
 ```js
 // This is a single-line comment
@@ -305,17 +305,17 @@ Consider:
                       */
 ```
 
-The `//` single-line comment is appropriate if you're going to put a comment right above a single statement, or even at the end of a line. Everything on the line after the `//` is treated as the comment (and thus ignored by the compiler), all the way to the end of the line. There's no restriction to what can appear inside a single-line comment.
+Comment một dòng `//` thích hợp nếu bạn định đặt một comment ngay phía trên một câu lệnh hoặc thậm chí ở cuối dòng. Mọi thứ trên dòng sau dấu `//` được coi là comment (và do đó bị trình biên dịch bỏ qua), cho đến cuối dòng. Không có giới hạn đối với những gì có thể xuất hiện bên trong một comment một dòng.
 
-Consider:
+Để ý:
 
 ```js
 var a = 42;		// 42 is the meaning of life
 ```
 
-The `/* .. */` multiline comment is appropriate if you have several lines worth of explanation to make in your comment.
+Comment nhiều dòng `/ * .. * /` thích hợp nếu bạn có một số dòng cần giải thích trong comment của mình.
 
-Here's a common usage of multiline comments:
+Đây là cách sử dụng phổ biến của comment nhiều dòng:
 
 ```js
 /* The following value is used because
@@ -324,7 +324,7 @@ Here's a common usage of multiline comments:
 var a = 42;
 ```
 
-It can also appear anywhere on a line, even in the middle of a line, because the `*/` ends it. For example:
+Nó cũng có thể xuất hiện ở bất kỳ đâu trên một dòng, ngay cả ở giữa dòng, vì dấu `* /` kết thúc nó. Ví dụ:
 
 ```js
 var a = /* arbitrary value */ 42;
@@ -332,23 +332,23 @@ var a = /* arbitrary value */ 42;
 console.log( a );	// 42
 ```
 
-The only thing that cannot appear inside a multiline comment is a `*/`, because that would be interpreted to end the comment.
+Điều duy nhất không thể xuất hiện bên trong một comment nhiều dòng là dấu `* /`, bởi vì điều đó sẽ được hiểu là để kết thúc comment.
 
-You will definitely want to begin your learning of programming by starting off with the habit of commenting code. Throughout the rest of this chapter, you'll see I use comments to explain things, so do the same in your own practice. Trust me, everyone who reads your code will thank you!
+Bạn chắc chắn sẽ muốn bắt đầu học lập trình bằng cách bắt đầu với thói quen comment code. Trong suốt phần còn lại của chương này, bạn sẽ thấy tôi sử dụng các comment để giải thích mọi thứ, vì vậy hãy làm như vậy trong thực tế của riêng bạn. Tin tôi đi, mọi người đọc code của bạn sẽ cảm ơn bạn!
 
-## Variables
+## Variables(Biến)
 
-Most useful programs need to track a value as it changes over the course of the program, undergoing different operations as called for by your program's intended tasks.
+Hầu hết các chương trình hữu ích cần phải theo dõi một giá trị khi nó thay đổi trong quá trình của chương trình, trải qua các hoạt động khác nhau như được yêu cầu bởi các nhiệm vụ dự định của chương trình của bạn.
 
-The easiest way to go about that in your program is to assign a value to a symbolic container, called a *variable* -- so called because the value in this container can *vary* over time as needed.
+Cách dễ nhất để thực hiện điều đó trong chương trình của bạn là gán một giá trị cho một vùng chứa tượng trưng, được gọi là *variale(biến)* - được gọi như vậy vì giá trị trong vùng chứa này có thể *thay đổi* theo thời gian khi cần thiết.
 
-In some programming languages, you declare a variable (container) to hold a specific type of value, such as `number` or `string`. *Static typing*, otherwise known as *type enforcement*, is typically cited as a benefit for program correctness by preventing unintended value conversions.
+Trong một số ngôn ngữ lập trình, bạn khai báo một biến (vùng chứa) để chứa một loại giá trị cụ thể, chẳng hạn như `số(number)` hoặc`chuỗi(string)`. *Nhập tĩnh(Static typing)*, còn được gọi là *kiểu bắt buộc(type enforcement)*, thường được coi là một lợi ích cho tính đúng đắn của chương trình bằng cách ngăn chặn các chuyển đổi giá trị không mong muốn.
 
-Other languages emphasize types for values instead of variables. *Weak typing*, otherwise known as *dynamic typing*, allows a variable to hold any type of value at any time. It's typically cited as a benefit for program flexibility by allowing a single variable to represent a value no matter what type form that value may take at any given moment in the program's logic flow.
+Các ngôn ngữ khác nhấn mạnh các kiểu cho các giá trị thay vì các biến. *Nhập yếu(Weak typing)*, còn được gọi là *nhập động(dynamic typing)*, cho phép một biến giữ bất kỳ loại giá trị nào vào bất kỳ lúc nào. Nó thường được trích dẫn như một lợi ích cho tính linh hoạt của chương trình bằng cách cho phép một biến duy nhất đại diện cho một giá trị bất kể dạng giá trị nào mà giá trị đó có thể nhận vào bất kỳ thời điểm nhất định nào trong luồng logic của chương trình.
 
-JavaScript uses the latter approach, *dynamic typing*, meaning variables can hold values of any *type* without any *type* enforcement.
+JavaScript sử dụng cách tiếp cận thứ hai, *nhập động*, nghĩa là các biến có thể giữ các giá trị thuộc bất kỳ *kiểu(type)* nào mà không cần bắt buộc *kiểu(type)* nào.
 
-As mentioned earlier, we declare a variable using the `var` statement -- notice there's no other *type* information in the declaration. Consider this simple program:
+Như đã đề cập trước đó, chúng ta khai báo một biến bằng câu lệnh `var` - lưu ý rằng không có thông tin *kiểu(type)* nào khác trong khai báo. Hãy xem xét chương trình đơn giản này:
 
 ```js
 var amount = 99.99;
@@ -364,23 +364,23 @@ amount = "$" + String( amount );
 console.log( amount );		// "$199.98"
 ```
 
-The `amount` variable starts out holding the number `99.99`, and then holds the `number` result of `amount * 2`, which is `199.98`.
+Biến `amount` bắt đầu giữ số `99,99`, sau đó giữ kết quả `số(number)` của `amount * 2`, là `199,98`.
 
-The first `console.log(..)` command has to *implicitly* coerce that `number` value to a `string` to print it out.
+Lệnh `console.log (..)` đầu tiên phải ép kiểu *ngầm định(implicitly)* giá trị `number` đó thành một` string` để in nó ra.
 
-Then the statement `amount = "$" + String(amount)` *explicitly* coerces the `199.98` value to a `string` and adds a `"$"` character to the beginning. At this point, `amount` now holds the `string` value `"$199.98"`, so the second `console.log(..)` statement doesn't need to do any coercion to print it out.
+Sau đó, câu lệnh `amount =" $ "+ String( amount )` ép kiểu *tường minh(explicitly)* giá trị `199,98` thành một `string` và thêm một ký tự `"$"`vào đầu. Tại thời điểm này, `amount` bây giờ chứa `string` có giá trị là `"$ 199,98"`, vì vậy câu lệnh `console.log (..) `thứ hai không cần phải thực hiện bất kỳ sự ép kiểu nào để in nó ra.
 
-JavaScript developers will note the flexibility of using the `amount` variable for each of the `99.99`, `199.98`, and the `"$199.98"` values. Static-typing enthusiasts would prefer a separate variable like `amountStr` to hold the final `"$199.98"` representation of the value, because it's a different type.
+Các nhà phát triển JavaScript sẽ lưu ý sự linh hoạt của việc sử dụng biến số `amount` cho mỗi giá trị `99,99`, `199,98` và `"$ 199,98"`. Những người đam mê nhập tĩnh sẽ thích một biến riêng biệt như `amountStr` để giữ biểu diễn cuối cùng của giá trị `"$ 199,98"`, bởi vì nó là một kiểu khác.
 
-Either way, you'll note that `amount` holds a running value that changes over the course of the program, illustrating the primary purpose of variables: managing program *state*.
+Dù bằng cách nào, bạn sẽ lưu ý rằng `số lượng` giữ một giá trị đang chạy thay đổi trong quá trình của chương trình, minh họa mục đích chính của các biến: quản lý *trạng thái(state)* chương trình.
 
-In other words, *state* is tracking the changes to values as your program runs.
+Nói cách khác, *trạng thái(state)* đang theo dõi các thay đổi đối với các giá trị khi chương trình của bạn chạy.
 
-Another common usage of variables is for centralizing value setting. This is more typically called *constants*, when you declare a variable with a value and intend for that value to *not change* throughout the program.
+Một cách sử dụng phổ biến khác của các biến là thiết lập giá trị tập trung. Điều này thường được gọi là *hằng số(constants)*, khi bạn khai báo một biến với một giá trị và định cho giá trị đó *không thay đổi(not change)* trong suốt chương trình.
 
-You declare these *constants*, often at the top of a program, so that it's convenient for you to have one place to go to alter a value if you need to. By convention, JavaScript variables as constants are usually capitalized, with underscores `_` between multiple words.
+Bạn khai báo các *hằng số(constants)* này, thường ở đầu chương trình, để thuận tiện cho bạn khi có một nơi để đi đến thay đổi giá trị nếu bạn cần. Theo quy ước, các biến JavaScript dưới dạng hằng số thường được viết hoa, với dấu gạch dưới `_` giữa nhiều từ.
 
-Here's a silly example:
+Đây là một ví dụ ngớ ngẩn:
 
 ```js
 var TAX_RATE = 0.08;	// 8% sales tax
@@ -395,11 +395,11 @@ console.log( amount );				// 215.9784
 console.log( amount.toFixed( 2 ) );	// "215.98"
 ```
 
-**Note:** Similar to how `console.log(..)` is a function `log(..)` accessed as an object property on the `console` value, `toFixed(..)` here is a function that can be accessed on `number` values. JavaScript `number`s aren't automatically formatted for dollars -- the engine doesn't know what your intent is and there's no type for currency. `toFixed(..)` lets us specify how many decimal places we'd like the `number` rounded to, and it produces the `string` as necessary.
+**Ghi chú:** Tương tự như cách `console.log (..)` là một hàm `log(..)` được truy cập như một thuộc tính đối tượng trên giá trị `console`,` toFixed (..) `đây là một hàm có thể được truy cập vào các giá trị `số(number)`. JavaScript `number` không được định dạng tự động cho đô la - công cụ không biết mục đích của bạn là gì và không có loại cho tiền tệ. `toFixed (..)` cho phép chúng tôi chỉ định có bao nhiêu chữ số thập phân mà chúng tôi muốn `number(số)` được làm tròn thành và nó tạo ra `string(chuỗi)` khi cần thiết.
 
-The `TAX_RATE` variable is only *constant* by convention -- there's nothing special in this program that prevents it from being changed. But if the city raises the sales tax rate to 9%, we can still easily update our program by setting the `TAX_RATE` assigned value to `0.09` in one place, instead of finding many occurrences of the value `0.08` strewn throughout the program and updating all of them.
+Biến `TAX_RATE` chỉ là *hằng số(constant)* theo quy ước - không có gì đặc biệt trong chương trình này ngăn nó bị thay đổi. Nhưng nếu thành phố tăng thuế suất bán hàng lên 9%, chúng tôi vẫn có thể dễ dàng cập nhật chương trình của mình bằng cách đặt giá trị được chỉ định `TAX_RATE` thành` 0,09` ở một nơi, thay vì tìm thấy nhiều lần xuất hiện của giá trị `0,08` rải rác trong lập trình và cập nhật tất cả chúng.
 
-The newest version of JavaScript at the time of this writing (commonly called "ES6") includes a new way to declare *constants*, by using `const` instead of `var`:
+Phiên bản JavaScript mới nhất tại thời điểm viết bài này (thường được gọi là "ES6") bao gồm một cách mới để khai báo *hằng số(constant)*, bằng cách sử dụng `const` thay vì `var`:
 
 ```js
 // as of ES6:
@@ -410,17 +410,17 @@ var amount = 99.99;
 // ..
 ```
 
-Constants are useful just like variables with unchanged values, except that constants also prevent accidentally changing value somewhere else after the initial setting. If you tried to assign any different value to `TAX_RATE` after that first declaration, your program would reject the change (and in strict mode, fail with an error -- see "Strict Mode" in Chapter 2).
+Hằng số hữu ích giống như các biến có giá trị không thay đổi, ngoại trừ việc hằng số cũng ngăn chặn việc vô tình thay đổi giá trị ở nơi khác sau cài đặt ban đầu. Nếu bạn cố gắng gán bất kỳ giá trị nào khác cho `TAX_RATE` sau lần khai báo đầu tiên đó, chương trình của bạn sẽ từ chối thay đổi (và ở strict mode(chế độ nghiêm ngặt), không thành công với lỗi - xem "Strict Mode" trong Chương 2).
 
-By the way, that kind of "protection" against mistakes is similar to the static-typing type enforcement, so you can see why static types in other languages can be attractive!
+Nhân tiện, kiểu "bảo vệ" chống lại lỗi đó cũng tương tự như kiểu thực thi kiểu gõ tĩnh, vì vậy bạn có thể thấy tại sao kiểu tĩnh trong các ngôn ngữ khác có thể hấp dẫn!
 
-**Note:** For more information about how different values in variables can be used in your programs, see the *Types & Grammar* title of this series.
+**Ghi chú:** Để biết thêm thông tin về cách các giá trị khác nhau trong các biến có thể được sử dụng trong chương trình của bạn, hãy xem tập *Types & Grammar* của bộ sách này.
 
-## Blocks
+## Blocks(Khối lệnh)
 
-The phone store employee must go through a series of steps to complete the checkout as you buy your new phone.
+Nhân viên cửa hàng điện thoại phải thực hiện một loạt các bước để hoàn tất việc thanh toán khi bạn mua điện thoại mới.
 
-Similarly, in code we often need to group a series of statements together, which we often call a *block*. In JavaScript, a block is defined by wrapping one or more statements inside a curly-brace pair `{ .. }`. Consider:
+Tương tự, trong code chúng ta thường cần nhóm một loạt các câu lệnh lại với nhau, mà chúng ta thường gọi là *khối(block)*. Trong JavaScript, một block(khối) được định nghĩa bằng cách gói một hoặc nhiều câu lệnh bên trong cặp ngoặc nhọn `{..}`. Xem xét:
 
 ```js
 var amount = 99.99;
@@ -432,7 +432,7 @@ var amount = 99.99;
 }
 ```
 
-This kind of standalone `{ .. }` general block is valid, but isn't as commonly seen in JS programs. Typically, blocks are attached to some other control statement, such as an `if` statement (see "Conditionals") or a loop (see "Loops"). For example:
+Kiểu khối `{..}` đứng độc lập này hợp lệ, nhưng không thường thấy trong các chương trình JS. Thông thường, các khối được đính kèm với một số câu lệnh điều khiển khác, chẳng hạn như câu lệnh `if` (xem "Conditionals(Điều kiện)") hoặc một vòng lặp (xem "Loops(Vòng lặp)"). Ví dụ:
 
 ```js
 var amount = 99.99;
@@ -444,17 +444,17 @@ if (amount > 10) {			// <-- block attached to `if`
 }
 ```
 
-We'll explain `if` statements in the next section, but as you can see, the `{ .. }` block with its two statements is attached to `if (amount > 10)`; the statements inside the block will only be processed if the conditional passes.
+Chúng tôi sẽ giải thích các câu lệnh `if` trong phần tiếp theo, nhưng như bạn có thể thấy, khối(block) `{..}`với hai câu lệnh của nó được đính kèm với `if (amount > 10) `; các câu lệnh bên trong khối(block) sẽ chỉ được xử lý nếu điều kiện thoả mãn.
 
-**Note:** Unlike most other statements like `console.log(amount);`, a block statement does not need a semicolon (`;`) to conclude it.
+**Ghi chú:** Không giống như hầu hết các câu lệnh khác như `console.log (amount);`, một khối(block) không cần dấu chấm phẩy (`;`) để kết thúc nó.
 
-## Conditionals
+## Conditionals(Điều kiện)
 
-"Do you want to add on the extra screen protectors to your purchase, for $9.99?" The helpful phone store employee has asked you to make a decision. And you may need to first consult the current *state* of your wallet or bank account to answer that question. But obviously, this is just a simple "yes or no" question.
+"Bạn có muốn thêm miếng dán bảo vệ màn hình bổ sung vào giao dịch mua của mình, với giá 9,99 đô la không?" Nhân viên cửa hàng điện thoại hữu ích đã yêu cầu bạn đưa ra quyết định. Và trước tiên bạn có thể cần tham khảo *trạng thái(state)* hiện tại của ví hoặc tài khoản ngân hàng của mình để trả lời câu hỏi đó. Nhưng rõ ràng, đây chỉ là một câu hỏi đơn giản "có hoặc không".
 
-There are quite a few ways we can express *conditionals* (aka decisions) in our programs.
+Có khá nhiều cách chúng ta có thể thể hiện *điều kiện* (hay còn gọi là quyết định) trong chương trình của mình.
 
-The most common one is the `if` statement. Essentially, you're saying, "*If* this condition is true, do the following...". For example:
+Câu lệnh phổ biến nhất là câu lệnh `if`. Về cơ bản, bạn đang nói, "*Nếu* điều kiện này là đúng, hãy làm như sau ...". Ví dụ:
 
 ```js
 var bank_balance = 302.13;
@@ -465,15 +465,15 @@ if (amount < bank_balance) {
 }
 ```
 
-The `if` statement requires an expression in between the parentheses `( )` that can be treated as either `true` or `false`. In this program, we provided the expression `amount < bank_balance`, which indeed will either evaluate to `true` or `false` depending on the amount in the `bank_balance` variable.
+Câu lệnh `if` yêu cầu một biểu thức ở giữa các dấu ngoặc đơn `()`có thể được coi là `true` hoặc `false`. Trong chương trình này, chúng tôi đã cung cấp biểu thức `amount < bank_balance`, thực sự sẽ đánh giá thành `true` hoặc `false` tùy thuộc vào số tiền trong biến `bank_balance`.
 
-You can even provide an alternative if the condition isn't true, called an `else` clause. Consider:
+Bạn thậm chí có thể cung cấp một giải pháp thay thế nếu điều kiện không đúng, được gọi là mệnh đề `else`. Xem xét:
 
 ```js
-const ACCESSORY_PRICE = 9.99;
+const ACCESSORY_PRICE = 9.99; // Giá trang sức
 
-var bank_balance = 302.13;
-var amount = 99.99;
+var bank_balance = 302.13; // Số dư ngân hàng
+var amount = 99.99; // Số tiền tổng cộng
 
 amount = amount * 2;
 
@@ -488,25 +488,25 @@ else {
 }
 ```
 
-Here, if `amount < bank_balance` is `true`, we'll print out `"I'll take the accessory!"` and add the `9.99` to our `amount` variable. Otherwise, the `else` clause says we'll just politely respond with `"No, thanks."` and leave `amount` unchanged.
+Ở đây, nếu `amount < bank_balance` là `true`, chúng ta sẽ in ra `"I'll take the accessory!"` và thêm `9.99` cho biến `amount`. Nếu không, mệnh đề `else` cho biết chúng ta sẽ chỉ trả lời một cách lịch sự bằng `"Không, cảm ơn"`. Và giữ nguyên `amount`.
 
-As we discussed in "Values & Types" earlier, values that aren't already of an expected type are often coerced to that type. The `if` statement expects a `boolean`, but if you pass it something that's not already `boolean`, coercion will occur.
+Như chúng ta đã thảo luận trong phần "Values & Types" trước đó, các giá trị không thuộc kiểu mong đợi thường bị ép kiểu vào kiểu đó. Câu lệnh `if` yêu cầu một `boolean`, nhưng nếu bạn chuyển nó vào một thứ gì đó chưa phải là `boolean`, thì sự ép kiểu sẽ xảy ra.
 
-JavaScript defines a list of specific values that are considered "falsy" because when coerced to a `boolean`, they become `false` -- these include values like `0` and `""`. Any other value not on the "falsy" list is automatically "truthy" -- when coerced to a `boolean` they become `true`. Truthy values include things like `99.99` and `"free"`. See "Truthy & Falsy" in Chapter 2 for more information.
+JavaScript định nghĩa một danh sách các giá trị cụ thể được coi là "falsy" vì khi bị ép kiểu thành `boolean`, chúng sẽ trở thành `false` - những giá trị này bao gồm các giá trị như `0` và `""`. Bất kỳ giá trị nào khác không có trong danh sách "falsy" sẽ tự động là "true" - khi bị ép kiểu thành `boolean` thì chúng sẽ trở thành `true`. Giá trị truthy bao gồm những thứ như `99,99` và `"miễn phí"`. Xem "Truthy & Falsy" trong Chương 2 để biết thêm thông tin.
 
-*Conditionals* exist in other forms besides the `if`. For example, the `switch` statement can be used as a shorthand for a series of `if..else` statements (see Chapter 2). Loops (see "Loops") use a *conditional* to determine if the loop should keep going or stop.
+*Các điều kiện* tồn tại ở các dạng khác ngoài lệnh `if`. Ví dụ, câu lệnh `switch` có thể được sử dụng như một cách viết tắt cho một loạt các câu lệnh `if..else` (xem Chương 2). Vòng lặp (xem "Loops(Vòng lặp)") sử dụng *có điều kiện* để xác định xem vòng lặp nên tiếp tục hay dừng lại.
 
-**Note:** For deeper information about the coercions that can occur implicitly in the test expressions of *conditionals*, see Chapter 4 of the *Types & Grammar* title of this series.
+**Ghi chú:** Để biết thêm thông tin về các ép kiểu có thể xảy ra ngầm trong các biểu thức kiểm tra của *điều kiện*, hãy xem Chương 4 của cuốn *Types and Grammar(Loại & Ngữ pháp)* của bộ sách này.
 
-## Loops
+## Loops(Vòng lặp)
 
-During busy times, there's a waiting list for customers who need to speak to the phone store employee. While there's still people on that list, she just needs to keep serving the next customer.
+Trong thời gian bận rộn, có một danh sách chờ cho những khách hàng cần nói chuyện với nhân viên cửa hàng điện thoại. Trong khi vẫn còn những người trong danh sách đó, cô ấy chỉ cần tiếp tục phục vụ khách hàng tiếp theo.
 
-Repeating a set of actions until a certain condition fails -- in other words, repeating only while the condition holds -- is the job of programming loops; loops can take different forms, but they all satisfy this basic behavior.
+Lặp lại một tập hợp các hành động cho đến khi một điều kiện nào đó không thành công - nói cách khác, chỉ lặp lại trong khi điều kiện giữ nguyên - là công việc của các vòng lặp lập trình; các vòng lặp có thể có các dạng khác nhau, nhưng tất cả chúng đều đáp ứng hành vi cơ bản này.
 
-A loop includes the test condition as well as a block (typically as `{ .. }`). Each time the loop block executes, that's called an *iteration*.
+Một vòng lặp bao gồm điều kiện kiểm tra cũng như một khối (thường là `{..}`). Mỗi khi khối lặp thực thi, đó được gọi là *lần lặp(iteration)*.
 
-For example, the `while` loop and the `do..while` loop forms illustrate the concept of repeating a block of statements until a condition no longer evaluates to `true`:
+Ví dụ: vòng lặp `while` và các dạng vòng lặp `do.. while` minh họa khái niệm lặp lại một khối câu lệnh cho đến khi một điều kiện không còn đánh giá là `true`:
 
 ```js
 while (numOfCustomers > 0) {
@@ -517,7 +517,7 @@ while (numOfCustomers > 0) {
 	numOfCustomers = numOfCustomers - 1;
 }
 
-// versus:
+// so với:
 
 do {
 	console.log( "How may I help you?" );
@@ -528,19 +528,19 @@ do {
 } while (numOfCustomers > 0);
 ```
 
-The only practical difference between these loops is whether the conditional is tested before the first iteration (`while`) or after the first iteration (`do..while`).
+Sự khác biệt thực tế duy nhất giữa các vòng lặp này là liệu điều kiện có được kiểm tra trước lần lặp(iteration) đầu tiên (`while`) hay sau lần lặp đầu tiên (` do.. while`).
 
-In either form, if the conditional tests as `false`, the next iteration will not run. That means if the condition is initially `false`, a `while` loop will never run, but a `do..while` loop will run just the first time.
+Ở cả hai dạng, nếu các kiểm tra có điều kiện là `false`, thì lần lặp tiếp theo sẽ không chạy. Điều đó có nghĩa là nếu điều kiện ban đầu là `false`, vòng lặp `while` sẽ không bao giờ chạy, nhưng vòng lặp `do.. while` sẽ chỉ chạy lần đầu tiên.
 
-Sometimes you are looping for the intended purpose of counting a certain set of numbers, like from `0` to `9` (ten numbers). You can do that by setting a loop iteration variable like `i` at value `0` and incrementing it by `1` each iteration.
+Đôi khi bạn lặp lại với mục đích dự định là đếm một tập hợp số nhất định, chẳng hạn như từ `0` đến` 9` (mười số). Bạn có thể làm điều đó bằng cách đặt một biến lặp vòng lặp như `i` với giá trị `0` và tăng nó lên `1` mỗi lần lặp.
 
-**Warning:** For a variety of historical reasons, programming languages almost always count things in a zero-based fashion, meaning starting with `0` instead of `1`. If you're not familiar with that mode of thinking, it can be quite confusing at first. Take some time to practice counting starting with `0` to become more comfortable with it!
+**Cảnh báo:** Vì nhiều lý do lịch sử khác nhau, các ngôn ngữ lập trình hầu như luôn đếm mọi thứ theo kiểu số 0, nghĩa là bắt đầu bằng `0` thay vì` 1`. Nếu bạn không quen với cách suy nghĩ đó, ban đầu bạn có thể khá bối rối. Hãy dành một chút thời gian để tập đếm bắt đầu bằng số `0` để trở nên thoải mái hơn với nó!
 
-The conditional is tested on each iteration, much as if there is an implied `if` statement inside the loop.
+Điều kiện được kiểm tra trên mỗi lần lặp, giống như thể có một câu lệnh `if` ngụ ý bên trong vòng lặp.
 
-We can use JavaScript's `break` statement to stop a loop. Also, we can observe that it's awfully easy to create a loop that would otherwise run forever without a `break`ing mechanism.
+Chúng ta có thể sử dụng câu lệnh `break` của JavaScript để dừng một vòng lặp. Ngoài ra, chúng ta có thể quan sát thấy rằng thật dễ dàng để tạo một vòng lặp mà nếu không sẽ chạy mãi mãi mà không có cơ chế ngắt bằng `break`.
 
-Let's illustrate:
+Hãy minh họa:
 
 ```js
 var i = 0;
@@ -558,9 +558,9 @@ while (true) {
 // 0 1 2 3 4 5 6 7 8 9
 ```
 
-**Warning:** This is not necessarily a practical form you'd want to use for your loops. It's presented here for illustration purposes only.
+**Cảnh báo:** Đây không nhất thiết phải là một biểu mẫu thực tế mà bạn muốn sử dụng cho các vòng lặp của mình. Nó được trình bày ở đây chỉ cho mục đích minh họa.
 
-While a `while` (or `do..while`) can accomplish the task manually, there's another syntactic form called a `for` loop for just that purpose:
+Trong khi một `while` (hoặc` do.. while`) có thể hoàn thành nhiệm vụ theo cách thủ công, có một dạng cú pháp khác được gọi là vòng lặp `for` chỉ cho mục đích đó:
 
 ```js
 for (var i = 0; i <= 9; i = i + 1) {
@@ -569,19 +569,19 @@ for (var i = 0; i <= 9; i = i + 1) {
 // 0 1 2 3 4 5 6 7 8 9
 ```
 
-As you can see, in both cases the conditional `i <= 9` is `true` for the first 10 iterations (`i` of values `0` through `9`) of either loop form, but becomes `false` once `i` is value `10`.
+Như bạn có thể thấy, trong cả hai trường hợp, điều kiện `i <= 9` là` true` cho 10 lần lặp đầu tiên (`i` của các giá trị từ` 0` đến `9`) của một trong hai dạng lặp, nhưng sẽ trở thành` false` một lần `i` là giá trị` 10`.
 
-The `for` loop has three clauses: the initialization clause (`var i=0`), the conditional test clause (`i <= 9`), and the update clause (`i = i + 1`). So if you're going to do counting with your loop iterations, `for` is a more compact and often easier form to understand and write.
+Vòng lặp `for` có ba mệnh đề: mệnh đề khởi tạo (`var i = 0`), mệnh đề kiểm tra có điều kiện (`i <= 9`) và mệnh đề cập nhật (`i = i + 1`). Vì vậy, nếu bạn định đếm với các lần lặp vòng lặp của mình, `for` là một dạng nhỏ gọn hơn và thường dễ hiểu và dễ viết hơn.
 
-There are other specialized loop forms that are intended to iterate over specific values, such as the properties of an object (see Chapter 2) where the implied conditional test is just whether all the properties have been processed. The "loop until a condition fails" concept holds no matter what the form of the loop.
+Có những dạng vòng lặp chuyên biệt khác nhằm mục đích lặp lại các giá trị cụ thể, chẳng hạn như các thuộc tính của một đối tượng (xem Chương 2), trong đó kiểm tra điều kiện ngụ ý chỉ là liệu tất cả các thuộc tính đã được xử lý hay chưa. Khái niệm "vòng lặp cho đến khi một điều kiện không thành công" không có vấn đề gì hình thức của vòng lặp.
 
-## Functions
+## Functions(Hàm)
 
-The phone store employee probably doesn't carry around a calculator to figure out the taxes and final purchase amount. That's a task she needs to define once and reuse over and over again. Odds are, the company has a checkout register (computer, tablet, etc.) with those "functions" built in.
+Nhân viên cửa hàng điện thoại có lẽ không mang theo máy tính để tính thuế và số tiền mua hàng cuối cùng. Đó là nhiệm vụ cô ấy cần xác định một lần và sử dụng lại nhiều lần. Tỷ lệ cược là, công ty có một sổ đăng ký thanh toán (máy tính, máy tính bảng, v.v.) với những "chức năng" được tích hợp sẵn.
 
-Similarly, your program will almost certainly want to break up the code's tasks into reusable pieces, instead of repeatedly repeating yourself repetitiously (pun intended!). The way to do this is to define a `function`.
+Tương tự, chương trình của bạn gần như chắc chắn sẽ muốn chia nhỏ các nhiệm vụ của mã thành các phần có thể tái sử dụng, thay vì lặp đi lặp lại nhiều lần (ý định chơi chữ!). Cách để làm điều này là xác định một `function(hàm)`.
 
-A function is generally a named section of code that can be "called" by name, and the code inside it will be run each time. Consider:
+Một hàm nói chung là một phần mã được đặt tên có thể được "gọi" theo tên và mã bên trong nó sẽ được chạy mỗi lần. Xem xét:
 
 ```js
 function printAmount() {
