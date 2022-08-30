@@ -581,7 +581,7 @@ Nhân viên cửa hàng điện thoại có lẽ không mang theo máy tính đ�
 
 Tương tự, chương trình của bạn gần như chắc chắn sẽ muốn chia nhỏ các nhiệm vụ của mã thành các phần có thể tái sử dụng, thay vì lặp đi lặp lại nhiều lần (ý định chơi chữ!). Cách để làm điều này là xác định một `function(hàm)`.
 
-Một hàm nói chung là một phần mã được đặt tên có thể được "gọi" theo tên và mã bên trong nó sẽ được chạy mỗi lần. Xem xét:
+Một hàm nói chung là một phần mã được đặt tên có thể được "gọi" theo tên và mã bên trong nó sẽ được chạy mỗi lần gọi. Xem xét:
 
 ```js
 function printAmount() {
@@ -597,7 +597,7 @@ amount = amount * 2;
 printAmount(); // "199.98"
 ```
 
-Functions can optionally take arguments (aka parameters) -- values you pass in. And they can also optionally return a value back.
+Các hàm có thể tùy chọn nhận các đối số (hay còn gọi là tham số) - các giá trị bạn truyền vào. Và chúng cũng có thể tùy chọn trả về một giá trị.
 
 ```js
 function printAmount(amt) {
@@ -616,11 +616,11 @@ amount = formatAmount();
 console.log( amount );			// "$99.99"
 ```
 
-The function `printAmount(..)` takes a parameter that we call `amt`. The function `formatAmount()` returns a value. Of course, you can also combine those two techniques in the same function.
+Hàm `printAmount(..)` nhận một tham số được gọi là `amt`. Hàm `formatAmount()` trả về một giá trị. Lẽ dĩ nhiên, bạn cũng có thể kết hợp hai kỹ thuật đó trong cùng một chức năng.
 
-Functions are often used for code that you plan to call multiple times, but they can also be useful just to organize related bits of code into named collections, even if you only plan to call them once.
+Các hàm thường được sử dụng cho mã mà bạn định gọi nhiều lần, nhưng chúng cũng có thể hữu ích chỉ để tổ chức các đoạn mã liên quan thành các nhóm được đặt tên, ngay cả khi bạn chỉ định gọi chúng một lần.
 
-Consider:
+Xem xét:
 
 ```js
 const TAX_RATE = 0.08;
@@ -640,15 +640,15 @@ amount = calculateFinalPurchaseAmount( amount );
 console.log( amount.toFixed( 2 ) );		// "107.99"
 ```
 
-Although `calculateFinalPurchaseAmount(..)` is only called once, organizing its behavior into a separate named function makes the code that uses its logic (the `amount = calculateFinal...` statement) cleaner. If the function had more statements in it, the benefits would be even more pronounced.
+Mặc dù chỉ được gọi một lần `allowFinalPurchaseAmount(..)`, việc tổ chức hành vi của nó thành một hàm được đặt tên riêng biệt sẽ làm cho mã sử dụng logic của nó (câu lệnh `amount = allowFinal ...`) sạch hơn. Nếu hàm có nhiều câu lệnh hơn trong đó, thì lợi ích sẽ càng rõ rệt hơn.
 
-### Scope
+### Scope(Phạm vi biến hoặc có thể dịch là giới hạn của biến)
 
-If you ask the phone store employee for a phone model that her store doesn't carry, she will not be able to sell you the phone you want. She only has access to the phones in her store's inventory. You'll have to try another store to see if you can find the phone you're looking for.
+Nếu bạn hỏi nhân viên cửa hàng điện thoại về một mẫu điện thoại mà cửa hàng của cô ấy không có, cô ấy sẽ không thể bán cho bạn chiếc điện thoại bạn muốn. Cô ấy chỉ có quyền truy cập vào điện thoại trong kho của cửa hàng của mình. Bạn sẽ phải thử một cửa hàng khác để xem liệu bạn có thể tìm thấy chiếc điện thoại mình đang tìm kiếm hay không.
 
-Programming has a term for this concept: *scope* (technically called *lexical scope*). In JavaScript, each function gets its own scope. Scope is basically a collection of variables as well as the rules for how those variables are accessed by name. Only code inside that function can access that function's *scoped* variables.
+Lập trình có một thuật ngữ cho khái niệm này: *phạm vi(scope)* (về mặt kỹ thuật được gọi là *phạm vi từ vựng(lexical scope)*). Trong JavaScript, mỗi hàm có phạm vi riêng. Phạm vi về cơ bản là một tập hợp các biến cũng như các quy tắc về cách các biến đó được truy cập theo tên. Chỉ mã bên trong hàm đó mới có thể truy cập các biến thuộc *phạm vi(scope)* của hàm đó.
 
-A variable name has to be unique within the same scope -- there can't be two different `a` variables sitting right next to each other. But the same variable name `a` could appear in different scopes.
+Tên biến phải là duy nhất trong cùng một phạm vi(scope) - không thể có hai biến `a` khác nhau nằm ngay cạnh nhau. Nhưng cùng một tên biến `a` có thể xuất hiện trong các phạm vi(scope) khác nhau.
 
 ```js
 function one() {
@@ -667,9 +667,9 @@ one();		// 1
 two();		// 2
 ```
 
-Also, a scope can be nested inside another scope, just like if a clown at a birthday party blows up one balloon inside another balloon. If one scope is nested inside another, code inside the innermost scope can access variables from either scope.
+Ngoài ra, một phạm vi có thể được lồng vào trong một phạm vi khác, giống như khi một chú hề trong bữa tiệc sinh nhật thổi bay một quả bóng bay bên trong một quả bóng bay khác. Nếu một phạm vi được lồng bên trong phạm vi khác, mã bên trong phạm vi trong cùng có thể truy cập các biến từ một trong hai phạm vi.
 
-Consider:
+Xem xét:
 
 ```js
 function outer() {
@@ -691,11 +691,11 @@ function outer() {
 outer();
 ```
 
-Lexical scope rules say that code in one scope can access variables of either that scope or any scope outside of it.
+Các quy tắc lexical scope nói rằng mã trong một phạm vi có thể truy cập các biến của phạm vi đó hoặc bất kỳ phạm vi nào bên ngoài phạm vi đó.
 
-So, code inside the `inner()` function has access to both variables `a` and `b`, but code in `outer()` has access only to `a` -- it cannot access `b` because that variable is only inside `inner()`.
+Do đó, code bên trong hàm `inner()` có thể truy cập đến cả biến `a` và `b`, tuy nhiên hàm `outer()` chỉ có thể truy cập tới biến `a` -- nó không thể truy cập vào biến `b` bởi vì biến đó chỉ có ở trong hàm `inner()`.
 
-Recall this code snippet from earlier:
+Nhớ lại đoạn mã này từ trước đó:
 
 ```js
 const TAX_RATE = 0.08;
@@ -709,28 +709,28 @@ function calculateFinalPurchaseAmount(amt) {
 }
 ```
 
-The `TAX_RATE` constant (variable) is accessible from inside the `calculateFinalPurchaseAmount(..)` function, even though we didn't pass it in, because of lexical scope.
+Hằng (biến) `TAX_RATE` có thể truy cập ở bên trong hàm `calculateFinalPurchaseAmount(..)`, mặc dù chúng ta không truyền nó vào, bởi vì lexical scope.
 
-**Note:** For more information about lexical scope, see the first three chapters of the *Scope & Closures* title of this series.
+**Ghi chú:** Để thêm thông tin về lexical scope, xem trong chương đầu tiên của cuốn *Scope & Closures* thuộc bộ sách này.
 
-## Practice
+## Thực hành
 
-There is absolutely no substitute for practice in learning programming. No amount of articulate writing on my part is alone going to make you a programmer.
+Không có gì thay thế được thực hành trong việc học lập trình. Không có phần nào cách viết rõ ràng về phần tôi sẽ giúp bạn trở thành một lập trình viên.
 
-With that in mind, let's try practicing some of the concepts we learned here in this chapter. I'll give the "requirements," and you try it first. Then consult the code listing below to see how I approached it.
+Với ý nghĩ đó, chúng ta hãy thử thực hành một số khái niệm mà chúng ta đã học ở đây trong chương này. Tôi sẽ đưa ra các "yêu cầu" và bạn thử nó trước. Sau đó, hãy tham khảo danh sách mã bên dưới để xem tôi đã tiếp cận nó như thế nào.
 
-* Write a program to calculate the total price of your phone purchase. You will keep purchasing phones (hint: loop!) until you run out of money in your bank account. You'll also buy accessories for each phone as long as your purchase amount is below your mental spending threshold.
-* After you've calculated your purchase amount, add in the tax, then print out the calculated purchase amount, properly formatted.
-* Finally, check the amount against your bank account balance to see if you can afford it or not.
-* You should set up some constants for the "tax rate," "phone price," "accessory price," and "spending threshold," as well as a variable for your "bank account balance.""
-* You should define functions for calculating the tax and for formatting the price with a "$" and rounding to two decimal places.
-* **Bonus Challenge:** Try to incorporate input into this program, perhaps with the `prompt(..)` covered in "Input" earlier. You may prompt the user for their bank account balance, for example. Have fun and be creative!
+* Viết chương trình tính tổng giá mua điện thoại của bạn. Bạn sẽ tiếp tục mua điện thoại (gợi ý: vòng lặp!) Cho đến khi hết tiền trong tài khoản ngân hàng của mình. Bạn cũng sẽ mua phụ kiện cho mỗi điện thoại miễn là số tiền mua của bạn dưới ngưỡng chi tiêu tinh thần của bạn.
+* Sau khi bạn đã tính toán số tiền mua hàng của mình, hãy thêm thuế, sau đó in ra số tiền mua hàng đã tính toán, được định dạng đúng.
+* Cuối cùng, hãy kiểm tra số tiền so với số dư tài khoản ngân hàng của bạn để xem bạn có đủ khả năng chi trả hay không.
+* Bạn nên thiết lập một số hằng số cho "tax rate(thuế suất)," "phone price(giá điện thoại)," "accessory price(giá phụ kiện)," and "spending threshold(ngưỡng chi tiêu)," cũng như biến số "bank account balance(số dư tài khoản ngân hàng)" của bạn.
+* Bạn nên xác định các hàm để tính thuế và định dạng giá bằng "$" và làm tròn đến hai chữ số thập phân.
+* **Bổ sung thách thức:** Cố gắng kết hợp đầu vào vào chương trình này, có thể với `prompt(..)` được nói đến trong "Đầu vào(Input)" trước đó. Ví dụ, bạn có thể nhắc người dùng về số dư tài khoản ngân hàng của họ. Hãy vui vẻ và sáng tạo!
 
-OK, go ahead. Try it. Don't peek at my code listing until you've given it a shot yourself!
+OK đi về phía trước. Thử nó. Đừng nhìn vào danh sách mã của tôi cho đến khi bạn đã tự thử!
 
-**Note:** Because this is a JavaScript book, I'm obviously going to solve the practice exercise in JavaScript. But you can do it in another language for now if you feel more comfortable.
+**Note:** Vì đây là một cuốn sách về JavaScript, nên rõ ràng tôi sẽ giải bài tập thực hành về JavaScript. Nhưng bạn có thể làm điều đó bằng một ngôn ngữ khác ngay bây giờ nếu bạn cảm thấy thoải mái hơn.
 
-Here's my JavaScript solution for this exercise:
+Đây là giải pháp JavaScript của tôi cho bài tập này:
 
 ```js
 const SPENDING_THRESHOLD = 200;
