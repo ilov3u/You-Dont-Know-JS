@@ -777,27 +777,27 @@ if (amount > bank_balance) {
 // You can't afford this purchase. :(
 ```
 
-**Note:** The simplest way to run this JavaScript program is to type it into the developer console of your nearest browser.
+**Ghi chú:** Cách đơn giản nhất để chạy chương trình JavaScript này là nhập nó vào bảng điều khiển dành cho nhà phát triển(Với chorme là DevTool/Console) của trình duyệt của bạn.
 
-How did you do? It wouldn't hurt to try it again now that you've seen my code. And play around with changing some of the constants to see how the program runs with different values.
+Bạn đã làm như thế nào? Sẽ không hại gì nếu thử lại ngay bây giờ khi bạn đã thấy mã của tôi. Và thử thay đổi một số hằng số để xem chương trình chạy như thế nào với các giá trị khác nhau.
 
-## Review
+## Đánh giá
 
-Learning programming doesn't have to be a complex and overwhelming process. There are just a few basic concepts you need to wrap your head around.
+Học lập trình không cần phải là một quá trình phức tạp và quá sức. Chỉ có một số khái niệm cơ bản mà bạn cần phải hiểu.
 
-These act like building blocks. To build a tall tower, you start first by putting block on top of block on top of block. The same goes with programming. Here are some of the essential programming building blocks:
+Chúng hoạt động giống như các khối xây dựng. Để xây dựng một tòa tháp cao, trước tiên bạn bắt đầu bằng cách đặt khối trên đầu khối lên trên khối. Lập trình cũng vậy. Dưới đây là một số khối xây dựng lập trình cần thiết:
 
-* You need *operators* to perform actions on values.
-* You need values and *types* to perform different kinds of actions like math on `number`s or output with `string`s.
-* You need *variables* to store data (aka *state*) during your program's execution.
-* You need *conditionals* like `if` statements to make decisions.
-* You need *loops* to repeat tasks until a condition stops being true.
-* You need *functions* to organize your code into logical and reusable chunks.
+* Bạn cần *operators(toán tử)* để thực thi trên các giá trị.
+* Bạn cần các giá trị và các *kiểu dữ liệu* để thực thi các hành động khác nhau như toán học với kiểu `number(số)` hoặc in ra với `string(chuỗi)`.
+* Bạn cần các *biến(variable)* để chứa dữ liệu (hay có thể gọi là *state(trạng thái)*) trong quá trình thực thi chương trình.
+* Bạn cần một số lệnh *điều kiện(conditionals)* giống như lệnh `if` để thực hiện các quyết định.
+* Bạn cần những *vòng lặp(loops)* để lặp lại các nhiệm vụ cho tới khi điều kiện dừng là true.
+* Bạn cần những *functions(hàm)* để tổ chức mã của bạn thành các phần hợp lý và có thể tái sử dụng.
 
-Code comments are one effective way to write more readable code, which makes your program easier to understand, maintain, and fix later if there are problems.
+Comment code là một cách hiệu quả để viết mã dễ đọc hơn, giúp chương trình của bạn dễ hiểu, dễ bảo trì và sửa chữa sau này nếu có vấn đề.
 
-Finally, don't neglect the power of practice. The best way to learn how to write code is to write code.
+Cuối cùng, đừng bỏ bê sức mạnh của việc luyện tập. Cách tốt nhất để học cách viết mã là viết mã.
 
-I'm excited you're well on your way to learning how to code, now! Keep it up. Don't forget to check out other beginner programming resources (books, blogs, online training, etc.). This chapter and this book are a great start, but they're just a brief introduction.
+Tôi rất vui vì bạn đang trên đường học cách viết mã, ngay bây giờ! Hãy duy trì nó. Đừng quên kiểm tra các tài nguyên lập trình cho người mới bắt đầu khác (sách, blog, đào tạo trực tuyến, v.v.). Chương này và cuốn sách này là một khởi đầu tuyệt vời, nhưng chúng chỉ là một phần giới thiệu ngắn gọn.
 
-The next chapter will review many of the concepts from this chapter, but from a more JavaScript-specific perspective, which will highlight most of the major topics that are addressed in deeper detail throughout the rest of the series.
+Chương tiếp theo sẽ xem xét nhiều khái niệm từ chương này, nhưng từ góc độ cụ thể hơn về JavaScript, sẽ làm nổi bật hầu hết các chủ đề chính được đề cập chi tiết hơn trong suốt phần còn lại của loạt bài.
