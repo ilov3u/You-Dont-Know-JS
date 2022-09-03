@@ -1,28 +1,28 @@
 # You Don't Know JS: Up & Going
-# Chapter 2: Into JavaScript
+# Chapter 2: Tìm hiểu JavaScript
 
-In the previous chapter, I introduced the basic building blocks of programming, such as variables, loops, conditionals, and functions. Of course, all the code shown has been in JavaScript. But in this chapter, we want to focus specifically on things you need to know about JavaScript to get up and going as a JS developer.
+Trong chương trước, tôi đã giới thiệu các khối lệnh cơ bản của lập trình, chẳng hạn như các biến, vòng lặp, điều kiện, và hàm. Tất nhiên, tất cả các mã đều được trình bày bằng ngôn ngữ Javascript. Tuy nhiên trong chương này, chúng tôi muốn tập trung đặc biệt vào những điều bạn cần biết về JavaScript để bắt đầu và trở thành một nhà phát triển Javascript.
 
-We will introduce quite a few concepts in this chapter that will not be fully explored until subsequent *YDKJS* books. You can think of this chapter as an overview of the topics covered in detail throughout the rest of this series.
+Chúng tôi sẽ giới thiệu khá nhiều khái niệm trong chương này mà sẽ được khám phá đầy đủ trong các cuốn sách *YDKJS* tiếp theo. Bạn có thể coi chương này như một tổng quan về các chủ đề được đề cập chi tiết trong suốt phần còn lại của bộ sách này.
 
-Especially if you're new to JavaScript, you should expect to spend quite a bit of time reviewing the concepts and code examples here multiple times. Any good foundation is laid brick by brick, so don't expect that you'll immediately understand it all the first pass through.
+Đặc biệt nếu bạn là người mới làm quen với JavaScript, bạn nên dành khá nhiều thời gian để xem lại các khái niệm và ví dụ code ở đây nhiều lần. Bất kỳ nền tảng tốt nào đều được đặt từng viên gạch, vì vậy đừng mong đợi rằng bạn sẽ hiểu ngay lập tức tất cả những gì bạn trải qua lần đầu tiên.
 
-Your journey to deeply learn JavaScript starts here.
+Hành trình tìm hiểu sâu về JavaScript của bạn bắt đầu từ đây.
 
-**Note:** As I said in Chapter 1, you should definitely try all this code yourself as you read and work through this chapter. Be aware that some of the code here assumes capabilities introduced in the newest version of JavaScript at the time of this writing (commonly referred to as "ES6" for the 6th edition of ECMAScript -- the official name of the JS specification). If you happen to be using an older, pre-ES6 browser, the code may not work. A recent update of a modern browser (like Chrome, Firefox, or IE) should be used.
+**Ghi chú:** Như tôi đã nói ở Chương 1, bạn chắc chắn nên tự mình thử tất cả mã này khi bạn đọc và làm việc qua chương này. Lưu ý rằng một số code ở đây giả định có được giới thiệu trong phiên bản JavaScript mới nhất tại thời điểm viết bài này (thường được gọi là "ES6" cho phiên bản thứ 6 của ECMAScript -- tên chính thức của đặc tả JS). Nếu bạn tình cờ sử dụng một trình duyệt cũ, trình duyệt chưa hỗ trợ ES6, code có thể không hoạt động. Nên sử dụng bản cập nhật gần đây của trình duyệt hiện đại (như Chrome, Firefox hoặc IE).
 
-## Values & Types
+## Values & Types(Giá trị và kiểu)
 
-As we asserted in Chapter 1, JavaScript has typed values, not typed variables. The following built-in types are available:
+Như chúng tôi đã khẳng định trong Chương 1, JavaScript có các kiểu giá trị chứ không phải kiểu biến. Có sẵn các loại tích hợp sau:
 
 * `string`
 * `number`
 * `boolean`
 * `null` and `undefined`
 * `object`
-* `symbol` (new to ES6)
+* `symbol` (mới từ ES6)
 
-JavaScript provides a `typeof` operator that can examine a value and tell you what type it is:
+JavaScript cung cấp toán tử `typeof` có thể kiểm tra một giá trị và cho bạn biết nó là loại gì:
 
 ```js
 var a;
@@ -47,19 +47,19 @@ a = { b: "c" };
 typeof a;				// "object"
 ```
 
-The return value from the `typeof` operator is always one of six (seven as of ES6! - the "symbol" type) string values. That is, `typeof "abc"` returns `"string"`, not `string`.
+Giá trị trả về từ toán tử `typeof` luôn là một trong sáu (bảy tính đến ES6! - kiểu "symbol") giá trị chuỗi. Đó là, `typeof "abc"` trả về `"string"`, không phải `string`.
 
-Notice how in this snippet the `a` variable holds every different type of value, and that despite appearances, `typeof a` is not asking for the "type of `a`", but rather for the "type of the value currently in `a`." Only values have types in JavaScript; variables are just simple containers for those values.
+Lưu ý rằng trong đoạn mã này, biến `a` chứa mọi loại giá trị khác nhau như thế nào và điều đó mặc dù xuất hiện, `typeof a` không yêu cầu "kiểu của `a`", thay vào đó là "kiểu của giá trị được lưu ở `a`." Chỉ các giá trị có loại trong JavaScript; các biến chỉ là các vùng chứa đơn giản cho các giá trị đó.
 
-`typeof null` is an interesting case, because it errantly returns `"object"`, when you'd expect it to return `"null"`.
+`typeof null` là một trường hợp thú vị, bởi vì nó trả lại một cách sai lầm `"object"`, khi bạn mong đợi nó trả về `"null"`.
 
-**Warning:** This is a long-standing bug in JS, but one that is likely never going to be fixed. Too much code on the Web relies on the bug and thus fixing it would cause a lot more bugs!
+**Cảnh báo:** Đây là một lỗi lâu đời trong JS, nhưng một lỗi có thể sẽ không bao giờ được sửa. Quá nhiều code trên Web dựa vào lỗi đó và do đó việc sửa nó sẽ gây ra nhiều lỗi hơn!
 
-Also, note `a = undefined`. We're explicitly setting `a` to the `undefined` value, but that is behaviorally no different from a variable that has no value set yet, like with the `var a;` line at the top of the snippet. A variable can get to this "undefined" value state in several different ways, including functions that return no values and usage of the `void` operator.
+Cũng thế, với `a = undefined`. Chúng ta đang thiết lập một cách rõ ràng `a` có giá trị `undefined`, nhưng điều đó về mặt biểu hiện không khác gì một biến chưa được đặt giá trị, giống như dòng `var a;` ở đầu đoạn mã. Một biến có thể đạt được trạng thái giá trị "undefined" này theo một số cách khác nhau, bao gồm các hàm không trả về giá trị và sử dụng toán tử `void`.
 
-### Objects
+### Objects(Đối tượng)
 
-The `object` type refers to a compound value where you can set properties (named locations) that each hold their own values of any type. This is perhaps one of the most useful value types in all of JavaScript.
+Kiểu `object` đề cập đến một giá trị phức hợp trong đó bạn có thể đặt các thuộc tính (vị trí được đặt tên) mà mỗi thuộc tính giữ các giá trị riêng của chúng thuộc bất kỳ kiểu nào. Đây có lẽ là một trong những kiểu giá trị hữu ích nhất trong tất cả JavaScript.
 
 ```js
 var obj = {
@@ -77,15 +77,15 @@ obj["b"];	// 42
 obj["c"];	// true
 ```
 
-It may be helpful to think of this `obj` value visually:
+Có thể hữu ích khi nghĩ về giá trị `obj` này một cách trực quan:
 
 <img src="fig4.png">
 
-Properties can either be accessed with *dot notation* (i.e., `obj.a`) or *bracket notation* (i.e., `obj["a"]`). Dot notation is shorter and generally easier to read, and is thus preferred when possible.
+Các thuộc tính có thể được truy cập bằng  *ký hiệu dấu chấm* (vd., `obj.a`) hoặc *ký hiệu dấu ngoặc* (vd., `obj["a"]`). Ký hiệu dấu chấm ngắn hơn và thường dễ đọc hơn, do đó được ưu tiên hơn khi có thể.
 
-Bracket notation is useful if you have a property name that has special characters in it, like `obj["hello world!"]` -- such properties are often referred to as *keys* when accessed via bracket notation. The `[ ]` notation requires either a variable (explained next) or a `string` *literal* (which needs to be wrapped in `" .. "` or `' .. '`).
+Ký hiệu dấu ngoặc hữu ích nếu bạn có tên thuộc tính có các ký tự đặc biệt trong đó, giống như `obj["hello world!"]` -- các thuộc tính như vậy thường được gọi là *keys(khóa)* khi được truy cập thông qua ký hiệu dấu ngoặc. Kí hiệu `[ ]` yêu cầu một biến (được giải thích sau) hoặc một `string` *literal* (cần được bao bao trong `" .. "` hoặc `' .. '`).
 
-Of course, bracket notation is also useful if you want to access a property/key but the name is stored in another variable, such as:
+Tất nhiên, ký hiệu dấu ngoặc cũng hữu ích nếu bạn muốn truy cập thuộc tính/khóa nhưng tên được lưu trữ trong một biến khác, chẳng hạn như:
 
 ```js
 var obj = {
@@ -99,13 +99,13 @@ obj[b];			// "hello world"
 obj["b"];		// 42
 ```
 
-**Note:** For more information on JavaScript `object`s, see the *this & Object Prototypes* title of this series, specifically Chapter 3.
+**Ghi chú:** Thêm thông tin về JavaScript `object`, xem trong cuốn *this & Object Prototypes* của bộ sách này, đặc biệt là Chương 3.
 
-There are a couple of other value types that you will commonly interact with in JavaScript programs: *array* and *function*. But rather than being proper built-in types, these should be thought of more like subtypes -- specialized versions of the `object` type.
+Có một số loại giá trị khác mà bạn sẽ thường tương tác trong các chương trình JavaScript: *array* và *function*. Nhưng thay vì là các kiểu tích hợp phù hợp, chúng nên được coi giống như kiểu con hơn - các phiên bản chuyên biệt của kiểu `object`.
 
-#### Arrays
+#### Arrays(Mảng)
 
-An array is an `object` that holds values (of any type) not particularly in named properties/keys, but rather in numerically indexed positions. For example:
+Mảng là một `object` chứa các giá trị (thuộc bất kỳ loại nào) không được gán trong các thuộc tính/khóa được đặt tên, mà là ở các vị trí được lập chỉ mục số. Cho ví dụ:
 
 ```js
 var arr = [
@@ -122,21 +122,21 @@ arr.length;		// 3
 typeof arr;		// "object"
 ```
 
-**Note:** Languages that start counting at zero, like JS does, use `0` as the index of the first element in the array.
+**Ghi chú:** Nhiều ngôn ngữ đếm bắt đầu từ số 0, giống như JS làm, sử dụng `0` như phần tử đầu tiên trong danh sách.
 
-It may be helpful to think of `arr` visually:
+Có thể hữu ích khi nghĩ về `arr` một cách trực quan:
 
 <img src="fig5.png">
 
-Because arrays are special objects (as `typeof` implies), they can also have properties, including the automatically updated `length` property.
+Vì mảng là các đối tượng đặc biệt (như ngụ ý của `typeof`), chúng cũng có thể có các thuộc tính, bao gồm cả thuộc tính `length` được cập nhật tự động.
 
-You theoretically could use an array as a normal object with your own named properties, or you could use an `object` but only give it numeric properties (`0`, `1`, etc.) similar to an array. However, this would generally be considered improper usage of the respective types.
+Về mặt lý thuyết, bạn có thể sử dụng một mảng như một đối tượng bình thường với các thuộc tính được đặt tên của riêng bạn hoặc bạn có thể sử dụng một `object` nhưng chỉ cung cấp cho nó các thuộc tính số (`0`, `1`, v.v.) tương tự như một mảng. Tuy nhiên, điều này thường được coi là sử dụng không đúng các loại tương ứng.
 
-The best and most natural approach is to use arrays for numerically positioned values and use `object`s for named properties.
+Cách tiếp cận tốt nhất và tự nhiên nhất là sử dụng mảng cho các giá trị được định vị bằng số và sử dụng `object` cho các thuộc tính được đặt tên.
 
-#### Functions
+#### Functions(Hàm)
 
-The other `object` subtype you'll use all over your JS programs is a function:
+Loại `object` phụ khác mà bạn sẽ sử dụng trên tất cả các chương trình JS của mình là một hàm:
 
 ```js
 function foo() {
@@ -150,15 +150,15 @@ typeof foo();		// "number"
 typeof foo.bar;		// "string"
 ```
 
-Again, functions are a subtype of `objects` -- `typeof` returns `"function"`, which implies that a `function` is a main type -- and can thus have properties, but you typically will only use function object properties (like `foo.bar`) in limited cases.
+Một lần nữa, các hàm(functions) là một loại phụ của `objects` -- `typeof` trả về `"function"`, điều đó ngụ ý rằng một `function` là một kiểu chính -- và do đó có thể có các thuộc tính, nhưng bạn thường sẽ chỉ sử dụng các thuộc tính đối tượng hàm (giống như `foo.bar`) trong một số trường hợp giới hạn.
 
-**Note:** For more information on JS values and their types, see the first two chapters of the *Types & Grammar* title of this series.
+**Ghi chú:** Để biết thêm thông tin về các giá trị JS và kiểu của chúng, hãy xem hai chương đầu tiên của cuốn *Types & Grammar* trong bộ sách này.
 
-### Built-In Type Methods
+### Built-In Type Methods(Những Kiểu Phương Thức Tích Hợp)
 
-The built-in types and subtypes we've just discussed have behaviors exposed as properties and methods that are quite powerful and useful.
+Các kiểu và kiểu con tích hợp mà chúng ta vừa thảo luận có các hành vi được hiển thị dưới dạng các thuộc tính và phương thức khá mạnh mẽ và hữu ích.
 
-For example:
+Cho ví dụ:
 
 ```js
 var a = "hello world";
@@ -169,31 +169,31 @@ a.toUpperCase();		// "HELLO WORLD"
 b.toFixed(4);			// "3.1416"
 ```
 
-The "how" behind being able to call `a.toUpperCase()` is more complicated than just that method existing on the value.
+"Làm thế nào" đằng sau việc có thể gọi `a.toUpperCase()` phức tạp hơn là chỉ phương pháp đó tồn tại trên giá trị.
 
-Briefly, there is a `String` (capital `S`) object wrapper form, typically called a "native," that pairs with the primitive `string` type; it's this object wrapper that defines the `toUpperCase()` method on its prototype.
+Tóm tắt, có một biểu mẫu bao bọc đối tượng `String` (viết hoa` S`), thường được gọi là "native(gốc)," cặp với kiểu `string` nguyên thủy; chính là trình bao bọc đối tượng này sẽ xác định phương thức `toUpperCase ()` trên prototype(nguyên mẫu) của nó.
 
-When you use a primitive value like `"hello world"` as an `object` by referencing a property or method (e.g., `a.toUpperCase()` in the previous snippet), JS automatically "boxes" the value to its object wrapper counterpart (hidden under the covers).
+Khi bạn sử dụng một giá trị nguyên thủy như `"hello world"` như một `object` bằng cách tham chiếu một thuộc tính hoặc phương thức (vd, `a.toUpperCase()` trong đoạn code minh hoạ bên trên), JS tự động "đóng hộp" giá trị cho phần đối ứng của trình bao bọc đối tượng của nó (ẩn bên dưới).
 
-A `string` value can be wrapped by a `String` object, a `number` can be wrapped by a `Number` object, and a `boolean` can be wrapped by a `Boolean` object. For the most part, you don't need to worry about or directly use these object wrapper forms of the values -- prefer the primitive value forms in practically all cases and JavaScript will take care of the rest for you.
+Một giá trị `string` có thể được bao bọc bởi một đối tượng  `String`, một `number` có thể được bao bọc bởi một đối tượng `Number`, và một giá trị `boolean` có thể được bao bởi một đối tượng `Boolean`. For the most part, you don't need to worry about or directly use these object wrapper forms of the values -- prefer the primitive value forms in practically all cases and JavaScript will take care of the rest for you.
 
-**Note:** For more information on JS natives and "boxing," see Chapter 3 of the *Types & Grammar* title of this series. To better understand the prototype of an object, see Chapter 5 of the *this & Object Prototypes* title of this series.
+**Ghi chú:** Để thêm thông tin về JS natives và "boxing," xem Chương 3 của cuốn *Types & Grammar* trong bộ sách này. Để hiểu rõ hơn về nguyên mẫu(prototype) của một đối tượng, xem Chương 5 của cuốn *this & Object Prototypes* trong bộ sách này.
 
-### Comparing Values
+### So Sánh Giá Trị
 
-There are two main types of value comparison that you will need to make in your JS programs: *equality* and *inequality*. The result of any comparison is a strictly `boolean` value (`true` or `false`), regardless of what value types are compared.
+Có hai kiểu so sánh giá trị chính mà bạn sẽ cần thực hiện trong các chương trình JS của mình: *equality(so sánh bằng)* và *inequality(so sánh khác)*. Kết quả của bất kỳ so sánh nào là một giá trị `boolean` (`true` hoặc `false`), bất kể loại giá trị nào được so sánh.
 
-#### Coercion
+#### Coercion(Ép kiểu)
 
-We talked briefly about coercion in Chapter 1, but let's revisit it here.
+Chúng ta đã nói sơ qua về ép kiểu trong Chương 1, nhưng chúng ta hãy xem lại nó ở đây.
 
-Coercion comes in two forms in JavaScript: *explicit* and *implicit*. Explicit coercion is simply that you can see obviously from the code that a conversion from one type to another will occur, whereas implicit coercion is when the type conversion can happen as more of a non-obvious side effect of some other operation.
+Sự ép kiểu có hai dạng trong JavaScript: *explicit(tường minh)* và *implicit(ngầm định)*. Sự ép kiểu tường minh chỉ đơn giản là bạn có thể thấy rõ ràng từ mã rằng chuyển đổi từ loại này sang loại khác sẽ xảy ra, trong khi ép kiểu ngầm định là khi chuyển đổi kiểu có thể xảy ra như một tác dụng phụ không rõ ràng của một số hoạt động khác.
 
-You've probably heard sentiments like "coercion is evil" drawn from the fact that there are clearly places where coercion can produce some surprising results. Perhaps nothing evokes frustration from developers more than when the language surprises them.
+Bạn có thể đã từng nghe những cảm nghĩ như "ép kiểu là xấu" được rút ra từ thực tế rằng rõ ràng có những nơi mà việc ép kiểu có thể tạo ra một số kết quả đáng ngạc nhiên. Có lẽ không có gì gợi lên sự thất vọng từ các nhà phát triển hơn là khi ngôn ngữ làm họ ngạc nhiên.
 
-Coercion is not evil, nor does it have to be surprising. In fact, the majority of cases you can construct with type coercion are quite sensible and understandable, and can even be used to *improve* the readability of your code. But we won't go much further into that debate -- Chapter 4 of the *Types & Grammar* title of this series covers all sides.
+Ép kiểu không phải là điều xấu xa, cũng không phải là điều đáng ngạc nhiên. Trong thực tế, phần lớn các trường hợp bạn có thể xây dựng với kiểu ép kiểu là khá hợp lý và dễ hiểu, và thậm chí có thể được sử dụng để *cải thiện* khả năng đọc code của bạn. Nhưng chúng ta sẽ không đi sâu hơn vào cuộc tranh luận đó -- Chương 4 của cuốn *Types & Grammar* trong bộ sách này đề cập đến các khía cạnh.
 
-Here's an example of *explicit* coercion:
+Đây là ví dụ của ép kiểu  *explicit(tường minh)*:
 
 ```js
 var a = "42";
@@ -204,7 +204,7 @@ a;				// "42"
 b;				// 42 -- the number!
 ```
 
-And here's an example of *implicit* coercion:
+Và đây là ví dụ của ép kiểu *implicit(ngầm định)*:
 
 ```js
 var a = "42";
