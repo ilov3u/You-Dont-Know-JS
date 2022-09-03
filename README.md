@@ -34,11 +34,11 @@ Nội dung của những cuốn sách này đã được phát hành tại đây
 
 <a href="https://www.patreon.com/getify">[![patreon.png](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/getify)</a>
 
-## Online Video Huấn Luyện
+## Video Huấn Luyện
 
 Tôi cũng có sẵn một số tài liệu đào tạo JS ở định dạng video theo yêu cầu. Tôi dạy một số khoá tại [Frontend Masters](https://FrontendMasters.com). Bạn có thể tìm [các khoá học của tôi ở đây](https://frontendmasters.com/kyle-simpson/).
 
-## Contributions
+## Đóng góp
 
 Những cuốn sách xuất bản đầu tiên này đã hoàn chỉnh và đã được xuất bản và sẽ không còn được thay đổi. Các nội dung sẽ vẫn còn được lưu trữ ở đây. Xem [tái bản lần 2](https://github.com/getify/You-Dont-Know-JS/tree/2nd-ed) cho công việc đang hoạt động trong repository này.
 
