@@ -217,16 +217,16 @@ b;				// 42 -- the number!
 
 #### Truthy & Falsy
 
-In Chapter 1, we briefly mentioned the "truthy" and "falsy" nature of values: when a non-`boolean` value is coerced to a `boolean`, does it become `true` or `false`, respectively?
+Trong Chương 1, chúng ta đã đề cập ngắn gọn tới tính chất của các giá trị "truthy" và "falsy": khi một giá trị non-`boolean` được ép kiểu về `boolean`, nó trở thành `true` hoặc `false`, tương ứng?
 
-The specific list of "falsy" values in JavaScript is as follows:
+Danh sách cụ thể của những giá trị "falsy" trong JavaScript là:
 
-* `""` (empty string)
-* `0`, `-0`, `NaN` (invalid `number`)
+* `""` (chuỗi rỗng)
+* `0`, `-0`, `NaN` (`number` không hợp lệ)
 * `null`, `undefined`
 * `false`
 
-Any value that's not on this "falsy" list is "truthy." Here are some examples of those:
+Bất kì giá trị nào không thuộc về danh sách "falsy" này là "truthy." Đây là một số mình hoạ của những giá trị "truthy":
 
 * `"hello"`
 * `42`
@@ -235,15 +235,15 @@ Any value that's not on this "falsy" list is "truthy." Here are some examples of
 * `{ }`, `{ a: 42 }` (objects)
 * `function foo() { .. }` (functions)
 
-It's important to remember that a non-`boolean` value only follows this "truthy"/"falsy" coercion if it's actually coerced to a `boolean`. It's not all that difficult to confuse yourself with a situation that seems like it's coercing a value to a `boolean` when it's not.
+Điều quan trọng cần nhớ là giá trị non-`boolean` chỉ tuân theo sự ép kiểu "truthy"/"falsy" nếu nó thực sự bị ép kiểu thành `boolean`.
 
-#### Equality
+#### Equality(So Sánh)
 
-There are four equality operators: `==`, `===`, `!=`, and `!==`. The `!` forms are of course the symmetric "not equal" versions of their counterparts; *non-equality* should not be confused with *inequality*.
+Có bốn toán tử so sánh: `==`, `===`, `!=`, và `!==`. Các dạng `!` Tất nhiên là các phiên bản đối "không bằng nhau" của các đối của chúng; *non-equality* không nên nhầm lẫn với *inequality*.
 
-The difference between `==` and `===` is usually characterized that `==` checks for value equality and `===` checks for both value and type equality. However, this is inaccurate. The proper way to characterize them is that `==` checks for value equality with coercion allowed, and `===` checks for value equality without allowing coercion; `===` is often called "strict equality" for this reason.
+Sự khác biệt giữa `==` và `===` thường được đặc trưng rằng `==` kiểm tra so sánh giá trị và `===` kiểm tra so sánh cả giá trị và kiểu. Tuy nhiên, điều này là không chính xác. Cách thích hợp để mô tả chúng là `==` kiểm tra so sánh giá trị với sự ép kiểu được phép, và `===` kiểm tra so sánh về giá trị mà không cho phép ép kiểu; `===` thường được gọi là "so sánh nghiêm ngặt" vì lý do này.
 
-Consider the implicit coercion that's allowed by the `==` loose-equality comparison and not allowed with the `===` strict-equality:
+Xem xét sự ép kiểu ngầm được cho phép bởi `==` loose-equality(so sánh lỏng lẻo) và không với  `===` strict-equality(so sánh nghiêm ngặt):
 
 ```js
 var a = "42";
@@ -253,29 +253,29 @@ a == b;			// true
 a === b;		// false
 ```
 
-In the `a == b` comparison, JS notices that the types do not match, so it goes through an ordered series of steps to coerce one or both values to a different type until the types match, where then a simple value equality can be checked.
+Trong so sánh này `a == b`, JS nhận thấy rằng các kiểu không khớp nhau, vì vậy nó trải qua một loạt các bước có thứ tự để ép kiểu một hoặc cả hai giá trị sang một kiểu khác cho đến khi các kiểu khớp với nhau, khi đó một giá trị so sánh đơn giản có thể được kiểm tra.
 
-If you think about it, there's two possible ways `a == b` could give `true` via coercion. Either the comparison could end up as `42 == 42` or it could be `"42" == "42"`. So which is it?
+Nếu bạn nghĩ về nó, có hai cách khả thi để `a == b` có thể trả về giá trị `true` thông qua ép kiểu. Hoặc sự so sánh có thể kết thúc là `42 == 42` hoặc nó nó có thể là `"42" == "42"`. Vậy nó là cái nào?
 
-The answer: `"42"` becomes `42`, to make the comparison `42 == 42`. In such a simple example, it doesn't really seem to matter which way that process goes, as the end result is the same. There are more complex cases where it matters not just what the end result of the comparison is, but *how* you get there.
+Câu trả lời: `"42"` trở thành `42`, để làm phép so sánh `42 == 42`. Trong một ví dụ đơn giản như vậy, nó dường như không thực sự quan trọng quá trình đó diễn ra theo cách nào, vì kết quả cuối cùng là giống nhau. Có nhiều trường hợp phức tạp hơn mà vấn đề không chỉ là kết quả cuối cùng của phép so sánh, mà là *cách nào* bạn lấy được kết quả cuối cùng.
 
-The `a === b` produces `false`, because the coercion is not allowed, so the simple value comparison obviously fails. Many developers feel that `===` is more predictable, so they advocate always using that form and staying away from `==`. I think this view is very shortsighted. I believe `==` is a powerful tool that helps your program, *if you take the time to learn how it works.*
+Câu lệnh `a === b` trả về `false`, bởi vì sự ép kiểu không được phép, do đó việc so sánh giữa hai giá trị đơn giản là thất bại. Nhiều nhà phát triển cảm thấy rằng so sánh `===` thì dễ dự đoán kết quả hơn, vì vậy họ chủ trương luôn sử dụng hình thức đó và tránh xa cách so sánh `==`. Tôi nghĩ rằng quan điểm này là rất thiển cận. Tôi tin rằng so sánh `==` là một công cụ mạnh mẽ hỗ trợ cho chương trình của bạn, *Nếu như bạn dành thời gian để học xem nó hoạt động như thế nào.*
 
-We're not going to cover all the nitty-gritty details of how the coercion in `==` comparisons works here. Much of it is pretty sensible, but there are some important corner cases to be careful of. You can read section 11.9.3 of the ES5 specification (http://www.ecma-international.org/ecma-262/5.1/) to see the exact rules, and you'll be surprised at just how straightforward this mechanism is, compared to all the negative hype surrounding it.
+Chúng tôi sẽ không trình bày tất cả các chi tiết thực tế về cách hoạt động của việc ép kiểu trong các so sánh `==` ở đây. Phần lớn trong số đó là khá hợp lý, nhưng có một số trường hợp khía cạnh quan trọng cần cẩn thận. Bạn có thể đọc phần 11.9.3 của đặc tả ES5 (http://www.ecma-international.org/ecma-262/5.1/) để xem các quy tắc chính xác và bạn sẽ ngạc nhiên về mức độ đơn giản của cơ chế này, so với tất cả những lời thổi phồng tiêu cực xung quanh nó.
 
-To boil down a whole lot of details to a few simple takeaways, and help you know whether to use `==` or `===` in various situations, here are my simple rules:
+Để tóm tắt rất nhiều chi tiết thành một vài điều đơn giản và giúp bạn biết nên sử dụng `==` hay `===` trong các tình huống khác nhau, đây là các quy tắc đơn giản của tôi:
 
-* If either value (aka side) in a comparison could be the `true` or `false` value, avoid `==` and use `===`.
-* If either value in a comparison could be one of these specific values (`0`, `""`, or `[]` -- empty array), avoid `==` and use `===`.
-* In *all* other cases, you're safe to use `==`. Not only is it safe, but in many cases it simplifies your code in a way that improves readability.
+* Nếu một trong hai giá trị (còn gọi là bên) trong phép so sánh có thể là giá trị `true` hoặc` false`, hãy tránh `==` và sử dụng `===`.
+* Nếu một trong hai giá trị trong phép so sánh có thể là một trong các giá trị cụ thể này (`0`,`""` hoặc `[]`- mảng rỗng, hãy tránh `==` và sử dụng `===`.
+* Trong *tất cả* các trường hợp khác, bạn có thể yên tâm sử dụng `==`. Nó không chỉ an toàn mà trong nhiều trường hợp, nó đơn giản hóa mã của bạn theo cách cải thiện khả năng đọc.
 
-What these rules boil down to is requiring you to think critically about your code and about what kinds of values can come through variables that get compared for equality. If you can be certain about the values, and `==` is safe, use it! If you can't be certain about the values, use `===`. It's that simple.
+Những quy tắc này đòi hỏi bạn phải suy nghĩ chín chắn về mã của mình và về những loại giá trị nào có thể đến thông qua các biến được so sánh. Nếu bạn có thể chắc chắn về các giá trị, và `==` là an toàn, sử dụng nó! Nếu bạn không thể chắc chắn về các giá trị, sử dụng `===`. Nó đơn giản mà.
 
-The `!=` non-equality form pairs with `==`, and the `!==` form pairs with `===`. All the rules and observations we just discussed hold symmetrically for these non-equality comparisons.
+So sánh `!=` là một cặp với `==`, và so sánh `!==` là cặp với `===`. Tất cả các quy tắc và quan sát mà chúng ta vừa thảo luận giữ đối xứng cho những so sánh không bình đẳng này.
 
-You should take special note of the `==` and `===` comparison rules if you're comparing two non-primitive values, like `object`s (including `function` and `array`). Because those values are actually held by reference, both `==` and `===` comparisons will simply check whether the references match, not anything about the underlying values.
+Bạn nên lưu ý đặc biệt về quy tắc so sánh `==` và `===` nếu bạn đang so sánh hai giá trị không phải nguyên thủy, như `object` (bao gồm `function` và `array`). Bởi vì những giá trị đó thực sự được giữ bằng tham chiếu, cả hai phép so sánh `==` và `===` sẽ chỉ kiểm tra xem các tham chiếu có khớp nhau hay không, chứ không phải bất kỳ điều gì về các giá trị cơ bản.
 
-For example, `array`s are by default coerced to `string`s by simply joining all the values with commas (`,`) in between. You might think that two `array`s with the same contents would be `==` equal, but they're not:
+Cho ví dụ, `array` được mặc định ép kiểu về `string` bằng cách nối các phần tử của mảng với nhau thông qua dấu (`,`) ở giữa. Bạn có thể nghĩ rằng hai `array` có cùng nội dung sẽ là `==` bằng nhau, nhưng chúng không:
 
 ```js
 var a = [1,2,3];
@@ -287,17 +287,17 @@ b == c;		// true
 a == b;		// false
 ```
 
-**Note:** For more information about the `==` equality comparison rules, see the ES5 specification (section 11.9.3) and also consult Chapter 4 of the *Types & Grammar* title of this series; see Chapter 2 for more information about values versus references.
+**Lưu ý:** Để biết thêm thông tin về quy tắc so sánh đẳng thức `==`, hãy xem đặc tả ES5 (section 11.9.3) và cũng tham khảo Chương 4 của cuốn *Type & Grammar* của bộ sách này; xem Chương 2 để biết thêm thông tin về giá trị so với tham chiếu.
 
-#### Inequality
+#### Inequality(So Sánh Không Bằng Nhau)
 
-The `<`, `>`, `<=`, and `>=` operators are used for inequality, referred to in the specification as "relational comparison." Typically they will be used with ordinally comparable values like `number`s. It's easy to understand that `3 < 4`.
+Các toán tử `<`, `>`, `<=`, và `>=` được sử dụng cho so sánh khác, được gọi trong đặc điểm kỹ thuật là "so sánh quan hệ." Thông thường, chúng sẽ được sử dụng với các giá trị có thể so sánh theo thứ tự như `number`. Có thể hiểu đơn giản rằng `3 < 4`.
 
-But JavaScript `string` values can also be compared for inequality, using typical alphabetic rules (`"bar" < "foo"`).
+Nhưng các giá trị `string` trong JavaScript cũng có thể được so sánh, bằng cách sử dụng các quy tắc bảng chữ cái điển hình (`"bar" < "foo"`).
 
-What about coercion? Similar rules as `==` comparison (though not exactly identical!) apply to the inequality operators. Notably, there are no "strict inequality" operators that would disallow coercion the same way `===` "strict equality" does.
+Còn chuyện ép kiểu thì sao? Các quy tắc tương tự như so sánh `==` (mặc dù không hoàn toàn giống nhau!). Áp dụng cho các toán tử bất đẳng thức. Đáng chú ý, không có toán tử "strict inequality(bất bình đẳng nghiêm ngặt)" nào giống như kiểu so sánh bằng và không cho phép tự ép kiểu `===`.
 
-Consider:
+Xem xét:
 
 ```js
 var a = 41;
@@ -308,9 +308,9 @@ a < b;		// true
 b < c;		// true
 ```
 
-What happens here? In section 11.8.5 of the ES5 specification, it says that if both values in the `<` comparison are `string`s, as it is with `b < c`, the comparison is made lexicographically (aka alphabetically like a dictionary). But if one or both is not a `string`, as it is with `a < b`, then both values are coerced to be `number`s, and a typical numeric comparison occurs.
+Chuyện gì xảy ra ở đây? Trong section 11.8.5 của đặc tả ES5, nó nói rằng nếu cả hai giá trị trong phép so sánh `<` là `string`, giống như với `b < c`, thì phép so sánh sẽ được thực hiện theo từ điển (hay còn gọi là theo thứ tự bảng chữ cái giống như một từ điển). Nhưng nếu một hoặc cả hai không phải là `string`, như với `a < b`, thì cả hai giá trị đều bị ép kiểu phải là `number` và xảy ra so sánh số điển hình.
 
-The biggest gotcha you may run into here with comparisons between potentially different value types -- remember, there are no "strict inequality" forms to use -- is when one of the values cannot be made into a valid number, such as:
+Vấn đề lớn nhất mà bạn có thể gặp phải ở đây khi so sánh giữa các loại giá trị tiềm năng khác nhau - hãy nhớ rằng không có hình thức "strict inenquality(bất bình đẳng nghiêm ngặt)" để sử dụng - là khi một trong các giá trị không thể được biến thành số hợp lệ, chẳng hạn như:
 
 ```js
 var a = 42;
@@ -321,33 +321,33 @@ a > b;		// false
 a == b;		// false
 ```
 
-Wait, how can all three of those comparisons be `false`? Because the `b` value is being coerced to the "invalid number value" `NaN` in the `<` and `>` comparisons, and the specification says that `NaN` is neither greater-than nor less-than any other value.
+Chờ đã, làm sao cả ba phép so sánh đó đều là `false` được? Bởi vì giá trị `b` đang bị ép buộc thành "giá trị số không hợp lệ(Not a number)" `NaN` trong phép so sánh `<` và `>` và thông số kỹ thuật cho biết rằng `NaN` không lớn hơn cũng không nhỏ hơn bất kỳ giá trị nào khác.
 
-The `==` comparison fails for a different reason. `a == b` could fail if it's interpreted either as `42 == NaN` or `"42" == "foo"` -- as we explained earlier, the former is the case.
+So sánh `==` không thành công vì một lý do khác. `a == b` có thể không thành công nếu nó được hiểu là `42 == NaN` hoặc `"42" == "foo"` - như chúng tôi đã giải thích trước đó, trường hợp trước là trường hợp xảy ra.
 
-**Note:** For more information about the inequality comparison rules, see section 11.8.5 of the ES5 specification and also consult Chapter 4 of the *Types & Grammar* title of this series.
+**Lưu ý:** Để biết thêm thông tin về các quy tắc so sánh bất đẳng thức, hãy xem phần 11.8.5 của đặc tả ES5 và cũng tham khảo Chương 4 của cuốn *Types & Grammar* của bộ sách này.
 
-## Variables
+## Biến(Variables)
 
-In JavaScript, variable names (including function names) must be valid *identifiers*. The strict and complete rules for valid characters in identifiers are a little complex when you consider nontraditional characters such as Unicode. If you only consider typical ASCII alphanumeric characters though, the rules are simple.
+Trong JavaScript, tên biến (bao gồm cả tên hàm) phải là *mã định danh(identifiers)* hợp lệ. Các quy tắc nghiêm ngặt và đầy đủ cho các ký tự hợp lệ trong mã định danh hơi phức tạp khi bạn xem xét các ký tự phi truyền thống như Unicode. Tuy nhiên, nếu bạn chỉ xem xét các ký tự chữ và số ASCII điển hình, các quy tắc rất đơn giản.
 
-An identifier must start with `a`-`z`, `A`-`Z`, `$`, or `_`. It can then contain any of those characters plus the numerals `0`-`9`.
+Một mã định danh cần bắt đầu với `a`-`z`, `A`-`Z`, `$`, or `_`. Nó có thể chứa thêm các kí tự số `0`-`9`.
 
-Generally, the same rules apply to a property name as to a variable identifier. However, certain words cannot be used as variables, but are OK as property names. These words are called "reserved words," and include the JS keywords (`for`, `in`, `if`, etc.) as well as `null`, `true`, and `false`.
+Nói chung, các quy tắc tương tự áp dụng cho tên thuộc tính cũng như cho một số nhận dạng biến. Tuy nhiên, một số từ nhất định không thể được sử dụng làm biến, nhưng có thể được dùng làm tên thuộc tính. Những từ này được gọi là "các từ dành riêng(reserved words)" và bao gồm các từ khóa JS (`for`,` in`, `if`, v.v.) cũng như` null`, `true` và` false`.
 
-**Note:** For more information about reserved words, see Appendix A of the *Types & Grammar* title of this series.
+**Lưu ý:** Để biết thêm thông tin về các từ dành riêng, hãy xem Phụ lục A của cuốn *Types & Grammar* của bộ sách này.
 
-### Function Scopes
+### Function Scopes(Phạm Vi Hàm)
 
-You use the `var` keyword to declare a variable that will belong to the current function scope, or the global scope if at the top level outside of any function.
+Bạn sử dụng từ khóa `var` để khai báo một biến sẽ thuộc phạm vi hàm hiện tại hoặc phạm vi toàn cục nếu ở cấp cao nhất bên ngoài bất kỳ hàm nào.
 
 #### Hoisting
 
-Wherever a `var` appears inside a scope, that declaration is taken to belong to the entire scope and accessible everywhere throughout.
+Bất cứ nơi nào một `var` xuất hiện bên trong một phạm vi, thì khai báo đó được coi là thuộc về toàn bộ phạm vi và có thể truy cập ở mọi nơi thông qua đó.
 
-Metaphorically, this behavior is called *hoisting*, when a `var` declaration is conceptually "moved" to the top of its enclosing scope. Technically, this process is more accurately explained by how code is compiled, but we can skip over those details for now.
+Nói một cách ẩn dụ, hành vi này được gọi là *hoisting*, khi một khai báo `var` về mặt khái niệm được "chuyển" lên đầu phạm vi bao quanh của nó. Về mặt kỹ thuật, quá trình này được giải thích chính xác hơn về cách mã được biên dịch, nhưng chúng ta có thể bỏ qua những chi tiết đó ngay bây giờ.
 
-Consider:
+Xem xét:
 
 ```js
 var a = 2;
@@ -367,11 +367,11 @@ function foo() {
 console.log( a );	// 2
 ```
 
-**Warning:** It's not common or a good idea to rely on variable *hoisting* to use a variable earlier in its scope than its `var` declaration appears; it can be quite confusing. It's much more common and accepted to use *hoisted* function declarations, as we do with the `foo()` call appearing before its formal declaration.
+**Cảnh báo:** Việc dựa vào biến *hoisting* để sử dụng một biến sớm hơn trong phạm vi của nó là không phổ biến hay là ý kiến hay; nó có thể khá khó hiểu. Phổ biến hơn và được chấp nhận sử dụng là khai báo hàm *hoisted*, như chúng ta làm với lệnh gọi `foo ()` xuất hiện trước khai báo chính thức của nó.
 
-#### Nested Scopes
+#### Lồng Khối Lệnh(Nested Scopes)
 
-When you declare a variable, it is available anywhere in that scope, as well as any lower/inner scopes. For example:
+Khi bạn khai báo một biến, nó có thể dùng ở bất kỳ đâu trong phạm vi đó, cũng như bất kỳ phạm vi nào bên dưới/bên trong. Ví dụ:
 
 ```js
 function foo() {
@@ -397,9 +397,9 @@ function foo() {
 foo();
 ```
 
-Notice that `c` is not available inside of `bar()`, because it's declared only inside the inner `baz()` scope, and that `b` is not available to `foo()` for the same reason.
+Lưu ý rằng `c` không khả dụng bên trong` bar () `, bởi vì nó chỉ được khai báo bên trong phạm vi` baz () `bên trong và` b` không khả dụng cho `foo ()` vì lý do tương tự.
 
-If you try to access a variable's value in a scope where it's not available, you'll get a `ReferenceError` thrown. If you try to set a variable that hasn't been declared, you'll either end up creating a variable in the top-level global scope (bad!) or getting an error, depending on "strict mode" (see "Strict Mode"). Let's take a look:
+Nếu bạn cố gắng truy cập giá trị của một biến trong một phạm vi mà nó không có sẵn, bạn sẽ nhận được một `ReferenceError` được ném ra. Nếu bạn cố gắng đặt một biến chưa được khai báo, bạn sẽ kết thúc việc tạo một biến trong phạm vi toàn cầu cấp cao nhất (xấu!) Hoặc gặp lỗi, tùy thuộc vào "strict mode" (xem "Strict Mode"). Hãy cùng xem::
 
 ```js
 function foo() {
@@ -410,9 +410,9 @@ foo();
 a;			// 1 -- oops, auto global variable :(
 ```
 
-This is a very bad practice. Don't do it! Always formally declare your variables.
+Đây là một cách thực hành rất tệ. Đừng làm điều đó! Luôn khai báo chính thức các biến của bạn.
 
-In addition to creating declarations for variables at the function level, ES6 *lets* you declare variables to belong to individual blocks (pairs of `{ .. }`), using the `let` keyword. Besides some nuanced details, the scoping rules will behave roughly the same as we just saw with functions:
+Ngoài việc tạo khai báo cho các biến ở cấp hàm, ES6 *cho phép* bạn khai báo các biến thuộc các khối riêng lẻ (cặp `{..}`), bằng cách sử dụng từ khóa `let`. Bên cạnh một số chi tiết sắc thái, các quy tắc xác định phạm vi sẽ hoạt động gần giống như chúng ta vừa thấy với các hàm:
 
 ```js
 function foo() {
@@ -434,15 +434,15 @@ foo();
 // 5 7 9
 ```
 
-Because of using `let` instead of `var`, `b` will belong only to the `if` statement and thus not to the whole `foo()` function's scope. Similarly, `c` belongs only to the `while` loop. Block scoping is very useful for managing your variable scopes in a more fine-grained fashion, which can make your code much easier to maintain over time.
+Bởi vì sử dụng `let` thay vì `var`, `b` sẽ chỉ thuộc về khối lệnh `if` và do đó không phải thuộc về toàn bộ phạm vi hàm `foo()`. Tương tự như vậy, `c` chỉ thuộc về vòng lặp `while`. Phạm vi khối(block scope) rất hữu ích để quản lý phạm vi biến của bạn theo cách chi tiết hơn, điều này có thể giúp mã của bạn dễ bảo trì hơn nhiều theo thời gian.
 
-**Note:** For more information about scope, see the *Scope & Closures* title of this series. See the *ES6 & Beyond* title of this series for more information about `let` block scoping.
+**Lưu ý:** Để biết thêm thông tin về scope, hãy xem cuốn *Scope & Closures* của bộ sách này. Xem cuốn *ES6 & Beyond* của bộ sách này để biết thêm thông tin về block scope `let`.
 
 ## Conditionals
 
-In addition to the `if` statement we introduced briefly in Chapter 1, JavaScript provides a few other conditionals mechanisms that we should take a look at.
+Ngoài câu lệnh `if` mà chúng tôi đã giới thiệu ngắn gọn trong Chương 1, JavaScript cung cấp một số cơ chế điều kiện khác mà chúng ta nên xem qua.
 
-Sometimes you may find yourself writing a series of `if..else..if` statements like this:
+Đôi khi bạn có thể thấy mình đang viết một loạt câu lệnh `if..else..if` như thế này:
 
 ```js
 if (a == 2) {
@@ -459,7 +459,7 @@ else {
 }
 ```
 
-This structure works, but it's a little verbose because you need to specify the `a` test for each case. Here's another option, the `switch` statement:
+Cấu trúc này hoạt động, nhưng hơi dài dòng vì bạn cần chỉ định kiểm tra `a` cho từng trường hợp. Đây là một tùy chọn khác, câu lệnh `switch`:
 
 ```js
 switch (a) {
@@ -477,7 +477,7 @@ switch (a) {
 }
 ```
 
-The `break` is important if you want only the statement(s) in one `case` to run. If you omit `break` from a `case`, and that `case` matches or runs, execution will continue with the next `case`'s statements regardless of that `case` matching. This so called "fall through" is sometimes useful/desired:
+Dấu `break` rất quan trọng nếu bạn chỉ muốn (các) câu lệnh trong một `case` chạy. Nếu bạn bỏ qua `break` khỏi một `case` và `case` đó khớp hoặc chạy, thì việc thực thi sẽ tiếp tục với các câu lệnh tiếp theo của các `case` tiếp theo cho dù không khớp với điều kiện các `case` đó. Điều này được gọi là "rơi qua" đôi khi hữu ích/mong muốn:
 
 ```js
 switch (a) {
@@ -493,9 +493,9 @@ switch (a) {
 }
 ```
 
-Here, if `a` is either `2` or `10`, it will execute the "some cool stuff" code statements.
+Ở đây, nếu `a` là` 2` hoặc `10`, nó sẽ thực thi các câu lệnh mã "some cool stuff".
 
-Another form of conditional in JavaScript is the "conditional operator," often called the "ternary operator." It's like a more concise form of a single `if..else` statement, such as:
+Một dạng khác của điều kiện trong JavaScript là "toán tử điều kiện", thường được gọi là "toán tử ba ngôi". Nó giống như một dạng ngắn gọn hơn của một câu lệnh `if..else`, chẳng hạn như:
 
 ```js
 var a = 42;
@@ -512,17 +512,17 @@ var b = (a > 41) ? "hello" : "world";
 // }
 ```
 
-If the test expression (`a > 41` here) evaluates as `true`, the first clause (`"hello"`) results, otherwise the second clause (`"world"`) results, and whatever the result is then gets assigned to `b`.
+Nếu biểu thức kiểm tra (`a > 41` ở đây) cho kết quả là `true`, thì kết quả là (`"Hello"`), nếu không thì là mệnh đề thứ hai (`" thế giới "`) và cho dù kết quả là gì được gán cho `b`.
 
-The conditional operator doesn't have to be used in an assignment, but that's definitely the most common usage.
+Toán tử điều kiện không nhất thiết phải được sử dụng trong một phép gán, nhưng đó chắc chắn là cách sử dụng phổ biến nhất.
 
-**Note:** For more information about testing conditions and other patterns for `switch` and `? :`, see the *Types & Grammar* title of this series.
+**Lưu ý:** Để biết thêm thông tin về điều kiện thử nghiệm và các mẫu khác cho `switch` và `? : `, xem cuốn *Types & Grammar* của bộ sách này.
 
 ## Strict Mode
 
-ES5 added a "strict mode" to the language, which tightens the rules for certain behaviors. Generally, these restrictions are seen as keeping the code to a safer and more appropriate set of guidelines. Also, adhering to strict mode makes your code generally more optimizable by the engine. Strict mode is a big win for code, and you should use it for all your programs.
+ES5 đã thêm một "chế độ nghiêm ngặt(strict mode)" vào ngôn ngữ, điều mà thắt chặt các quy tắc cho các hành vi nhất định. Nói chung, những hạn chế này được coi là giữ cho mã tuân theo một bộ nguyên tắc an toàn hơn và phù hợp hơn. Ngoài ra, việc tuân thủ chế độ nghiêm ngặt(strict mode) làm cho mã của bạn nói chung được công cụ tối ưu hóa hơn. Chế độ nghiêm ngặt(strict mode) là một chiến thắng lớn cho mã và bạn nên sử dụng nó cho tất cả các chương trình của mình.
 
-You can opt in to strict mode for an individual function, or an entire file, depending on where you put the strict mode pragma:
+Bạn có thể chọn áp dụng chế độ nghiêm ngặt cho một chức năng riêng lẻ hoặc toàn bộ file, tùy thuộc vào vị trí bạn đặt pragma chế độ nghiêm ngặt:
 
 ```js
 function foo() {
