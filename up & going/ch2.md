@@ -945,18 +945,18 @@ Biến `document` tồn tại dưới dạng biến toàn cục khi mã của b�
 
 Hơn nữa, phương thức `getElementById(..)` trên `document` trông giống như một hàm JS bình thường, nhưng nó chỉ là một giao diện mỏng tiếp xúc với một phương thức tích hợp được cung cấp bởi DOM từ trình duyệt của bạn. Trong một số trình duyệt (thế hệ mới hơn), lớp này cũng có thể ở trong JS, nhưng theo truyền thống DOM và hành vi của nó được triển khai trong một thứ giống như C/C++ hơn.
 
-Another example is with input/output (I/O).
+Một ví dụ khác với input/output (I/O).
 
-Everyone's favorite `alert(..)` pops up a message box in the user's browser window. `alert(..)` is provided to your JS program by the browser, not by the JS engine itself. The call you make sends the message to the browser internals and it handles drawing and displaying the message box.
+Mọi người yêu thích `alert(..)` sẽ bật lên một hộp thông báo trong cửa sổ trình duyệt của người dùng. `alert(..)` được trình duyệt cung cấp cho chương trình JS của bạn, không phải bởi chính công cụ JS. Khi bạn gọi nó sẽ thực hiện gửi tin nhắn đến nội bộ của trình duyệt và nó xử lý việc vẽ và hiển thị hộp tin nhắn.
 
-The same goes with `console.log(..)`; your browser provides such mechanisms and hooks them up to the developer tools.
+Tương tự với `console.log (..)`; trình duyệt của bạn cung cấp các cơ chế như vậy và kết nối chúng với các công cụ dành cho nhà phát triển.
 
-This book, and this whole series, focuses on JavaScript the language. That's why you don't see any substantial coverage of these non-JavaScript JavaScript mechanisms. Nevertheless, you need to be aware of them, as they'll be in every JS program you write!
+Cuốn sách này và toàn bộ loạt bài này tập trung vào ngôn ngữ JavaScript. Đó là lý do tại sao bạn không thấy bất kỳ mức độ phù hợp đáng kể nào của các cơ chế JavaScript không phải JavaScript này. Tuy nhiên, bạn cần phải biết về chúng, vì chúng sẽ có trong mọi chương trình JS bạn viết!
 
-## Review
+## Đánh giá
 
-The first step to learning JavaScript's flavor of programming is to get a basic understanding of its core mechanisms like values, types, function closures, `this`, and prototypes.
+Bước đầu tiên để học lập trình JavaScript là hiểu cơ bản về các cơ chế cốt lõi của nó như giá trị, kiểu, đóng hàm, `this` và nguyên mẫu.
 
-Of course, each of these topics deserves much greater coverage than you've seen here, but that's why they have chapters and books dedicated to them throughout the rest of this series. After you feel pretty comfortable with the concepts and code samples in this chapter, the rest of the series awaits you to really dig in and get to know the language deeply.
+Tất nhiên, mỗi chủ đề trong số này xứng đáng được bao quát hơn nhiều so với những gì bạn đã thấy ở đây, nhưng đó là lý do tại sao họ có các chương và sách dành riêng cho họ trong suốt phần còn lại của loạt bài này. Sau khi bạn cảm thấy khá thoải mái với các khái niệm và mẫu mã trong chương này, phần còn lại của loạt bài đang chờ bạn thực sự tìm hiểu và làm quen sâu sắc về ngôn ngữ này.
 
-The final chapter of this book will briefly summarize each of the other titles in the series and the other concepts they cover besides what we've already explored.
+Chương cuối cùng của cuốn sách này sẽ tóm tắt ngắn gọn từng tựa sách khác trong bộ sách và các khái niệm khác mà chúng đề cập bên cạnh những gì chúng ta đã khám phá.
