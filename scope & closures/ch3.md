@@ -1,17 +1,17 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 3: Function vs. Block Scope
 
-As we explored in Chapter 2, scope consists of a series of "bubbles" that each act as a container or bucket, in which identifiers (variables, functions) are declared. These bubbles nest neatly inside each other, and this nesting is defined at author-time.
+Như chúng ta đã khám phá trong Chương 2, scope bao gồm một loạt các "bong bóng" mà mỗi "bong bóng" hoạt động như một thùng chứa hoặc gàu, trong đó các định danh (biến, hàm) được khai báo. Những bong bóng này lồng vào nhau một cách gọn gàng và sự lồng vào nhau này được xác định tại thời điểm tác giả.
 
-But what exactly makes a new bubble? Is it only the function? Can other structures in JavaScript create bubbles of scope?
+Nhưng chính xác thì điều gì tạo nên một bong bóng mới? Có phải nó chỉ là chức năng? Các cấu trúc khác trong JavaScript có thể tạo bong bóng scope không?
 
 ## Scope From Functions
 
-The most common answer to those questions is that JavaScript has function-based scope. That is, each function you declare creates a bubble for itself, but no other structures create their own scope bubbles. As we'll see in just a little bit, this is not quite true.
+Câu trả lời phổ biến nhất cho những câu hỏi đó là JavaScript có function-based scope (phạm vi dựa trên chức năng). Nghĩa là, mỗi hàm bạn khai báo sẽ tạo ra bong bóng cho chính nó, nhưng không có cấu trúc nào khác tạo bong bóng scope riêng của chúng. Như chúng ta sẽ thấy một chút, điều này không hoàn toàn đúng.
 
-But first, let's explore function scope and its implications.
+Nhưng trước tiên, hãy khám phá phạm vi chức năng và ý nghĩa của nó.
 
-Consider this code:
+Hãy xem xét đoạn code này:
 
 ```js
 function foo(a) {
@@ -29,11 +29,11 @@ function foo(a) {
 }
 ```
 
-In this snippet, the scope bubble for `foo(..)` includes identifiers `a`, `b`, `c` and `bar`. **It doesn't matter** *where* in the scope a declaration appears, the variable or function belongs to the containing scope bubble, regardless. We'll explore how exactly *that* works in the next chapter.
+Trong đoạn code này, bong bóng scope cho `foo(..)` bao gồm các identifier `a`,` b`, `c` và `bar`. **Không quan trọng** *nơi* trong scope mà khai báo xuất hiện, biến hoặc hàm thuộc về bong bóng scope chứa, bất kể. Chúng ta sẽ khám phá cách hoạt động chính xác của *điều đó* trong chương tiếp theo.
 
-`bar(..)` has its own scope bubble. So does the global scope, which has just one identifier attached to it: `foo`.
+`bar(..)` có bong bóng scope riêng của nó. Scope toàn cục cũng vậy, chỉ có một identifier gắn liền với nó: `foo`.
 
-Because `a`, `b`, `c`, and `bar` all belong to the scope bubble of `foo(..)`, they are not accessible outside of `foo(..)`. That is, the following code would all result in `ReferenceError` errors, as the identifiers are not available to the global scope:
+Bởi vì `a`,` b`, `c` và `bar` đều thuộc bong bóng scope của `foo(..)`, chúng không thể truy cập được bên ngoài `foo(..)`. Có nghĩa là, tất cả mã sau đây sẽ dẫn đến lỗi `ReferenceError`, vì các identifier không có sẵn cho scope toàn cục:
 
 ```js
 bar(); // fails
@@ -41,25 +41,25 @@ bar(); // fails
 console.log( a, b, c ); // all 3 fail
 ```
 
-However, all these identifiers (`a`, `b`, `c`, `foo`, and `bar`) are accessible *inside* of `foo(..)`, and indeed also available inside of `bar(..)` (assuming there are no shadow identifier declarations inside `bar(..)`).
+Tuy nhiên, tất cả các identifier này (`a`, `b`, `c`, `foo` và `bar`) đều có thể truy cập *bên trong* của `foo(..)`, và thực sự cũng có sẵn bên trong `bar( ..)` (giả sử không có khai báo identifier bên trong `bar(..)` trùng tên với các identifier thuộc scope bên ngoài).
 
-Function scope encourages the idea that all variables belong to the function, and can be used and reused throughout the entirety of the function (and indeed, accessible even to nested scopes). This design approach can be quite useful, and certainly can make full use of the "dynamic" nature of JavaScript variables to take on values of different types as needed.
+Function scope khuyến khích ý tưởng rằng tất cả các biến thuộc về hàm và có thể được sử dụng và sử dụng lại trong toàn bộ hàm (và thực sự, có thể truy cập ngay cả đối với các scope lồng nhau). Cách tiếp cận thiết kế này có thể khá hữu ích và chắc chắn có thể tận dụng đầy đủ tính chất "động" của các biến JavaScript để nhận các giá trị thuộc các kiểu khác nhau khi cần thiết.
 
-On the other hand, if you don't take careful precautions, variables existing across the entirety of a scope can lead to some unexpected pitfalls.
+Mặt khác, nếu bạn không thực hiện các biện pháp phòng ngừa cẩn thận, các biến tồn tại trên toàn bộ scope có thể dẫn đến một số cạm bẫy bất ngờ.
 
-## Hiding In Plain Scope
+## Hiding In Plain Scope (Ẩn trong phạm vi thuần túy)
 
-The traditional way of thinking about functions is that you declare a function, and then add code inside it. But the inverse thinking is equally powerful and useful: take any arbitrary section of code you've written, and wrap a function declaration around it, which in effect "hides" the code.
+Cách nghĩ truyền thống về các hàm là bạn khai báo một hàm, sau đó thêm code vào bên trong nó. Nhưng tư duy nghịch đảo cũng mạnh mẽ và hữu ích không kém: lấy bất kỳ đoạn code tùy ý nào bạn đã viết và bọc một khai báo hàm xung quanh nó, phần này có tác dụng "ẩn" đoạn code..
 
-The practical result is to create a scope bubble around the code in question, which means that any declarations (variable or function) in that code will now be tied to the scope of the new wrapping function, rather than the previously enclosing scope. In other words, you can "hide" variables and functions by enclosing them in the scope of a function.
+Kết quả thực tế là tạo bong bóng scope xung quanh code được đề cập, có nghĩa là bất kỳ khai báo nào (biến hoặc hàm) trong code đó bây giờ sẽ được gắn với scope của hàm gói mới, thay vì scope được bao trước đó. Nói cách khác, bạn có thể "ẩn" các biến và hàm bằng cách đặt chúng trong scope của một hàm.
 
-Why would "hiding" variables and functions be a useful technique?
+Tại sao "ẩn" các biến và hàm lại là một kỹ thuật hữu ích?
 
-There's a variety of reasons motivating this scope-based hiding. They tend to arise from the software design principle "Principle of Least Privilege" [^note-leastprivilege], also sometimes called "Least Authority" or "Least Exposure". This principle states that in the design of software, such as the API for a module/object, you should expose only what is minimally necessary, and "hide" everything else.
+Có nhiều lý do thúc đẩy việc ẩn nấp dựa trên scope này. Chúng có xu hướng phát sinh từ nguyên tắc thiết kế phần mềm "Nguyên tắc ít đặc quyền nhất" [^note-leastprivilege], đôi khi còn được gọi là "Least Authority" hoặc "Least Exposure". Nguyên tắc này nói rằng trong thiết kế phần mềm, chẳng hạn như API cho mô-đun/đối tượng, bạn chỉ nên để lộ những gì tối thiểu cần thiết và "ẩn" mọi thứ khác.
 
-This principle extends to the choice of which scope to contain variables and functions. If all variables and functions were in the global scope, they would of course be accessible to any nested scope. But this would violate the "Least..." principle in that you are (likely) exposing many variables or functions which you should otherwise keep private, as proper use of the code would discourage access to those variables/functions.
+Nguyên tắc này mở rộng đến việc lựa chọn scope nào để chứa các biến và hàm. Nếu tất cả các biến và hàm nằm trong scope toàn cục, tất nhiên chúng sẽ có thể truy cập được ở bất kỳ scope lồng nhau nào. Nhưng điều này sẽ vi phạm nguyên tắc "Ít nhất ..." ở chỗ bạn (có khả năng) tiết lộ nhiều biến hoặc hàm mà bạn nên giữ riêng tư, vì việc sử dụng code đúng cách sẽ không khuyến khích truy cập vào các biến/hàm đó.
 
-For example:
+Cho ví dụ:
 
 ```js
 function doSomething(a) {
@@ -77,9 +77,9 @@ var b;
 doSomething( 2 ); // 15
 ```
 
-In this snippet, the `b` variable and the `doSomethingElse(..)` function are likely "private" details of how `doSomething(..)` does its job. Giving the enclosing scope "access" to `b` and `doSomethingElse(..)` is not only unnecessary but also possibly "dangerous", in that they may be used in unexpected ways, intentionally or not, and this may violate pre-condition assumptions of `doSomething(..)`.
+Trong đoạn code này, biến `b` và hàm `doSomethingElse(..)` có thể là chi tiết "riêng tư" về cách `doSomething(..)` thực hiện công việc của nó. Việc cấp cho scope bao quanh "quyền truy cập" vào `b` và `doSomethingElse(..)` không chỉ không cần thiết mà còn có thể "nguy hiểm", ở chỗ chúng có thể được sử dụng theo những cách không mong muốn, có chủ ý hoặc không và điều này có thể vi phạm trước các giả định điều kiện của `doSomething(..)`.
 
-A more "proper" design would hide these private details inside the scope of `doSomething(..)`, such as:
+Một thiết kế "thích hợp" hơn sẽ ẩn những chi tiết riêng tư này trong phạm vi của `doSomething(..)`, giống như:
 
 ```js
 function doSomething(a) {
@@ -97,13 +97,13 @@ function doSomething(a) {
 doSomething( 2 ); // 15
 ```
 
-Now, `b` and `doSomethingElse(..)` are not accessible to any outside influence, instead controlled only by `doSomething(..)`. The functionality and end-result has not been affected, but the design keeps private details private, which is usually considered better software.
+Giờ đây, `b` và `doSomethingElse(..)` không thể truy cập được bởi bất kỳ ảnh hưởng bên ngoài nào, thay vào đó chỉ được kiểm soát bởi `doSomething(..)`. Chức năng và kết quả cuối cùng không bị ảnh hưởng, nhưng thiết kế giữ bí mật các chi tiết riêng tư, thường được coi là phần mềm tốt hơn.
 
-### Collision Avoidance
+### Collision Avoidance (Tránh va chạm)
 
-Another benefit of "hiding" variables and functions inside a scope is to avoid unintended collision between two different identifiers with the same name but different intended usages. Collision results often in unexpected overwriting of values.
+Một lợi ích khác của việc "ẩn" các biến và hàm trong scope là tránh va chạm ngoài ý muốn giữa hai identifier khác nhau có cùng tên nhưng mục đích sử dụng khác nhau. Việc va chạm thường dẫn đến việc ghi đè các giá trị một cách bất ngờ.
 
-For example:
+Cho ví dụ:
 
 ```js
 function foo() {
@@ -120,17 +120,17 @@ function foo() {
 foo();
 ```
 
-The `i = 3` assignment inside of `bar(..)` overwrites, unexpectedly, the `i` that was declared in `foo(..)` at the for-loop. In this case, it will result in an infinite loop, because `i` is set to a fixed value of `3` and that will forever remain `< 10`.
+Phép gán `i = 3` bên trong của `bar(..)` ghi đè, bất ngờ thay, `i` đã được khai báo trong `foo(..)` tại vòng lặp for. Trong trường hợp này, nó sẽ dẫn đến một vòng lặp vô hạn, vì `i` được đặt thành giá trị cố định là `3` và điều đó sẽ mãi mãi vẫn là `<10`.
 
-The assignment inside `bar(..)` needs to declare a local variable to use, regardless of what identifier name is chosen. `var i = 3;` would fix the problem (and would create the previously mentioned "shadowed variable" declaration for `i`). An *additional*, not alternate, option is to pick another identifier name entirely, such as `var j = 3;`. But your software design may naturally call for the same identifier name, so utilizing scope to "hide" your inner declaration is your best/only option in that case.
+Phép gán bên trong `bar(..)` cần khai báo một biến cục bộ để sử dụng, bất kể identifier nào được chọn. `var i = 3;` sẽ khắc phục sự cố (và sẽ tạo khai báo "biến bị che khuất" đã đề cập trước đó cho `i`). Một tùy chọn *bổ sung*, không thay thế, là chọn hoàn toàn một identifier khác, chẳng hạn như `var j = 3;`. Nhưng thiết kế phần mềm của bạn có thể tự nhiên gọi cùng một tên định danh, vì vậy việc sử dụng scope để "ẩn" khai báo bên trong là lựa chọn tốt nhất/duy nhất của bạn trong trường hợp đó.
 
 #### Global "Namespaces"
 
-A particularly strong example of (likely) variable collision occurs in the global scope. Multiple libraries loaded into your program can quite easily collide with each other if they don't properly hide their internal/private functions and variables.
+Một ví dụ đặc biệt mạnh mẽ về xung đột biến (có khả năng) xảy ra trong scope toàn cục. Nhiều thư viện được tải vào chương trình của bạn có thể khá dễ dàng xung đột với nhau nếu chúng không ẩn các hàm và biến nội bộ/riêng tư đúng cách.
 
-Such libraries typically will create a single variable declaration, often an object, with a sufficiently unique name, in the global scope. This object is then used as a "namespace" for that library, where all specific exposures of functionality are made as properties of that object (namespace), rather than as top-level lexically scoped identifiers themselves.
+Các thư viện như vậy thường sẽ tạo ra một khai báo biến duy nhất, thường là một đối tượng, với một tên đủ duy nhất, trong scope toàn cục. Đối tượng này sau đó được sử dụng làm "namespace (không gian tên)" cho thư viện đó, nơi tất cả các chức năng hiển thị cụ thể được thực hiện dưới dạng thuộc tính của đối tượng đó (namespace), chứ không phải là bản thân các identifier lexical scope cấp cao nhất.
 
-For example:
+Cho ví dụ:
 
 ```js
 var MyReallyCoolLibrary = {
@@ -146,17 +146,17 @@ var MyReallyCoolLibrary = {
 
 #### Module Management
 
-Another option for collision avoidance is the more modern "module" approach, using any of various dependency managers. Using these tools, no libraries ever add any identifiers to the global scope, but are instead required to have their identifier(s) be explicitly imported into another specific scope through usage of the dependency manager's various mechanisms.
+Một lựa chọn khác để tránh va chạm là cách tiếp cận "mô-đun" hiện đại hơn, sử dụng bất kỳ trình quản lý phụ thuộc nào khác nhau. Bằng cách sử dụng các công cụ này, không có thư viện nào thêm bất kỳ identifier nào vào scope toàn cục, nhưng thay vào đó, chúng được yêu cầu nhập (các) identifier của chúng một cách rõ ràng vào một scope cụ thể khác thông qua việc sử dụng các cơ chế khác nhau của trình quản lý phụ thuộc.
 
-It should be observed that these tools do not possess "magic" functionality that is exempt from lexical scoping rules. They simply use the rules of scoping as explained here to enforce that no identifiers are injected into any shared scope, and are instead kept in private, non-collision-susceptible scopes, which prevents any accidental scope collisions.
+Cần lưu ý rằng những công cụ này không sở hữu chức năng "ma thuật" được miễn các quy tắc lexical scope. Chúng chỉ đơn giản là sử dụng các quy tắc xác định scope như được giải thích ở đây để thực thi rằng không có identifier nào được đưa vào bất kỳ scope dùng chung nào và thay vào đó được giữ trong scope riêng tư, không dễ bị va chạm, giúp ngăn chặn mọi va chạm scope ngẫu nhiên.
 
-As such, you can code defensively and achieve the same results as the dependency managers do without actually needing to use them, if you so choose. See the Chapter 5 for more information about the module pattern.
+Như vậy, bạn có thể viết code một cách an toàn và đạt được kết quả giống như những gì mà người quản lý phụ thuộc làm mà không thực sự cần sử dụng chúng, nếu bạn muốn. Xem Chương 5 để biết thêm thông tin về pattern mô-đun.
 
 ## Functions As Scopes
 
-We've seen that we can take any snippet of code and wrap a function around it, and that effectively "hides" any enclosed variable or function declarations from the outside scope inside that function's inner scope.
+Chúng ta đã thấy rằng chúng ta có thể lấy bất kỳ đoạn code nào và bọc một hàm xung quanh nó và điều đó có hiệu quả "ẩn" bất kỳ khai báo biến hoặc hàm kèm theo nào khỏi scope bên ngoài bên trong scope bên trong của hàm đó.
 
-For example:
+Cho ví dụ:
 
 ```js
 var a = 2;
@@ -172,11 +172,11 @@ foo(); // <-- and this
 console.log( a ); // 2
 ```
 
-While this technique "works", it is not necessarily very ideal. There are a few problems it introduces. The first is that we have to declare a named-function `foo()`, which means that the identifier name `foo` itself "pollutes" the enclosing scope (global, in this case). We also have to explicitly call the function by name (`foo()`) so that the wrapped code actually executes.
+Mặc dù kỹ thuật này "hoạt động", nó không nhất thiết phải rất lý tưởng. Có một số vấn đề mà nó thể hiện. Đầu tiên là chúng ta phải khai báo một hàm có tên `foo()`, có nghĩa là bản thân tên định danh `foo` "gây ảnh hưởng" scope bao quanh (toàn cục, trong trường hợp này). Chúng ta cũng phải gọi hàm một cách rõ ràng bằng tên (`foo()`) để code được bọc thực sự thực thi.
 
-It would be more ideal if the function didn't need a name (or, rather, the name didn't pollute the enclosing scope), and if the function could automatically be executed.
+Sẽ lý tưởng hơn nếu hàm không cần tên (hoặc đúng hơn là tên không gây ảnh hưởng scope bao quanh) và nếu hàm có thể tự động được thực thi.
 
-Fortunately, JavaScript offers a solution to both problems.
+May mắn thay, JavaScript cung cấp giải pháp cho cả hai vấn đề.
 
 ```js
 var a = 2;
@@ -191,21 +191,21 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-Let's break down what's happening here.
+Nào cùng chia nhỏ những gì đang xảy ra ở đây.
 
-First, notice that the wrapping function statement starts with `(function...` as opposed to just `function...`. While this may seem like a minor detail, it's actually a major change. Instead of treating the function as a standard declaration, the function is treated as a function-expression.
+Đầu tiên, hãy lưu ý rằng câu lệnh đóng gói hàm bắt đầu bằng `(function...` thay vì chỉ `function...`. Mặc dù điều này có vẻ như là một chi tiết nhỏ, nhưng nó thực sự là một thay đổi lớn. Thay vì coi hàm như một khai báo chuẩn, hàm được coi như một function-expression (biểu thức hàm).
 
-**Note:** The easiest way to distinguish declaration vs. expression is the position of the word "function" in the statement (not just a line, but a distinct statement). If "function" is the very first thing in the statement, then it's a function declaration. Otherwise, it's a function expression.
+**Lưu ý:** Cách dễ nhất để phân biệt declaration (khai báo) và expression (biểu thức) là vị trí của từ "function" trong câu lệnh (không chỉ một dòng mà là một câu lệnh riêng biệt). Nếu "function" là điều đầu tiên trong câu lệnh, thì đó là một khai báo hàm. Nếu không, đó là một biểu thức hàm.
 
-The key difference we can observe here between a function declaration and a function expression relates to where its name is bound as an identifier.
+Sự khác biệt chính mà chúng ta có thể quan sát ở đây giữa khai báo hàm và biểu thức hàm liên quan đến nơi tên của nó được ràng buộc như một identifier.
 
-Compare the previous two snippets. In the first snippet, the name `foo` is bound in the enclosing scope, and we call it directly with `foo()`. In the second snippet, the name `foo` is not bound in the enclosing scope, but instead is bound only inside of its own function.
+So sánh hai đoạn code trước. Trong đoạn code đầu tiên, tên `foo` được ràng buộc trong scope bao quanh và chúng ta gọi nó trực tiếp bằng `foo()`. Trong đoạn mã thứ hai, tên `foo` không bị ràng buộc trong scope bao quanh, mà thay vào đó, chỉ bị ràng buộc bên trong chức năng của chính nó.
 
-In other words, `(function foo(){ .. })` as an expression means the identifier `foo` is found *only* in the scope where the `..` indicates, not in the outer scope. Hiding the name `foo` inside itself means it does not pollute the enclosing scope unnecessarily.
+Nói cách khác, `(function foo(){..})` như một biểu thức có nghĩa là identifier `foo` được tìm thấy *chỉ* trong scope mà dấu `..` chỉ ra, không phải trong scope bên ngoài. Ẩn tên `foo` bên trong chính nó có nghĩa là nó không làm ảnh hưởng scope bao quanh một cách không cần thiết.
 
 ### Anonymous vs. Named
 
-You are probably most familiar with function expressions as callback parameters, such as:
+Bạn có lẽ quen thuộc nhất với các function expressions dưới dạng tham số gọi lại, chẳng hạn như:
 
 ```js
 setTimeout( function(){
@@ -213,17 +213,17 @@ setTimeout( function(){
 }, 1000 );
 ```
 
-This is called an "anonymous function expression", because `function()...` has no name identifier on it. Function expressions can be anonymous, but function declarations cannot omit the name -- that would be illegal JS grammar.
+Đây được gọi là "anonymous function expression (biểu thức hàm ẩn danh)", bởi vì `function()...` không có tên identifier trên đó. Function expression có thể ẩn danh, nhưng khai báo hàm không được bỏ qua tên - đó sẽ là ngữ pháp JS không hợp lệ.
 
-Anonymous function expressions are quick and easy to type, and many libraries and tools tend to encourage this idiomatic style of code. However, they have several draw-backs to consider:
+Anonymous function expressions là nhanh chóng và dễ gõ, và nhiều thư viện và công cụ có xu hướng khuyến khích kiểu mã thành ngữ này. Tuy nhiên, nó có một số điểm hạn chế cần xem xét:
 
-1. Anonymous functions have no useful name to display in stack traces, which can make debugging more difficult.
+1. Các hàm anonymous function không có tên hữu ích để hiển thị trong stack traces (dấu vết ngăn xếp), điều này có thể khiến việc gỡ lỗi trở nên khó khăn hơn.
 
-2. Without a name, if the function needs to refer to itself, for recursion, etc., the **deprecated** `arguments.callee` reference is unfortunately required. Another example of needing to self-reference is when an event handler function wants to unbind itself after it fires.
+2. Không có tên, nếu hàm cần tham chiếu đến chính nó, cho đệ quy, v.v., rất tiếc, tham chiếu **không dùng đến** `arguments.callee` là bắt buộc. Một ví dụ khác về việc cần tự tham chiếu là khi một hàm xử lý sự kiện muốn tự hủy liên kết sau khi nó kích hoạt.
 
-3. Anonymous functions omit a name that is often helpful in providing more readable/understandable code. A descriptive name helps self-document the code in question.
+3. Các hàm ẩn danh bỏ qua một tên thường hữu ích trong việc cung cấp mã dễ đọc/dễ hiểu hơn. Tên mô tả giúp tự ghi lại mã được đề cập.
 
-**Inline function expressions** are powerful and useful -- the question of anonymous vs. named doesn't detract from that. Providing a name for your function expression quite effectively addresses all these draw-backs, but has no tangible downsides. The best practice is to always name your function expressions:
+**Inline function expressions** rất mạnh mẽ và hữu ích - câu hỏi về ẩn danh so với có tên không làm giảm đi điều đó. Việc cung cấp một tên cho biểu thức hàm của bạn giải quyết khá hiệu quả tất cả những phần lùi này, nhưng không có nhược điểm rõ ràng nào. Cách tốt nhất là luôn đặt tên cho các biểu thức hàm của bạn:
 
 ```js
 setTimeout( function timeoutHandler(){ // <-- Look, I have a name!
