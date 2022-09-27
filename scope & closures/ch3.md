@@ -246,11 +246,11 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-Now that we have a function as an expression by virtue of wrapping it in a `( )` pair, we can execute that function by adding another `()` on the end, like `(function foo(){ .. })()`. The first enclosing `( )` pair makes the function an expression, and the second `()` executes the function.
+Bây giờ chúng ta có một hàm dưới dạng một biểu thức bằng cách gói nó trong một cặp `()`, chúng ta có thể thực thi hàm đó bằng cách thêm một dấu `()` khác vào cuối, như `(function foo(){..})() `. Cặp `()` bao quanh đầu tiên làm cho hàm trở thành một biểu thức và cặp `()` thứ hai thực thi hàm.
 
-This pattern is so common, a few years ago the community agreed on a term for it: **IIFE**, which stands for **I**mmediately **I**nvoked **F**unction **E**xpression.
+Mô hình này rất phổ biến, một vài năm trước, cộng đồng đã đồng ý về một thuật ngữ cho nó: **IIFE**, which stands for **I**mmediately **I**nvoked **F**unction **E**xpression.
 
-Of course, IIFE's don't need names, necessarily -- the most common form of IIFE is to use an anonymous function expression. While certainly less common, naming an IIFE has all the aforementioned benefits over anonymous function expressions, so it's a good practice to adopt.
+Tất nhiên, IIFE không nhất thiết phải có tên - dạng phổ biến nhất của IIFE là sử dụng một biểu thức hàm ẩn danh. Mặc dù chắc chắn ít phổ biến hơn, nhưng việc đặt tên cho IIFE có tất cả các lợi ích đã nói ở trên so với các biểu thức hàm ẩn danh, vì vậy bạn nên áp dụng.
 
 ```js
 var a = 2;
@@ -265,13 +265,13 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-There's a slight variation on the traditional IIFE form, which some prefer: `(function(){ .. }())`. Look closely to see the difference. In the first form, the function expression is wrapped in `( )`, and then the invoking `()` pair is on the outside right after it. In the second form, the invoking `()` pair is moved to the inside of the outer `( )` wrapping pair.
+Có một chút biến thể trên biểu mẫu IIFE truyền thống, mà một số người thích hơn: `(function(){..}())`. Nhìn kỹ để thấy sự khác biệt. Ở dạng đầu tiên, biểu thức hàm được bao bọc trong `()`, và sau đó cặp `()` đang gọi ở bên ngoài ngay sau nó. Ở dạng thứ hai, cặp `()` đang gọi được chuyển vào bên trong của cặp bao ngoài `()`.
 
-These two forms are identical in functionality. **It's purely a stylistic choice which you prefer.**
+Hai hình thức này giống hệt nhau về chức năng. **Đó hoàn toàn là một lựa chọn phong cách mà bạn thích.**
 
-Another variation on IIFE's which is quite common is to use the fact that they are, in fact, just function calls, and pass in argument(s).
+Một biến thể khác trên IIFE's khá phổ biến là sử dụng thực tế rằng chúng chỉ là các lệnh gọi hàm và truyền vào (các) đối số.
 
-For instance:
+Ví dụ:
 
 ```js
 var a = 2;
@@ -287,9 +287,9 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-We pass in the `window` object reference, but we name the parameter `global`, so that we have a clear stylistic delineation for global vs. non-global references. Of course, you can pass in anything from an enclosing scope you want, and you can name the parameter(s) anything that suits you. This is mostly just stylistic choice.
+Chúng tôi chuyển vào tham chiếu đối tượng `window`, nhưng chúng tôi đặt tên cho tham số là `global`, để chúng tôi có sự phân định rõ ràng theo phong cách cho các tham chiếu toàn cục và không toàn cục. Tất nhiên, bạn có thể chuyển bất kỳ thứ gì từ scope bao quanh mà bạn muốn và bạn có thể đặt tên (các) tham số bất kỳ thứ gì phù hợp với mình. Đây hầu hết chỉ là sự lựa chọn theo phong cách.
 
-Another application of this pattern addresses the (minor niche) concern that the default `undefined` identifier might have its value incorrectly overwritten, causing unexpected results. By naming a parameter `undefined`, but not passing any value for that argument, we can guarantee that the `undefined` identifier is in fact the undefined value in a block of code:
+Một ứng dụng khác của mẫu này giải quyết mối lo ngại (ngách nhỏ) rằng giá trị nhận dạng `undefined` mặc định có thể có giá trị của nó bị ghi đè không chính xác, gây ra kết quả không mong muốn. Bằng cách đặt tên một tham số là `undefined`, nhưng không chuyển bất kỳ giá trị nào cho đối số đó, chúng tôi có thể đảm bảo rằng identifier `undefined` trên thực tế là giá trị không xác định trong một khối code:
 
 ```js
 undefined = true; // setting a land-mine for other code! avoid!
@@ -304,7 +304,7 @@ undefined = true; // setting a land-mine for other code! avoid!
 })();
 ```
 
-Still another variation of the IIFE inverts the order of things, where the function to execute is given second, *after* the invocation and parameters to pass to it. This pattern is used in the UMD (Universal Module Definition) project. Some people find it a little cleaner to understand, though it is slightly more verbose.
+Vẫn còn một biến thể khác của IIFE đảo ngược thứ tự của mọi thứ, trong đó hàm để thực thi được đưa ra thứ hai, *sau* lệnh gọi và các tham số để chuyển cho nó. Mẫu này được sử dụng trong dự án UMD (Định nghĩa mô-đun chung). Một số người thấy nó dễ hiểu hơn một chút để hiểu, mặc dù nó hơi dài dòng hơn một chút.
 
 ```js
 var a = 2;
@@ -320,15 +320,15 @@ var a = 2;
 });
 ```
 
-The `def` function expression is defined in the second-half of the snippet, and then passed as a parameter (also called `def`) to the `IIFE` function defined in the first half of the snippet. Finally, the parameter `def` (the function) is invoked, passing `window` in as the `global` parameter.
+Biểu thức hàm `def` được xác định trong nửa sau của đoạn code, sau đó được chuyển dưới dạng tham số (còn được gọi là `def`) cho hàm `IIFE` được xác định trong nửa đầu của đoạn code. Cuối cùng, tham số `def` (hàm) được gọi, truyền `window` vào dưới dạng tham số `global`.
 
 ## Blocks As Scopes
 
-While functions are the most common unit of scope, and certainly the most wide-spread of the design approaches in the majority of JS in circulation, other units of scope are possible, and the usage of these other scope units can lead to even better, cleaner to maintain code.
+Trong khi các hàm là đơn vị scope phổ biến nhất và chắc chắn là phổ biến rộng rãi nhất trong các phương pháp thiết kế trong phần lớn JS đang lưu hành, các đơn vị scope khác là có thể và việc sử dụng các đơn vị scope khác này có thể dẫn đến tốt hơn, sạch hơn để duy trì code.
 
-Many languages other than JavaScript support Block Scope, and so developers from those languages are accustomed to the mindset, whereas those who've primarily only worked in JavaScript may find the concept slightly foreign.
+Nhiều ngôn ngữ khác ngoài JavaScript hỗ trợ Block Scope và vì vậy các nhà phát triển từ những ngôn ngữ đó đã quen với suy nghĩ này, trong khi những người chủ yếu chỉ làm việc trong JavaScript có thể thấy khái niệm này hơi xa lạ.
 
-But even if you've never written a single line of code in block-scoped fashion, you are still probably familiar with this extremely common idiom in JavaScript:
+Nhưng ngay cả khi bạn chưa bao giờ viết một dòng code nào trong block scope, bạn vẫn có thể quen thuộc với cú pháp cực kỳ phổ biến này trong JavaScript:
 
 ```js
 for (var i=0; i<10; i++) {
@@ -336,9 +336,9 @@ for (var i=0; i<10; i++) {
 }
 ```
 
-We declare the variable `i` directly inside the for-loop head, most likely because our *intent* is to use `i` only within the context of that for-loop, and essentially ignore the fact that the variable actually scopes itself to the enclosing scope (function or global).
+Chúng ta khai báo biến `i` trực tiếp bên trong phần đầu vòng lặp for, rất có thể bởi vì *ý định* của chúng ta là chỉ sử dụng `i` trong ngữ cảnh của vòng lặp đó và về cơ bản bỏ qua thực tế rằng biến thực sự scope chính nó scope bao quanh (function hoặc toàn cục).
 
-That's what block-scoping is all about. Declaring variables as close as possible, as local as possible, to where they will be used. Another example:
+Đó là tất cả những gì về block scope. Khai báo các biến càng gần càng tốt, càng cục bộ càng tốt, đến nơi chúng sẽ được sử dụng. Một vi dụ khác:
 
 ```js
 var foo = true;
@@ -350,11 +350,11 @@ if (foo) {
 }
 ```
 
-We are using a `bar` variable only in the context of the if-statement, so it makes a kind of sense that we would declare it inside the if-block. However, where we declare variables is not relevant when using `var`, because they will always belong to the enclosing scope. This snippet is essentially "fake" block-scoping, for stylistic reasons, and relying on self-enforcement not to accidentally use `bar` in another place in that scope.
+Chúng ta đang sử dụng một biến `bar` chỉ trong ngữ cảnh của câu lệnh if, vì vậy, có nghĩa là chúng ta sẽ khai báo nó bên trong khối if. Tuy nhiên, nơi chúng ta khai báo các biến không có liên quan khi sử dụng `var`, vì chúng sẽ luôn thuộc scope bao quanh. Đoạn mã này về cơ bản là block scope "giả mạo", vì lý do phong cách và dựa vào việc tự thực thi để không vô tình sử dụng `bar` ở một nơi khác trong scope đó.
 
-Block scope is a tool to extend the earlier "Principle of Least ~~Privilege~~ Exposure" [^note-leastprivilege] from hiding information in functions to hiding information in blocks of our code.
+Block scope là một công cụ để mở rộng "Principle of Least ~~Privilege~~ Exposure (Nguyên Tắc Ít Nhất Tiếp Xúc ~~Đặc Quyền~~)" [^note-leastprivilege] từ ẩn thông tin trong các hàm đến ẩn thông tin trong các khối code của chúng ta.
 
-Consider the for-loop example again:
+Hãy xem xét lại ví dụ về vòng lặp:
 
 ```js
 for (var i=0; i<10; i++) {
@@ -362,23 +362,23 @@ for (var i=0; i<10; i++) {
 }
 ```
 
-Why pollute the entire scope of a function with the `i` variable that is only going to be (or only *should be*, at least) used for the for-loop?
+Tại sao lại gây ảnh hưởng toàn bộ scope của một hàm với biến `i` sẽ chỉ được (hoặc chỉ *nên là*, ít nhất) được sử dụng cho vòng lặp for?
 
-But more importantly, developers may prefer to *check* themselves against accidentally (re)using variables outside of their intended purpose, such as being issued an error about an unknown variable if you try to use it in the wrong place. Block-scoping (if it were possible) for the `i` variable would make `i` available only for the for-loop, causing an error if `i` is accessed elsewhere in the function. This helps ensure variables are not re-used in confusing or hard-to-maintain ways.
+Nhưng quan trọng hơn, các nhà phát triển có thể thích tự *kiểm tra* để tránh việc vô tình (lại) sử dụng các biến ngoài mục đích của nó, chẳng hạn như bị báo lỗi về một biến không xác định nếu bạn cố sử dụng nó không đúng chỗ. Block scope (nếu có thể) cho biến `i` sẽ làm cho `i` chỉ khả dụng cho vòng lặp for, gây ra lỗi nếu `i` được truy cập ở nơi khác trong hàm. Điều này giúp đảm bảo các biến không được sử dụng lại theo những cách khó hiểu hoặc khó bảo trì.
 
-But, the sad reality is that, on the surface, JavaScript has no facility for block scope.
+Nhưng, một thực tế đáng buồn là, nhìn bề ngoài, JavaScript không có cơ sở cho block scope.
 
-That is, until you dig a little further.
+Đó là, cho đến khi bạn đào sâu hơn một chút.
 
 ### `with`
 
-We learned about `with` in Chapter 2. While it is a frowned upon construct, it *is* an example of (a form of) block scope, in that the scope that is created from the object only exists for the lifetime of that `with` statement, and not in the enclosing scope.
+Chúng ta đã tìm hiểu về `with` trong Chương 2. Mặc dù nó là một cấu trúc khó hiểu, nó *là* một ví dụ về (một dạng của) block scope, trong đó scope được tạo từ đối tượng chỉ tồn tại trong suốt thời gian tồn tại của nó câu lệnh `with`, và không nằm trong scope kèm theo.
 
 ### `try/catch`
 
-It's a *very* little known fact that JavaScript in ES3 specified the variable declaration in the `catch` clause of a `try/catch` to be block-scoped to the `catch` block.
+Một sự thật *rất* ít được biết đến là JavaScript trong ES3 đã chỉ định khai báo biến trong mệnh đề `catch` của một `try/catch` để được phân chia theo phạm vi khối thành khối `catch`.
 
-For instance:
+Ví dụ:
 
 ```js
 try {
@@ -391,21 +391,21 @@ catch (err) {
 console.log( err ); // ReferenceError: `err` not found
 ```
 
-As you can see, `err` exists only in the `catch` clause, and throws an error when you try to reference it elsewhere.
+Như bạn có thể thấy, `err` chỉ tồn tại trong mệnh đề` catch` và phát sinh lỗi khi bạn cố gắng tham chiếu nó ở nơi khác.
 
-**Note:** While this behavior has been specified and true of practically all standard JS environments (except perhaps old IE), many linters seem to still complain if you have two or more `catch` clauses in the same scope which each declare their error variable with the same identifier name. This is not actually a re-definition, since the variables are safely block-scoped, but the linters still seem to, annoyingly, complain about this fact.
+**Lưu ý:** Mặc dù hành vi này đã được chỉ định và thực tế đúng với tất cả các môi trường JS tiêu chuẩn (có lẽ ngoại trừ IE cũ), nhưng nhiều người có vẻ vẫn phàn nàn nếu bạn có hai hoặc nhiều mệnh đề `catch` trong cùng một scope mà mỗi mệnh đề khai báo biến lỗi của chúng có cùng tên identifier. Đây thực sự không phải là một định nghĩa lại, vì các biến được xác định block scope một cách an toàn, nhưng những người trong nhóm dường như vẫn phàn nàn một cách khó chịu về thực tế này.
 
-To avoid these unnecessary warnings, some devs will name their `catch` variables `err1`, `err2`, etc. Other devs will simply turn off the linting check for duplicate variable names.
+Để tránh những cảnh báo không cần thiết này, một số nhà phát triển sẽ đặt tên cho các biến `catch` của họ là `err1`, `err2`, v.v. Các nhà phát triển khác sẽ chỉ cần tắt tính năng kiểm tra tên biến trùng lặp.
 
-The block-scoping nature of `catch` may seem like a useless academic fact, but see Appendix B for more information on just how useful it might be.
+Bản chất block scope của `catch` có vẻ như là một thực tế học thuật vô ích, nhưng hãy xem Phụ lục B để biết thêm thông tin về mức độ hữu ích của nó.
 
 ### `let`
 
-Thus far, we've seen that JavaScript only has some strange niche behaviors which expose block scope functionality. If that were all we had, and *it was* for many, many years, then block scoping would not be terribly useful to the JavaScript developer.
+Cho đến nay, chúng ta đã thấy rằng JavaScript chỉ có một số hành vi thích hợp kỳ lạ làm lộ block scope. Nếu đó là tất cả những gì chúng ta có, và *nó đã* trong nhiều, rất nhiều năm, thì block scope sẽ không hữu ích lắm đối với nhà phát triển JavaScript.
 
-Fortunately, ES6 changes that, and introduces a new keyword `let` which sits alongside `var` as another way to declare variables.
+May mắn thay, ES6 thay đổi điều đó và giới thiệu một từ khóa mới `let` nằm cùng với `var` như một cách khác để khai báo các biến.
 
-The `let` keyword attaches the variable declaration to the scope of whatever block (commonly a `{ .. }` pair) it's contained in. In other words, `let` implicitly hijacks any block's scope for its variable declaration.
+Từ khóa `let` đính kèm khai báo biến với scope của bất kỳ khối nào (thường là cặp `{..}`) mà nó chứa trong đó. Nói cách khác, `let` ngầm chiếm đoạt scope của bất kỳ khối nào đối với khai báo biến của nó..
 
 ```js
 var foo = true;
@@ -419,9 +419,9 @@ if (foo) {
 console.log( bar ); // ReferenceError
 ```
 
-Using `let` to attach a variable to an existing block is somewhat implicit. It can confuse you if you're not paying close attention to which blocks have variables scoped to them, and are in the habit of moving blocks around, wrapping them in other blocks, etc., as you develop and evolve code.
+Sử dụng `let` để đính kèm một biến vào một khối hiện có hơi ngầm. Nó có thể khiến bạn bối rối nếu bạn không chú ý đến khối nào có các biến trong scope đến chúng và có thói quen di chuyển các khối xung quanh, gói chúng trong các khối khác, v.v., khi bạn phát triển và phát triển code.
 
-Creating explicit blocks for block-scoping can address some of these concerns, making it more obvious where variables are attached and not. Usually, explicit code is preferable over implicit or subtle code. This explicit block-scoping style is easy to achieve, and fits more naturally with how block-scoping works in other languages:
+Việc tạo các khối rõ ràng cho block scope có thể giải quyết một số mối quan tâm này, làm rõ ràng hơn nơi các biến được đính kèm và không. Thông thường, code rõ ràng được ưu tiên hơn code ẩn. Phong cách xác định block scope rõ ràng này dễ đạt được và phù hợp tự nhiên hơn với cách xác định block scope hoạt động trong các ngôn ngữ khác:
 
 ```js
 var foo = true;
@@ -437,13 +437,13 @@ if (foo) {
 console.log( bar ); // ReferenceError
 ```
 
-We can create an arbitrary block for `let` to bind to by simply including a `{ .. }` pair anywhere a statement is valid grammar. In this case, we've made an explicit block *inside* the if-statement, which may be easier as a whole block to move around later in refactoring, without affecting the position and semantics of the enclosing if-statement.
+Chúng ta có thể tạo một khối tùy ý cho `let` để liên kết bằng cách chỉ cần thêm một cặp `{..}` vào bất kỳ đâu mà một câu lệnh là ngữ pháp hợp lệ. Trong trường hợp này, chúng ta đã tạo một khối rõ ràng *bên trong* câu lệnh if, có thể dễ dàng hơn khi toàn bộ khối di chuyển xung quanh sau này trong quá trình cấu trúc lại, mà không ảnh hưởng đến vị trí và ngữ nghĩa của câu lệnh if đi kèm.
 
-**Note:** For another way to express explicit block scopes, see Appendix B.
+**Lưu ý:** Để biết một cách khác để thể hiện block scope rõ ràng, hãy xem Phụ lục B.
 
-In Chapter 4, we will address hoisting, which talks about declarations being taken as existing for the entire scope in which they occur.
+Trong Chương 4, chúng ta sẽ đề cập đến việc nâng cấp, nói về việc các khai báo được coi là hiện có trong toàn bộ scope mà chúng xảy ra.
 
-However, declarations made with `let` will *not* hoist to the entire scope of the block they appear in. Such declarations will not observably "exist" in the block until the declaration statement.
+Tuy nhiên, các khai báo được thực hiện với `let` sẽ *không* nâng lên toàn bộ scope của khối mà chúng xuất hiện. Các khai báo như vậy sẽ không "tồn tại" trong khối cho đến khi có câu lệnh khai báo.
 
 ```js
 {
@@ -454,9 +454,9 @@ However, declarations made with `let` will *not* hoist to the entire scope of th
 
 #### Garbage Collection
 
-Another reason block-scoping is useful relates to closures and garbage collection to reclaim memory. We'll briefly illustrate here, but the closure mechanism is explained in detail in Chapter 5.
+Một lý do khác khiến block scope hữu ích liên quan đến việc đóng gói và thu gom rác để lấy lại bộ nhớ. Chúng ta sẽ minh họa ngắn gọn ở đây, nhưng cơ chế closure được giải thích chi tiết trong Chương 5.
 
-Consider:
+Xem xét:
 
 ```js
 function process(data) {
@@ -474,9 +474,9 @@ btn.addEventListener( "click", function click(evt){
 }, /*capturingPhase=*/false );
 ```
 
-The `click` function click handler callback doesn't *need* the `someReallyBigData` variable at all. That means, theoretically, after `process(..)` runs, the big memory-heavy data structure could be garbage collected. However, it's quite likely (though implementation dependent) that the JS engine will still have to keep the structure around, since the `click` function has a closure over the entire scope.
+Lệnh gọi lại trình xử lý nhấp chuột của hàm `click` không *cần* biến `someReallyBigData`. Điều đó có nghĩa là, về mặt lý thuyết, sau khi chạy `process(..)`, cấu trúc dữ liệu nặng bộ nhớ lớn có thể được thu thập rác. Tuy nhiên, có nhiều khả năng (mặc dù phụ thuộc vào việc triển khai) rằng công cụ JS vẫn sẽ phải giữ cấu trúc xung quanh, vì hàm `click` có một closure trên toàn bộ scope.
 
-Block-scoping can address this concern, making it clearer to the engine that it does not need to keep `someReallyBigData` around:
+Block scope có thể giải quyết mối quan tâm này, làm rõ ràng hơn với engine rằng nó không cần phải giữ `someReallyBigData` xung quanh:
 
 ```js
 function process(data) {
@@ -497,11 +497,11 @@ btn.addEventListener( "click", function click(evt){
 }, /*capturingPhase=*/false );
 ```
 
-Declaring explicit blocks for variables to locally bind to is a powerful tool that you can add to your code toolbox.
+Khai báo các khối rõ ràng cho các biến để liên kết cục bộ là một công cụ mạnh mẽ mà bạn có thể thêm vào hộp công cụ code của mình.
 
 #### `let` Loops
 
-A particular case where `let` shines is in the for-loop case as we discussed previously.
+Một trường hợp cụ thể trong đó `let` nằm trong trường hợp vòng lặp như chúng ta đã thảo luận trước đây.
 
 ```js
 for (let i=0; i<10; i++) {
@@ -511,9 +511,9 @@ for (let i=0; i<10; i++) {
 console.log( i ); // ReferenceError
 ```
 
-Not only does `let` in the for-loop header bind the `i` to the for-loop body, but in fact, it **re-binds it** to each *iteration* of the loop, making sure to re-assign it the value from the end of the previous loop iteration.
+`let` trong khởi tạo vòng lặp không chỉ liên kết `i` với nội dung vòng lặp, mà trên thực tế, nó **liên kết lại nó** với mỗi *lần lặp* của vòng lặp, đảm bảo rằng gán lại cho nó giá trị từ cuối lần lặp vòng lặp trước đó.
 
-Here's another way of illustrating the per-iteration binding behavior that occurs:
+Đây là một cách khác để minh họa hành vi liên kết mỗi lần lặp lại xảy ra:
 
 ```js
 {
@@ -525,11 +525,11 @@ Here's another way of illustrating the per-iteration binding behavior that occur
 }
 ```
 
-The reason why this per-iteration binding is interesting will become clear in Chapter 5 when we discuss closures.
+Lý do tại sao ràng buộc mỗi lần lặp lại thú vị này sẽ trở nên rõ ràng trong Chương 5 khi chúng ta thảo luận về các closure.
 
-Because `let` declarations attach to arbitrary blocks rather than to the enclosing function's scope (or global), there can be gotchas where existing code has a hidden reliance on function-scoped `var` declarations, and replacing the `var` with `let` may require additional care when refactoring code.
+Bởi vì khai báo `let` gắn vào các khối tùy ý thay vì scope của hàm bao quanh (hoặc toàn cục), có thể có các lỗi trong đó code hiện tại có sự phụ thuộc ẩn vào các khai báo `var` trong function-scope và thay thế `var` bằng `let` có thể yêu cầu chăm sóc bổ sung khi cấu trúc lại code.
 
-Consider:
+Xem xét:
 
 ```js
 var foo = true, baz = 10;
@@ -545,7 +545,7 @@ if (foo) {
 }
 ```
 
-This code is fairly easily re-factored as:
+Code này khá dễ dàng được re-factored như là:
 
 ```js
 var foo = true, baz = 10;
@@ -561,7 +561,7 @@ if (baz > bar) {
 }
 ```
 
-But, be careful of such changes when using block-scoped variables:
+Tuy nhiên, hãy cẩn thận với những thay đổi như vậy khi sử dụng các biến block scope:
 
 ```js
 var foo = true, baz = 10;
@@ -575,11 +575,11 @@ if (foo) {
 }
 ```
 
-See Appendix B for an alternate (more explicit) style of block-scoping which may provide easier to maintain/refactor code that's more robust to these scenarios.
+Xem Phụ lục B để biết kiểu block scope thay thế (rõ ràng hơn) có thể cung cấp code dễ duy trì/cấu trúc lại, mạnh mẽ hơn cho các trường hợp này.
 
 ### `const`
 
-In addition to `let`, ES6 introduces `const`, which also creates a block-scoped variable, but whose value is fixed (constant). Any attempt to change that value at a later time results in an error.
+Ngoài `let`, ES6 giới thiệu `const`, cũng tạo ra một biến block scope, nhưng giá trị của nó là hằng số (không đổi). Bất kỳ nỗ lực nào để thay đổi giá trị đó sau đó đều dẫn đến lỗi.
 
 ```js
 var foo = true;
@@ -598,14 +598,14 @@ console.log( b ); // ReferenceError!
 
 ## Review (TL;DR)
 
-Functions are the most common unit of scope in JavaScript. Variables and functions that are declared inside another function are essentially "hidden" from any of the enclosing "scopes", which is an intentional design principle of good software.
+Hàm là đơn vị scope phổ biến nhất trong JavaScript. Các biến và hàm được khai báo bên trong một hàm khác về cơ bản là "ẩn" khỏi bất kỳ "scope" bao quanh, đó là một nguyên tắc thiết kế có chủ đích của phần mềm tốt.
 
-But functions are by no means the only unit of scope. Block-scope refers to the idea that variables and functions can belong to an arbitrary block (generally, any `{ .. }` pair) of code, rather than only to the enclosing function.
+Nhưng các hàm không có nghĩa là đơn vị duy nhất của scope. Block scope đề cập đến ý tưởng rằng các biến và hàm có thể thuộc về một khối tùy ý (nói chung, bất kỳ cặp mã `{..}` nào), thay vì chỉ cho hàm bao.
 
-Starting with ES3, the `try/catch` structure has block-scope in the `catch` clause.
+Bắt đầu với ES3, cấu trúc `try/catch` có block scope trong mệnh đề `catch`.
 
-In ES6, the `let` keyword (a cousin to the `var` keyword) is introduced to allow declarations of variables in any arbitrary block of code. `if (..) { let a = 2; }` will declare a variable `a` that essentially hijacks the scope of the `if`'s `{ .. }` block and attaches itself there.
+Trong ES6, từ khóa `let` (anh em họ với từ khóa `var`) được giới thiệu để cho phép khai báo các biến trong bất kỳ khối mã tùy ý nào. `if (..) {let a = 2;}` sẽ khai báo một biến `a` về cơ bản chiếm quyền điều khiển scope của khối `if` `{..}` và tự gắn vào đó.
 
-Though some seem to believe so, block scope should not be taken as an outright replacement of `var` function scope. Both functionalities co-exist, and developers can and should use both function-scope and block-scope techniques where respectively appropriate to produce better, more readable/maintainable code.
+Mặc dù một số người có vẻ tin như vậy, nhưng block scope không nên được coi là sự thay thế hoàn toàn của function scope `var`. Cả hai chức năng cùng tồn tại và các nhà phát triển có thể và nên sử dụng cả kỹ thuật function scope và block scope khi thích hợp để tạo ra code tốt hơn, dễ đọc hơn/dễ bảo trì hơn.
 
 [^note-leastprivilege]: [Principle of Least Privilege](http://en.wikipedia.org/wiki/Principle_of_least_privilege)
