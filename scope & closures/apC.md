@@ -1,9 +1,9 @@
 # You Don't Know JS: Scope & Closures
 # Appendix C: Lexical-this
 
-Though this title does not address the `this` mechanism in any detail, there's one ES6 topic which relates `this` to lexical scope in an important way, which we will quickly examine.
+Mặc dù cuốn này không đề cập chi tiết đến cơ chế `this`, nhưng có một chủ đề ES6 liên quan đến `this` với lexical scope theo một cách quan trọng, chúng ta sẽ nhanh chóng kiểm tra.
 
-ES6 adds a special syntactic form of function declaration called the "arrow function". It looks like this:
+ES6 bổ sung một dạng khai báo hàm cú pháp đặc biệt được gọi là "arrow function". Nó trông như thế này:
 
 ```js
 var foo = a => {
@@ -13,11 +13,11 @@ var foo = a => {
 foo( 2 ); // 2
 ```
 
-The so-called "fat arrow" is often mentioned as a short-hand for the *tediously verbose* (sarcasm) `function` keyword.
+Cái gọi là "fat arrow" thường được nhắc đến như một cách viết tắt của từ khóa *dài dòng một cách tẻ nhạt* (mỉa mai) `function`.
 
-But there's something much more important going on with arrow-functions that has nothing to do with saving keystrokes in your declaration.
+Nhưng có điều gì đó quan trọng hơn nhiều đang xảy ra với các hàm mũi tên không liên quan gì đến việc lưu các tổ hợp phím trong khai báo của bạn.
 
-Briefly, this code suffers a problem:
+Tóm lại, code này gặp sự cố:
 
 ```js
 
@@ -35,9 +35,9 @@ obj.cool(); // awesome
 setTimeout( obj.cool, 100 ); // not awesome
 ```
 
-The problem is the loss of `this` binding on the `cool()` function. There are various ways to address that problem, but one often-repeated solution is `var self = this;`.
+Vấn đề là mất liên kết `this` trên hàm `cool()`. Có nhiều cách khác nhau để giải quyết vấn đề đó, nhưng một giải pháp thường được lặp lại là `var self = this;`.
 
-That might look like:
+Điều đó có thể trông giống như:
 
 ```js
 var obj = {
@@ -57,11 +57,11 @@ var obj = {
 obj.cool(); // awesome?
 ```
 
-Without getting too much into the weeds here, the `var self = this` "solution" just dispenses with the whole problem of understanding and properly using `this` binding, and instead falls back to something we're perhaps more comfortable with: lexical scope. `self` becomes just an identifier that can be resolved via lexical scope and closure, and cares not what happened to the `this` binding along the way.
+Không đi quá nhiều vào ngoài lề ở đây, `var self = this` "giải pháp" chỉ giải quyết toàn bộ vấn đề về việc hiểu và sử dụng đúng cách ràng buộc `this`, và thay vào đó, chúng ta có thể cảm thấy thoải mái hơn: lexical scope. `self` chỉ trở thành một định danh có thể được giải quyết thông qua lexical scope và closure, và không quan tâm đến điều gì đã xảy ra với ràng buộc `this` trong quá trình thực hiện.
 
-People don't like writing verbose stuff, especially when they do it over and over again. So, a motivation of ES6 is to help alleviate these scenarios, and indeed, *fix* common idiom problems, such as this one.
+Mọi người không thích viết những thứ dài dòng, đặc biệt là khi họ làm đi làm lại. Vì vậy, động lực của ES6 là giúp giảm bớt các tình huống này và thực sự, *sửa chữa* các vấn đề về thành ngữ phổ biến, chẳng hạn như trường hợp này.
 
-The ES6 solution, the arrow-function, introduces a behavior called "lexical this".
+Giải pháp ES6, arrow function, giới thiệu một hành vi được gọi là "lexical scope".
 
 ```js
 var obj = {
@@ -79,17 +79,17 @@ var obj = {
 obj.cool(); // awesome?
 ```
 
-The short explanation is that arrow-functions do not behave at all like normal functions when it comes to their `this` binding. They discard all the normal rules for `this` binding, and instead take on the `this` value of their immediate lexical enclosing scope, whatever it is.
+Giải thích ngắn gọn là các hàm mũi tên hoàn toàn không hoạt động như các hàm bình thường khi nói đến ràng buộc `this` của chúng. Họ loại bỏ tất cả các quy tắc thông thường cho ràng buộc `this`, và thay vào đó lấy giá trị `this` của scope bao bọc lexical tức thì của họ, bất kể nó là gì.
 
-So, in that snippet, the arrow-function doesn't get its `this` unbound in some unpredictable way, it just "inherits" the `this` binding of the `cool()` function (which is correct if we invoke it as shown!).
+Vì vậy, trong đoạn code đó, arrow function không nhận được liên kết `this` của nó theo một cách không thể đoán trước được, nó chỉ "kế thừa" ràng buộc `this` của hàm `cool()` (điều này đúng nếu chúng ta gọi nó như hình!).
 
-While this makes for shorter code, my perspective is that arrow-functions are really just codifying into the language syntax a common *mistake* of developers, which is to confuse and conflate "this binding" rules with "lexical scope" rules.
+Mặc dù điều này làm cho code ngắn hơn, nhưng quan điểm của tôi là các arrow function thực sự chỉ mã hóa thành cú pháp ngôn ngữ, một *lỗi* phổ biến của các nhà phát triển, đó là nhầm lẫn và kết hợp các quy tắc "this binding" với các quy tắc "lexical scope".
 
-Put another way: why go to the trouble and verbosity of using the `this` style coding paradigm, only to cut it off at the knees by mixing it with lexical references. It seems natural to embrace one approach or the other for any given piece of code, and not mix them in the same piece of code.
+Nói một cách khác: tại sao lại gặp rắc rối và dài dòng khi sử dụng mô hình mã hóa phong cách `this`, chỉ để cắt bỏ nó ở đầu gối bằng cách trộn nó với các tham chiếu lexical. Có vẻ tự nhiên khi áp dụng phương pháp này hay phương pháp khác cho bất kỳ đoạn code nhất định nào và không trộn chúng trong cùng một đoạn code.
 
-**Note:** one other detraction from arrow-functions is that they are anonymous, not named. See Chapter 3 for the reasons why anonymous functions are less desirable than named functions.
+**Lưu ý:** một điểm hạn chế khác từ các arrow function là chúng ẩn danh, không được đặt tên. Xem Chương 3 để biết lý do tại sao các arrow function ít được mong muốn hơn các hàm được đặt tên.
 
-A more appropriate approach, in my perspective, to this "problem", is to use and embrace the `this` mechanism correctly.
+Theo quan điểm của tôi, một cách tiếp cận phù hợp hơn đối với "vấn đề" này là sử dụng và nắm bắt cơ chế `this` một cách chính xác.
 
 ```js
 var obj = {
@@ -107,8 +107,8 @@ var obj = {
 obj.cool(); // more awesome
 ```
 
-Whether you prefer the new lexical-this behavior of arrow-functions, or you prefer the tried-and-true `bind()`, it's important to note that arrow-functions are **not** just about less typing of "function".
+Cho dù bạn thích hành vi lexical-this của các arrow function hay bạn thích `bind()` đã thử-và-đúng, thì điều quan trọng cần lưu ý là các arrow function **không** chỉ là việc gõ ít chữ hơn "function".
 
-They have an *intentional behavioral difference* that we should learn and understand, and if we so choose, leverage.
+Chúng có *sự khác biệt về hành vi có chủ đích* mà chúng ta nên học và hiểu, và nếu chúng ta chọn, hãy tận dụng.
 
-Now that we fully understand lexical scoping (and closure!), understanding lexical-this should be a breeze!
+Bây giờ chúng ta đã hiểu đầy đủ về lexical scope (và kết thúc!), Việc hiểu lexical-this thật dễ dàng!

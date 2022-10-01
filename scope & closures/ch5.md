@@ -1,33 +1,33 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 5: Scope Closure
 
-We arrive at this point with hopefully a very healthy, solid understanding of how scope works.
+Chúng ta đến thời điểm này với hy vọng có được sự hiểu biết rất đúng đắn và vững chắc về cách thức hoạt động của scope.
 
-We turn our attention to an incredibly important, but persistently elusive, *almost mythological*, part of the language: **closure**. If you have followed our discussion of lexical scope thus far, the payoff is that closure is going to be, largely, anticlimactic, almost self-obvious. *There's a man behind the wizard's curtain, and we're about to see him*. No, his name is not Crockford!
+Chúng ta chuyển sự chú ý của mình sang một phần cực kỳ quan trọng nhưng khó nắm bắt, *gần như thần thoại*, của ngôn ngữ: **closure**. Nếu bạn đã theo dõi cuộc thảo luận của chúng ta về lexical scope cho đến nay, thì mục tiêu hướng tới là closure, phần lớn, là phản khoa học, gần như tự hiển nhiên. *Có một người đàn ông đằng sau bức màn của thuật sĩ, và chúng ta sắp được nhìn thấy anh ta*. Không, tên anh ấy không phải là Crockford!
 
-If however you have nagging questions about lexical scope, now would be a good time to go back and review Chapter 2 before proceeding.
+Tuy nhiên, nếu bạn có câu hỏi dai dẳng về lexical scope, bây giờ sẽ là thời điểm tốt để quay lại và xem lại Chương 2 trước khi tiếp tục.
 
-## Enlightenment
+## Enlightenment (Minh Bạch)
 
-For those who are somewhat experienced in JavaScript, but have perhaps never fully grasped the concept of closures, *understanding closure* can seem like a special nirvana that one must strive and sacrifice to attain.
+Đối với những người đã có kinh nghiệm về JavaScript, nhưng có lẽ chưa bao giờ hiểu đầy đủ về khái niệm closure, *hiểu closure* có thể giống như một thành tựu đặc biệt mà người ta phải cố gắng và hy sinh để đạt được.
 
-I recall years back when I had a firm grasp on JavaScript, but had no idea what closure was. The hint that there was *this other side* to the language, one which promised even more capability than I already possessed, teased and taunted me. I remember reading through the source code of early frameworks trying to understand how it actually worked. I remember the first time something of the "module pattern" began to emerge in my mind. I remember the *a-ha!* moments quite vividly.
+Tôi nhớ lại những năm trước khi tôi đã nắm chắc về JavaScript, nhưng không biết closure là gì. Gợi ý rằng có *mặt này bên kia* đối với ngôn ngữ, thứ hứa hẹn nhiều khả năng hơn cả những gì tôi đã sở hữu, đã trêu chọc và chế nhạo tôi. Tôi nhớ đã đọc qua mã nguồn của các framework ban đầu để cố gắng hiểu cách nó thực sự hoạt động. Tôi nhớ lần đầu tiên một cái gì đó về "mô-đun" bắt đầu xuất hiện trong đầu tôi. Tôi nhớ những khoảnh khắc *a-ha!* Khá sống động.
 
-What I didn't know back then, what took me years to understand, and what I hope to impart to you presently, is this secret: **closure is all around you in JavaScript, you just have to recognize and embrace it.** Closures are not a special opt-in tool that you must learn new syntax and patterns for. No, closures are not even a weapon that you must learn to wield and master as Luke trained in The Force.
+Điều tôi không biết hồi đó, điều mà tôi đã mất nhiều năm để hiểu, và điều tôi hy vọng sẽ truyền đạt cho bạn hiện tại, chính là bí mật này: **closure ở xung quanh bạn trong JavaScript, bạn chỉ cần nhận ra và nắm lấy nó.** Closures không phải là một công cụ chọn tham gia đặc biệt mà bạn phải học cú pháp và patterns mới. Không, closure thậm chí không phải là một vũ khí mà bạn phải học cách sử dụng và thành thạo như Luke được đào tạo trong The Force.
 
-Closures happen as a result of writing code that relies on lexical scope. They just happen. You do not even really have to intentionally create closures to take advantage of them. Closures are created and used for you all over your code. What you are *missing* is the proper mental context to recognize, embrace, and leverage closures for your own will.
+Closure xảy ra do việc viết mã dựa trên lexical scope. Chúng chỉ xảy ra. Bạn thậm chí không thực sự phải cố ý tạo ra các closure để tận dụng chúng. Closure được tạo và sử dụng cho bạn trên toàn bộ code của bạn. Những gì bạn đang *thiếu* là bối cảnh tinh thần thích hợp để nhận ra, đón nhận và tận dụng các closure theo ý muốn của bạn.
 
-The enlightenment moment should be: **oh, closures are already occurring all over my code, I can finally *see* them now.** Understanding closures is like when Neo sees the Matrix for the first time.
+Khoảnh khắc khai sáng nên là: **ồ, các closure đã xảy ra trên toàn bộ code của tôi, cuối cùng thì tôi cũng có thể *nhìn thấy* chúng ngay bây giờ.** Việc hiểu các closure giống như khi Neo nhìn thấy Ma trận lần đầu tiên.
 
 ## Nitty Gritty
 
-OK, enough hyperbole and shameless movie references.
+OK, đủ tham chiếu phim cường điệu và vô liêm sỉ.
 
-Here's a down-n-dirty definition of what you need to know to understand and recognize closures:
+Dưới đây là một định nghĩa đơn giản về những gì bạn cần biết để hiểu và nhận ra closure:
 
-> Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
+> Closure khi một function có thể nhớ và truy cập lexical scope của nó ngay cả khi function đó đang thực thi bên ngoài lexical scope của nó.
 
-Let's jump into some code to illustrate that definition.
+Hãy chuyển sang một số đoạn code để minh họa định nghĩa đó.
 
 ```js
 function foo() {
@@ -43,17 +43,17 @@ function foo() {
 foo();
 ```
 
-This code should look familiar from our discussions of Nested Scope. Function `bar()` has *access* to the variable `a` in the outer enclosing scope because of lexical scope look-up rules (in this case, it's an RHS reference look-up).
+Đoạn code này sẽ trông quen thuộc từ các cuộc thảo luận của chúng ta về Nested Scope. Function `bar ()` có *quyền truy cập* vào biến `a` trong scope bao bọc bên ngoài do các quy tắc tra cứu lexical scope (trong trường hợp này, đó là tra cứu tham chiếu RHS).
 
-Is this "closure"?
+Đây có phải là "closure"?
 
-Well, technically... *perhaps*. But by our what-you-need-to-know definition above... *not exactly*. I think the most accurate way to explain `bar()` referencing `a` is via lexical scope look-up rules, and those rules are *only* (an important!) **part** of what closure is.
+Ồ, về mặt kỹ thuật thì ... *có lẽ*. Nhưng theo định nghĩa điều-bạn-cần-biết của chúng ta ở trên ... *không chính xác*. Tôi nghĩ cách chính xác nhất để giải thích `bar ()` tham chiếu đến `a` là thông qua các quy tắc tra cứu lexical scope và các quy tắc đó là *chỉ* (quan trọng!) **một phần** của closure là gì.
 
-From a purely academic perspective, what is said of the above snippet is that the function `bar()` has a *closure* over the scope of `foo()` (and indeed, even over the rest of the scopes it has access to, such as the global scope in our case). Put slightly differently, it's said that `bar()` closes over the scope of `foo()`. Why? Because `bar()` appears nested inside of `foo()`. Plain and simple.
+Từ một góc độ học thuật thuần túy, những gì được nói về đoạn code trên là hàm `bar()` có *closure* trên scope của `foo()` (và thực sự, ngay cả trên các scope còn lại, nó cũng có quyền truy cập chẳng hạn như scope toàn cầu trong trường hợp của chúng ta). Nói khác đi một chút, người ta nói rằng `bar()` đóng trong scope của `foo()`. Tại sao? Bởi vì `bar()` xuất hiện lồng vào bên trong của `foo()`. Thông thường và đơn giản.
 
-But, closure defined in this way is not directly *observable*, nor do we see closure *exercised* in that snippet. We clearly see lexical scope, but closure remains sort of a mysterious shifting shadow behind the code.
+Tuy nhiên, closure được xác định theo cách này không trực tiếp *có thể quan sát được*, cũng như chúng ta không thấy closure *thực hiện* trong đoạn code đó. Chúng ta thấy rõ ràng lexical scope, nhưng closure vẫn là một cái bóng chuyển dịch bí ẩn đằng sau code.
 
-Let us then consider code which brings closure into full light:
+Sau đó, chúng ta hãy xem xét đoạn code đưa closure ra ánh sáng:
 
 ```js
 function foo() {
@@ -71,25 +71,25 @@ var baz = foo();
 baz(); // 2 -- Whoa, closure was just observed, man.
 ```
 
-The function `bar()` has lexical scope access to the inner scope of `foo()`. But then, we take `bar()`, the function itself, and pass it *as* a value. In this case, we `return` the function object itself that `bar` references.
+Function `bar()` có quyền truy cập lexical scope vào scope bên trong của `foo()`. Nhưng sau đó, chúng ta lấy `bar()`, chính là function, và truyền nó *dưới dạng* một giá trị. Trong trường hợp này, chúng ta `trả về` chính đối tượng hàm mà `bar` tham chiếu.
 
-After we execute `foo()`, we assign the value it returned (our inner `bar()` function) to a variable called `baz`, and then we actually invoke `baz()`, which of course is invoking our inner function `bar()`, just by a different identifier reference.
+Sau khi chúng ta thực thi `foo()`, chúng ta gán giá trị mà nó trả về (function `bar()` bên trong) cho một biến có tên là `baz`, và sau đó chúng ta thực sự gọi `baz()`, tất nhiên nó đang gọi hàm bên trong `bar()`, chỉ bởi một tham chiếu mã định danh khác.
 
-`bar()` is executed, for sure. But in this case, it's executed *outside* of its declared lexical scope.
+`bar()` được thực thi, chắc chắn. Nhưng trong trường hợp này, nó được thực thi *bên ngoài* lexical scope đã khai báo của nó.
 
-After `foo()` executed, normally we would expect that the entirety of the inner scope of `foo()` would go away, because we know that the *Engine* employs a *Garbage Collector* that comes along and frees up memory once it's no longer in use. Since it would appear that the contents of `foo()` are no longer in use, it would seem natural that they should be considered *gone*.
+Sau khi thực thi `foo()`, thông thường chúng ta sẽ mong đợi rằng toàn bộ scope bên trong của `foo()` sẽ biến mất, vì chúng ta biết rằng *Engine* sử dụng *Garbage Collector* đi kèm và giải phóng bộ nhớ một khi nó không còn được sử dụng. Vì có vẻ như nội dung của `foo()` không còn được sử dụng nữa, nên có vẻ như chúng sẽ được coi là *biến mất*.
 
-But the "magic" of closures does not let this happen. That inner scope is in fact *still* "in use", and thus does not go away. Who's using it? **The function `bar()` itself**.
+Nhưng "phép thuật" của những closure không để điều này xảy ra. Trên thực tế, scope bên trong đó *vẫn* "được sử dụng", và do đó không biến mất. Ai đang sử dụng nó? **Function `bar()` của chính nó**.
 
-By virtue of where it was declared, `bar()` has a lexical scope closure over that inner scope of `foo()`, which keeps that scope alive for `bar()` to reference at any later time.
+Nhờ vào nơi nó được khai báo, `bar()` có một lexical scope closure trên scope bên trong đó của `foo()`, điều này giữ cho scope đó tồn tại để `bar()` tham chiếu bất kỳ lúc nào sau này.
 
-**`bar()` still has a reference to that scope, and that reference is called closure.**
+**`bar ()` vẫn có một tham chiếu đến scope đó và tham chiếu đó được gọi là closure.**
 
-So, a few microseconds later, when the variable `baz` is invoked (invoking the inner function we initially labeled `bar`), it duly has *access* to author-time lexical scope, so it can access the variable `a` just as we'd expect.
+Vì vậy, vài micro giây sau, khi biến `baz` được gọi (gọi hàm bên trong mà ban đầu chúng ta gắn nhãn là `bar`), nó có *quyền truy cập* vào lexical scope theo thời gian của tác giả, vì vậy nó có thể truy cập biến `a` đúng như chúng ta mong đợi.
 
-The function is being invoked well outside of its author-time lexical scope. **Closure** lets the function continue to access the lexical scope it was defined in at author-time.
+Hàm đang được gọi tốt bên ngoài lexical scope theo thời gian tác giả của nó. **Closure** cho phép hàm tiếp tục truy cập lexical scope mà nó được xác định tại thời điểm tác giả.
 
-Of course, any of the various ways that functions can be *passed around* as values, and indeed invoked in other locations, are all examples of observing/exercising closure.
+Tất nhiên, bất kỳ cách nào trong số các cách khác nhau mà các hàm có thể được *truyền xung quanh* dưới dạng giá trị và thực sự được gọi ở các vị trí khác, tất cả đều là ví dụ về việc quan sát/thực hiện closure.
 
 ```js
 function foo() {
@@ -107,9 +107,9 @@ function bar(fn) {
 }
 ```
 
-We pass the inner function `baz` over to `bar`, and call that inner function (labeled `fn` now), and when we do, its closure over the inner scope of `foo()` is observed, by accessing `a`.
+Chúng ta truyền hàm bên trong `baz` vào `bar` và gọi hàm bên trong đó (giờ được đặt tên là `fn`), và khi chúng ta thực hiện, closure của nó đối với scope bên trong của `foo()` được quan sát bằng cách truy cập vào `a`.
 
-These passings-around of functions can be indirect, too.
+Những việc truyền tham số xung quanh các function này cũng có thể là gián tiếp.
 
 ```js
 var fn;
@@ -133,11 +133,11 @@ foo();
 bar(); // 2
 ```
 
-Whatever facility we use to *transport* an inner function outside of its lexical scope, it will maintain a scope reference to where it was originally declared, and wherever we execute it, that closure will be exercised.
+Bất kỳ phương cách nào chúng ta sử dụng để *vận chuyển* một function bên trong bên ngoài lexical scope của nó, nó sẽ duy trì một scope reference đến nơi nó được khai báo ban đầu và bất cứ nơi nào chúng ta thực thi nó, closure đó sẽ được thực hiện.
 
 ## Now I Can See
 
-The previous code snippets are somewhat academic and artificially constructed to illustrate *using closure*. But I promised you something more than just a cool new toy. I promised that closure was something all around you in your existing code. Let us now *see* that truth.
+Các đoạn code phía trên hơi mang tính hàn lâm và được xây dựng để minh họa *cách sử dụng closure*. Nhưng tôi đã hứa với bạn rằng đó không chỉ là một món đồ chơi mới tuyệt vời. Tôi đã hứa rằng closure là một cái gì đó xung quanh bạn trong code hiện có của bạn. Bây giờ chúng ta hãy *xem* sự thật đó.
 
 ```js
 function wait(message) {
@@ -151,15 +151,15 @@ function wait(message) {
 wait( "Hello, closure!" );
 ```
 
-We take an inner function (named `timer`) and pass it to `setTimeout(..)`. But `timer` has a scope closure over the scope of `wait(..)`, indeed keeping and using a reference to the variable `message`.
+Chúng ta lấy một hàm bên trong (có tên là `timer`) và chuyển nó vào `setTimeout(..)`. Nhưng `timer` có một scope closure trên scope của `wait(..)`, thực sự giữ và sử dụng một tham chiếu đến biến `message`.
 
-A thousand milliseconds after we have executed `wait(..)`, and its inner scope should otherwise be long gone, that inner function `timer` still has closure over that scope.
+Một nghìn mili giây sau khi chúng ta thực hiện `wait(..)` và scope bên trong của nó sẽ biến mất từ lâu, hàm bên trong `timer` vẫn có closure trên scope đó.
 
-Deep down in the guts of the *Engine*, the built-in utility `setTimeout(..)` has reference to some parameter, probably called `fn` or `func` or something like that. *Engine* goes to invoke that function, which is invoking our inner `timer` function, and the lexical scope reference is still intact.
+Sâu trong ruột của *Engine*, tiện ích tích hợp sẵn `setTimeout(..)` có tham chiếu đến một số tham số, có thể được gọi là `fn` hoặc `func` hoặc tương tự như vậy. *Engine* sẽ gọi hàm đó, hàm này đang gọi hàm `timer` bên trong của chúng ta và tham chiếu lexical scope vẫn còn nguyên vẹn.
 
 **Closure.**
 
-Or, if you're of the jQuery persuasion (or any JS framework, for that matter):
+Hoặc, nếu bạn thuộc về tín đồ của jQuery (hoặc bất kỳ framework JS nào, cho vấn đề đó):
 
 ```js
 function setupBot(name,selector) {
@@ -172,11 +172,11 @@ setupBot( "Closure Bot 1", "#bot_1" );
 setupBot( "Closure Bot 2", "#bot_2" );
 ```
 
-I am not sure what kind of code you write, but I regularly write code which is responsible for controlling an entire global drone army of closure bots, so this is totally realistic!
+Tôi không chắc bạn viết code loại gì, nhưng tôi thường xuyên viết code chịu trách nhiệm kiểm soát toàn bộ đội quân máy bay không người lái toàn cục gồm các bot closure, vì vậy điều này hoàn toàn thực tế!
 
-(Some) joking aside, essentially *whenever* and *wherever* you treat functions (which access their own respective lexical scopes) as first-class values and pass them around, you are likely to see those functions exercising closure. Be that timers, event handlers, Ajax requests, cross-window messaging, web workers, or any of the other asynchronous (or synchronous!) tasks, when you pass in a *callback function*, get ready to sling some closure around!
+(Một số) nói đùa sang một bên, về cơ bản *bất cứ khi nào* và *bất cứ nơi nào* bạn coi các hàm (truy cập lexical scope tương ứng của riêng chúng) là các giá trị first-class và truyền chúng xung quanh, bạn có thể thấy các hàm đó thực hiện closure. Thử timers, event handlers, Ajax requests, cross-window messaging, web workers hoặc bất kỳ tác vụ không đồng bộ (hoặc đồng bộ!) Nào khác, khi bạn truyền vào *callback*, hãy sẵn sàng xử lý một số closure!
 
-**Note:** Chapter 3 introduced the IIFE pattern. While it is often said that IIFE (alone) is an example of observed closure, I would somewhat disagree, by our definition above.
+**Lưu ý:** Chương 3 đã giới thiệu mẫu IIFE. Mặc dù người ta thường nói rằng IIFE (một mình) là một ví dụ về closure được quan sát, tôi sẽ hơi không đồng ý, theo định nghĩa của chúng tôi ở trên.
 
 ```js
 var a = 2;
@@ -186,21 +186,21 @@ var a = 2;
 })();
 ```
 
-This code "works", but it's not strictly an observation of closure. Why? Because the function (which we named "IIFE" here) is not executed outside its lexical scope. It's still invoked right there in the same scope as it was declared (the enclosing/global scope that also holds `a`). `a` is found via normal lexical scope look-up, not really via closure.
+Code này "hoạt động", nhưng nó không hoàn toàn có thể quan sát hoạt động closure ở đây. Tại sao? Bởi vì hàm (mà chúng ta đặt tên là "IIFE" ở đây) không được thực thi bên ngoài lexical scope của nó. Nó vẫn được gọi ngay tại đó trong cùng một scope như đã được khai báo (scope bao quanh / toàn cục cũng chứa `a`). `a` được tìm thấy thông qua tra cứu lexical scope thông thường, không thực sự thông qua closure.
 
-While closure might technically be happening at declaration time, it is *not* strictly observable, and so, as they say, *it's a tree falling in the forest with no one around to hear it.*
+Mặc dù về mặt kỹ thuật, closure có thể xảy ra vào thời điểm khai báo, nhưng điều này *không* có thể quan sát được một cách nghiêm túc, và vì vậy, như người ta nói, *đó là một cái đổ trong rừng mà không ai xung quanh nghe thấy.*
 
-Though an IIFE is not *itself* an example of closure, it absolutely creates scope, and it's one of the most common tools we use to create scope which can be closed over. So IIFEs are indeed heavily related to closure, even if not exercising closure themselves.
+Mặc dù IIFE không phải là *bản thân* là một ví dụ của closure, nhưng nó hoàn toàn tạo ra scope và đó là một trong những công cụ phổ biến nhất mà chúng ta sử dụng để tạo scope có thể được đóng lại. Vì vậy, IIFE thực sự có liên quan nhiều đến closure, ngay cả khi bản thân họ không thực hiện closure.
 
-Put this book down right now, dear reader. I have a task for you. Go open up some of your recent JavaScript code. Look for your functions-as-values and identify where you are already using closure and maybe didn't even know it before.
+Hãy đặt cuốn sách này xuống ngay bây giờ, bạn đọc thân mến. Tôi có một nhiệm vụ dành cho bạn. Mở một số code JavaScript gần đây của bạn. Tìm kiếm các hàm làm giá trị của bạn và xác định vị trí bạn đang sử dụng closure và thậm chí có thể chưa biết về nó trước đây.
 
-I'll wait.
+Tôi sẽ chờ.
 
-Now... you see!
+Bây giờ... bạn thấy đấy!
 
 ## Loops + Closure
 
-The most common canonical example used to illustrate closure involves the humble for-loop.
+Ví dụ chính tắc phổ biến nhất được sử dụng để minh họa closure liên quan đến vòng lặp đơn giản.
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -210,27 +210,27 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-**Note:** Linters often complain when you put functions inside of loops, because the mistakes of not understanding closure are **so common among developers**. We explain how to do so properly here, leveraging the full power of closure. But that subtlety is often lost on linters and they will complain regardless, assuming you don't *actually* know what you're doing.
+**Lưu ý:** Các Linters (Trình kiểm tra code) thường báo cáo khi bạn đặt các hàm bên trong các vòng lặp, vì lỗi không hiểu về closure **rất phổ biến giữa các nhà phát triển**. Chúng ta giải thích cách làm như vậy đúng cách ở đây, tận dụng toàn bộ sức mạnh của closure. Nhưng sự tinh tế đó thường bị mất đi trong linters và nó sẽ phàn nàn bất kể, giả sử rằng bạn không *thực sự* biết mình đang làm gì.
 
-The spirit of this code snippet is that we would normally *expect* for the behavior to be that the numbers "1", "2", .. "5" would be printed out, one at a time, one per second, respectively.
+Tinh thần của đoạn mã này là chúng ta thường *mong đợi* đối với hành vi là các số "1", "2", .. "5" sẽ được in ra, mỗi lần một cái, một giây, tương ứng.
 
-In fact, if you run this code, you get "6" printed out 5 times, at the one-second intervals.
+Trên thực tế, nếu bạn chạy mã này, bạn sẽ in "6" ra 5 lần, cách nhau một giây.
 
 **Huh?**
 
-Firstly, let's explain where `6` comes from. The terminating condition of the loop is when `i` is *not* `<=5`. The first time that's the case is when `i` is 6. So, the output is reflecting the final value of the `i` after the loop terminates.
+Đầu tiên, hãy giải thích `6` đến từ đâu. Điều kiện kết thúc của vòng lặp là khi `i` là *không phải là* `<= 5`. Lần đầu tiên trường hợp này xảy ra là khi `i` bằng 6. Vì vậy, đầu ra phản ánh giá trị cuối cùng của `i` sau khi vòng lặp kết thúc.
 
-This actually seems obvious on second glance. The timeout function callbacks are all running well after the completion of the loop. In fact, as timers go, even if it was `setTimeout(.., 0)` on each iteration, all those function callbacks would still run strictly after the completion of the loop, and thus print `6` each time.
+Điều này thực sự có vẻ rõ ràng trong cái nhìn thứ hai. Tất cả các lệnh gọi lại hàm timeout đều chạy tốt sau khi hoàn thành vòng lặp. Trên thực tế, khi timers trôi đi, ngay cả khi nó là `setTimeout(.., 0)` trên mỗi lần lặp, tất cả các lệnh gọi lại hàm đó sẽ vẫn chạy đúng sau khi hoàn thành vòng lặp và do đó in `6` mỗi lần.
 
-But there's a deeper question at play here. What's *missing* from our code to actually have it behave as we semantically have implied?
+Nhưng có một câu hỏi sâu hơn ở đây. Điều gì *còn thiếu* trong code của chúng ta để nó thực sự hoạt động như chúng ta đã ngụ ý về mặt ngữ nghĩa?
 
-What's missing is that we are trying to *imply* that each iteration of the loop "captures" its own copy of `i`, at the time of the iteration. But, the way scope works, all 5 of those functions, though they are defined separately in each loop iteration, all **are closed over the same shared global scope**, which has, in fact, only one `i` in it.
+Điều còn thiếu là chúng ta đang cố gắng *ngụ ý* rằng mỗi lần lặp lại của vòng lặp sẽ "bắt" bản sao của chính `i`, tại thời điểm lặp. Tuy nhiên, cách thức hoạt động của scope, tất cả 5 hàm đó, mặc dù chúng được định nghĩa riêng biệt trong mỗi lần lặp vòng lặp, tất cả **đều được đóng trên cùng một phạm vi toàn cục được chia sẻ**, trên thực tế, chỉ có một chữ `i` trong đó.
 
-Put that way, *of course* all functions share a reference to the same `i`. Something about the loop structure tends to confuse us into thinking there's something else more sophisticated at work. There is not. There's no difference than if each of the 5 timeout callbacks were just declared one right after the other, with no loop at all.
+Nói theo cách đó, *tất nhiên* tất cả các hàm đều chia sẻ một tham chiếu đến cùng một `i`. Một cái gì đó về cấu trúc vòng lặp có xu hướng khiến chúng ta nhầm lẫn khi nghĩ rằng có một thứ gì đó khác phức tạp hơn trong công việc. Không có. Không có gì khác biệt so với việc mỗi trong số 5 lệnh gọi lại thời gian chờ chỉ được khai báo lần lượt ngay sau lần gọi lại kia, không có vòng lặp nào cả.
 
-OK, so, back to our burning question. What's missing? We need more ~~cowbell~~ closured scope. Specifically, we need a new closured scope for each iteration of the loop.
+OK, vậy, quay lại câu hỏi nóng bỏng của chúng ta. Cái gì còn thiếu? Chúng ta cần thêm scope đã đóng. Cụ thể, chúng ta cần một closure scope mới cho mỗi lần lặp lại của vòng lặp.
 
-We learned in Chapter 3 that the IIFE creates scope by declaring a function and immediately executing it.
+Chúng ta đã học trong Chương 3 rằng IIFE tạo scope bằng cách khai báo một hàm và ngay lập tức thực thi nó.
 
 Let's try:
 
@@ -244,13 +244,13 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-Does that work? Try it. Again, I'll wait.
+Điều đó có hiệu quả không? Thử nó. Một lần nữa, tôi sẽ đợi.
 
-I'll end the suspense for you. **Nope.** But why? We now obviously have more lexical scope. Each timeout function callback is indeed closing over its own per-iteration scope created respectively by each IIFE.
+Tôi sẽ kết thúc hồi hộp cho bạn. **Không.** Nhưng tại sao? Bây giờ chúng ta rõ ràng có nhiều lexical scope hơn. Mỗi lệnh gọi lại hàm timeout thực sự đóng trên scope mỗi lần lặp lại của chính nó được tạo tương ứng bởi mỗi IIFE.
 
-It's not enough to have a scope to close over **if that scope is empty**. Look closely. Our IIFE is just an empty do-nothing scope. It needs *something* in it to be useful to us.
+Không đủ để có một scope để đóng lại **nếu scope đó trống**. Nhìn kĩ. IIFE của chúng tôi chỉ là một scope trống rỗng. Nó cần *một cái gì đó* trong đó để hữu ích cho chúng ta.
 
-It needs its own variable, with a copy of the `i` value at each iteration.
+Nó cần biến riêng, với một bản sao của giá trị `i` ở mỗi lần lặp.
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -265,7 +265,7 @@ for (var i=1; i<=5; i++) {
 
 **Eureka! It works!**
 
-A slight variation some prefer is:
+Một biến thể nhỏ mà một số người thích là:
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -277,17 +277,17 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-Of course, since these IIFEs are just functions, we can pass in `i`, and we can call it `j` if we prefer, or we can even call it `i` again. Either way, the code works now.
+Tất nhiên, vì các IIFE này chỉ là các hàm, chúng ta có thể truyền vào `i`, và chúng ta có thể gọi nó là` j` nếu chúng ta thích, hoặc thậm chí chúng ta có thể gọi lại nó là `i`. Dù bằng cách nào, code hoạt động ngay bây giờ.
 
-The use of an IIFE inside each iteration created a new scope for each iteration, which gave our timeout function callbacks the opportunity to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
+Việc sử dụng IIFE bên trong mỗi lần lặp đã tạo ra một scope mới cho mỗi lần lặp, điều này mang lại cho các lệnh gọi lại hàm thời gian chờ của chúng tôi có cơ hội đóng qua một scope mới cho mỗi lần lặp, một trong đó có một biến với giá trị mỗi lần lặp phù hợp cho chúng ta để truy cập.
 
 Problem solved!
 
 ### Block Scoping Revisited
 
-Look carefully at our analysis of the previous solution. We used an IIFE to create new scope per-iteration. In other words, we actually *needed* a per-iteration **block scope**. Chapter 3 showed us the `let` declaration, which hijacks a block and declares a variable right there in the block.
+Xem xét kỹ lưỡng phân tích của chúng ta về giải pháp trước đó. Chúng ta đã sử dụng IIFE để tạo scope mới cho mỗi lần lặp. Nói cách khác, chúng ta thực sự *cần* block scope **mỗi lần lặp lại**. Chương 3 đã cho chúng ta thấy khai báo `let`, chiếm quyền điều khiển một khối và khai báo một biến ngay tại đó trong khối.
 
-**It essentially turns a block into a scope that we can close over.** So, the following awesome code "just works":
+**Về cơ bản, nó biến một khối thành một scope mà chúng ta có thể đóng lại.** Vì vậy, đoạn mã tuyệt vời sau "hoạt động":
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -298,7 +298,7 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-*But, that's not all!* (in my best Bob Barker voice). There's a special behavior defined for `let` declarations used in the head of a for-loop. This behavior says that the variable will be declared not just once for the loop, **but each iteration**. And, it will, helpfully, be initialized at each subsequent iteration with the value from the end of the previous iteration.
+*Nhưng, đó không phải là tất cả!* (Bằng giọng Bob Barker hay nhất của tôi). Có một hành vi đặc biệt được xác định cho các khai báo `let` được sử dụng trong phần đầu của vòng lặp for. Hành vi này nói rằng biến sẽ được khai báo không chỉ một lần cho vòng lặp, **mà mỗi lần lặp**. Và, hữu ích, nó sẽ được khởi tạo ở mỗi lần lặp tiếp theo với giá trị từ cuối lần lặp trước đó.
 
 ```js
 for (let i=1; i<=5; i++) {
@@ -308,11 +308,11 @@ for (let i=1; i<=5; i++) {
 }
 ```
 
-How cool is that? Block scoping and closure working hand-in-hand, solving all the world's problems. I don't know about you, but that makes me a happy JavaScripter.
+Làm sao tuyệt như vậy? Xác định scope và đóng khối làm việc cùng nhau, giải quyết tất cả các vấn đề của thế giới. Tôi không biết bạn thế nào, nhưng điều đó khiến tôi trở thành một JavaScripter hạnh phúc.
 
 ## Modules
 
-There are other code patterns which leverage the power of closure but which do not on the surface appear to be about callbacks. Let's examine the most powerful of them: *the module*.
+Có những code pattern khác tận dụng sức mạnh của closure nhưng bề ngoài không có vẻ là về các lệnh gọi lại. Hãy xem xét điểm mạnh nhất trong số chúng: *module*.
 
 ```js
 function foo() {
@@ -329,9 +329,9 @@ function foo() {
 }
 ```
 
-As this code stands right now, there's no observable closure going on. We simply have some private data variables `something` and `another`, and a couple of inner functions `doSomething()` and `doAnother()`, which both have lexical scope (and thus closure!) over the inner scope of `foo()`.
+Vì code này đứng ngay bây giờ, không có closure có thể quan sát được nào đang diễn ra. Chúng tôi chỉ đơn giản có một số biến dữ liệu riêng tư `something` và `another`, và một vài hàm bên trong `doSomething()` và `doAnother()`, cả hai đều có lexical scope (và do closure!) trong scope bên trong của `foo()`.
 
-But now consider:
+Nhưng bây giờ hãy xem xét :
 
 ```js
 function CoolModule() {
@@ -358,29 +358,29 @@ foo.doSomething(); // cool
 foo.doAnother(); // 1 ! 2 ! 3
 ```
 
-This is the pattern in JavaScript we call *module*. The most common way of implementing the module pattern is often called "Revealing Module", and it's the variation we present here.
+Đây là pattern trong JavaScript mà chúng ta gọi là *module*. Cách phổ biến nhất để triển khai module thường được gọi là "Revealing Module (Mô-đun tiết lộ)" và đó là biến thể mà chúng ta trình bày ở đây.
 
-Let's examine some things about this code.
+Hãy xem xét một số điều về đoạn code này.
 
-Firstly, `CoolModule()` is just a function, but it *has to be invoked* for there to be a module instance created. Without the execution of the outer function, the creation of the inner scope and the closures would not occur.
+Thứ nhất, `CoolModule()` chỉ là một function, nhưng nó *phải được gọi* để có một module intance được tạo. Nếu không thực thi function bên ngoài, việc tạo scope bên trong và closure sẽ không xảy ra.
 
-Secondly, the `CoolModule()` function returns an object, denoted by the object-literal syntax `{ key: value, ... }`. The object we return has references on it to our inner functions, but *not* to our inner data variables. We keep those hidden and private. It's appropriate to think of this object return value as essentially a **public API for our module**.
+Thứ hai, function `CoolModule()` trả về một object, được biểu thị bằng cú pháp đối tượng-chữ `{key: value, ...} '. Object mà chúng ta nhận về có các tham chiếu đến các function bên trong, nhưng *không phải* đến các biến dữ liệu bên trong. Chúng ta giữ bí mật và riêng tư. Thật thích hợp khi nghĩ về giá trị trả về của đối tượng này về cơ bản là một **API công khai cho module của chúng ta**.
 
-This object return value is ultimately assigned to the outer variable `foo`, and then we can access those property methods on the API, like `foo.doSomething()`.
+Giá trị trả về của object này cuối cùng được gán cho biến bên ngoài `foo` và sau đó chúng ta có thể truy cập các phương thức thuộc tính đó trên API, như `foo.doSomething()`.
 
-**Note:** It is not required that we return an actual object (literal) from our module. We could just return back an inner function directly. jQuery is actually a good example of this. The `jQuery` and `$` identifiers are the public API for the jQuery "module", but they are, themselves, just a function (which can itself have properties, since all functions are objects).
+**Lưu ý:** Chúng ta không bắt buộc phải trả về một object thực sự (theo nghĩa đen) từ module của chúng ta. Chúng ta có thể chỉ trả lại trực tiếp một function bên trong. jQuery thực sự là một ví dụ điển hình về điều này. Các định danh `jQuery` và `$` là API công khai cho "module" jQuery, nhưng bản thân chúng chỉ là một function (bản thân nó có thể có các thuộc tính, vì tất cả các hàm đều là đối tượng).
 
-The `doSomething()` and `doAnother()` functions have closure over the inner scope of the module "instance" (arrived at by actually invoking `CoolModule()`). When we transport those functions outside of the lexical scope, by way of property references on the object we return, we have now set up a condition by which closure can be observed and exercised.
+Các function `doSomething()` và `doAnother()` có closure trong phạm vi bên trong của module "instance" (đến bằng cách thực sự gọi `CoolModule()`). Khi chúng ta chuyển các function đó ra ngoài lexical scope, bằng cách tham chiếu thuộc tính trên object mà chúng ta trả về, bây giờ chúng ta đã thiết lập một điều kiện để có thể quan sát và thực hiện closure.
 
-To state it more simply, there are two "requirements" for the module pattern to be exercised:
+Nói một cách đơn giản hơn, có hai "yêu cầu" đối với module pattern được thực hiện:
 
-1. There must be an outer enclosing function, and it must be invoked at least once (each time creates a new module instance).
+1. Phải có một function bao bọc bên ngoài và nó phải được gọi ít nhất một lần (mỗi lần tạo một module instance mới).
 
-2. The enclosing function must return back at least one inner function, so that this inner function has closure over the private scope, and can access and/or modify that private state.
+2. Function bao quanh phải trả về ít nhất một function bên trong, để function bên trong này có closure trên private scope và có thể truy cập và/hoặc sửa đổi private state đó.
 
-An object with a function property on it alone is not *really* a module. An object which is returned from a function invocation which only has data properties on it and no closured functions is not *really* a module, in the observable sense.
+Một object có một function property trên nó không *thực sự* là một module. Một object được trả về từ một lệnh gọi function mà chỉ có thuộc tính dữ liệu trên đó và không có closured functions (hàm bị đóng) nào thì không phải là *thực sự* là một module, theo nghĩa có thể quan sát được.
 
-The code snippet above shows a standalone module creator called `CoolModule()` which can be invoked any number of times, each time creating a new module instance. A slight variation on this pattern is when you only care to have one instance, a "singleton" of sorts:
+Đoạn code ở trên hiển thị một trình tạo module độc lập có tên là `CoolModule()` có thể được gọi bất kỳ số lần nào, mỗi lần tạo một module instance mới. Một sự thay đổi nhỏ đối với mô hình này là khi bạn chỉ quan tâm đến một trường hợp, một "singleton":
 
 ```js
 var foo = (function CoolModule() {
@@ -405,9 +405,9 @@ foo.doSomething(); // cool
 foo.doAnother(); // 1 ! 2 ! 3
 ```
 
-Here, we turned our module function into an IIFE (see Chapter 3), and we *immediately* invoked it and assigned its return value directly to our single module instance identifier `foo`.
+Ở đây, chúng ta đã chuyển module function của mình thành một IIFE (xem Chương 3), và chúng ta *ngay lập tức* gọi nó và gán giá trị trả về của nó trực tiếp cho single module instance identifier của chúng ta `foo`.
 
-Modules are just functions, so they can receive parameters:
+Module chỉ là các function, vì vậy chúng có thể nhận các tham số:
 
 ```js
 function CoolModule(id) {
@@ -427,7 +427,7 @@ foo1.identify(); // "foo 1"
 foo2.identify(); // "foo 2"
 ```
 
-Another slight but powerful variation on the module pattern is to name the object you are returning as your public API:
+Một biến thể nhỏ nhưng mạnh mẽ khác trên module pattern là đặt tên object bạn đang trả về làm public API của bạn:
 
 ```js
 var foo = (function CoolModule(id) {
@@ -457,11 +457,11 @@ foo.change();
 foo.identify(); // FOO MODULE
 ```
 
-By retaining an inner reference to the public API object inside your module instance, you can modify that module instance **from the inside**, including adding and removing methods, properties, *and* changing their values.
+Bằng cách giữ lại tham chiếu bên trong đến đối tượng public API bên trong instance module của bạn, bạn có thể sửa đổi instance module đó **từ bên trong**, bao gồm thêm và xóa các phương thức, thuộc tính, *và* thay đổi giá trị của chúng.
 
 ### Modern Modules
 
-Various module dependency loaders/managers essentially wrap up this pattern of module definition into a friendly API. Rather than examine any one particular library, let me present a *very simple* proof of concept **for illustration purposes (only)**:
+Các trình quản lý/tải phụ thuộc module (module dependence loaders/managers) khác nhau về cơ bản gói gọn pattern định nghĩa module này thành một API thân thiện. Thay vì kiểm tra bất kỳ thư viện cụ thể nào, hãy để tôi trình bày một bằng chứng khái niệm *rất đơn giản* **(chỉ) cho mục đích minh họa**:
 
 ```js
 var MyModules = (function Manager() {
@@ -485,9 +485,9 @@ var MyModules = (function Manager() {
 })();
 ```
 
-The key part of this code is `modules[name] = impl.apply(impl, deps)`. This is invoking the definition wrapper function for a module (passing in any dependencies), and storing the return value, the module's API, into an internal list of modules tracked by name.
+Phần quan trọng của đoạn code này là `modules[name] = impl.apply(impl, deps)`. Điều này đang gọi definition wrapper function cho một module (truyền vào bất kỳ dependencies nào) và lưu trữ giá trị trả về, API của module, vào danh sách nội bộ của các module được theo dõi theo tên.
 
-And here's how I might use it to define some modules:
+Và đây là cách tôi có thể sử dụng nó để define một số module:
 
 ```js
 MyModules.define( "bar", [], function(){
@@ -522,25 +522,25 @@ console.log(
 foo.awesome(); // LET ME INTRODUCE: HIPPO
 ```
 
-Both the "foo" and "bar" modules are defined with a function that returns a public API. "foo" even receives the instance of "bar" as a dependency parameter, and can use it accordingly.
+Cả hai module "foo" và "bar" đều được xác định bằng một hàm trả về một public API. "foo" thậm chí còn nhận được instance của "bar" làm dependency parameter và có thể sử dụng nó cho phù hợp.
 
-Spend some time examining these code snippets to fully understand the power of closures put to use for our own good purposes. The key take-away is that there's not really any particular "magic" to module managers. They fulfill both characteristics of the module pattern I listed above: invoking a function definition wrapper, and keeping its return value as the API for that module.
+Hãy dành một chút thời gian để kiểm tra các đoạn code này để hiểu đầy đủ về sức mạnh của các closure được sử dụng cho các mục đích tốt của chúng ta. Điểm mấu chốt là không thực sự có bất kỳ "phép thuật" cụ thể nào đối với các module managers (nhà quản lý mô-đun). Chúng đáp ứng cả hai đặc điểm của module pattern mà tôi đã liệt kê ở trên: gọi một function definition wrapper và giữ giá trị trả về của nó làm API cho module đó.
 
-In other words, modules are just modules, even if you put a friendly wrapper tool on top of them.
+Nói cách khác, module chỉ là module, ngay cả khi bạn đặt một friendly wrapper tool (công cụ trình bao bọc thân thiện) lên trên chúng.
 
 ### Future Modules
 
-ES6 adds first-class syntax support for the concept of modules. When loaded via the module system, ES6 treats a file as a separate module. Each module can both import other modules or specific API members, as well export their own public API members.
+ES6 bổ sung hỗ trợ syntax first-class cho khái niệm module. Khi được tải(load) qua hệ thống mô-đun(module system), ES6 coi một file như một mô-đun riêng biệt(sperate module). Mỗi module đều có thể nhập các module khác hoặc các thành viên API cụ thể, cũng như xuất các thành viên public API của riêng chúng.
 
-**Note:** Function-based modules aren't a statically recognized pattern (something the compiler knows about), so their API semantics aren't considered until run-time. That is, you can actually modify a module's API during the run-time (see earlier `publicAPI` discussion).
+**Lưu ý:** Các module function-base không phải là một pattern được nhận dạng tĩnh (điều gì đó mà compiler (trình biên dịch) biết về), vì vậy ngữ nghĩa API của chúng sẽ không được xem xét cho đến khi chạy. Nghĩa là, bạn thực sự có thể sửa đổi API của module trong thời gian chạy (xem thảo luận về  `publicAPI` trước đó).
 
-By contrast, ES6 Module APIs are static (the APIs don't change at run-time). Since the compiler knows *that*, it can (and does!) check during (file loading and) compilation that a reference to a member of an imported module's API *actually exists*. If the API reference doesn't exist, the compiler throws an "early" error at compile-time, rather than waiting for traditional dynamic run-time resolution (and errors, if any).
+Ngược lại, các ES6 Module API là tĩnh (các API không thay đổi tại thời điểm chạy). Vì compiler (trình biên dịch) biết *điều đó*, nó có thể (và thực hiện được!) kiểm tra trong quá trình biên dịch (tải file và) xem có tham chiếu đến thành viên của API của module được nhập *thực sự tồn tại* hay không. Nếu tham chiếu API không tồn tại, trình biên dịch sẽ đưa ra lỗi "sớm" tại thời điểm biên dịch, thay vì đợi giải pháp thời gian chạy động truyền thống (và các lỗi, nếu có).
 
-ES6 modules **do not** have an "inline" format, they must be defined in separate files (one per module). The browsers/engines have a default "module loader" (which is overridable, but that's well-beyond our discussion here) which synchronously loads a module file when it's imported.
+Các module ES6 **không** có định dạng "inline", chúng phải được xác định trong các file riêng biệt (một file cho mỗi mô-đun). Các trình duyệt/công cụ có "module loader (trình tải mô-đun)" mặc định (có thể ghi đè, nhưng điều đó nằm ngoài cuộc thảo luận của chúng ta ở đây) tải đồng bộ file module khi nó được nhập.
 
-Consider:
+Xem xét:
 
-**bar.js**
+**bar.js**c
 ```js
 function hello(who) {
 	return "Let me introduce: " + who;
@@ -577,20 +577,20 @@ console.log(
 foo.awesome(); // LET ME INTRODUCE: HIPPO
 ```
 
-**Note:** Separate files **"foo.js"** and **"bar.js"** would need to be created, with the contents as shown in the first two snippets, respectively. Then, your program would load/import those modules to use them, as shown in the third snippet.
+**Lưu ý:** Cần tạo các file riêng biệt **"foo.js"** và **"bar.js"**, với nội dung tương ứng như được hiển thị trong hai đoạn code đầu tiên. Sau đó, chương trình của bạn sẽ load/import các module đó để sử dụng chúng, như được hiển thị trong đoạn mã thứ ba.
 
-`import` imports one or more members from a module's API into the current scope, each to a bound variable (`hello` in our case). `module` imports an entire module API to a bound variable (`foo`, `bar` in our case). `export` exports an identifier (variable, function) to the public API for the current module. These operators can be used as many times in a module's definition as is necessary.
+`import` nhập một hoặc nhiều thành viên từ API của module vào scope hiện tại, mỗi thành viên vào một biến bị ràng buộc (`hello` trong trường hợp của chúng ta). `module` nhập toàn bộ module API vào một biến bị ràng buộc (`foo`, `bar` trong trường hợp của chúng ta). `export` xuất một identifier (biến, hàm) sang public API cho module hiện tại. Các toán tử này có thể được sử dụng nhiều lần trong định nghĩa của module nếu cần thiết.
 
-The contents inside the *module file* are treated as if enclosed in a scope closure, just like with the function-closure modules seen earlier.
+Nội dung bên trong *file module* được xử lý như thể được bao bọc trong một scope closure, giống như với các function-closure module đã thấy trước đó.
 
 ## Review (TL;DR)
 
-Closure seems to the un-enlightened like a mystical world set apart inside of JavaScript which only the few bravest souls can reach. But it's actually just a standard and almost obvious fact of how we write code in a lexically scoped environment, where functions are values and can be passed around at will.
+Closure dường như đối với người chưa được khai sáng giống như một thế giới thần bí nằm tách biệt bên trong JavaScript mà chỉ một số linh hồn dũng cảm nhất mới có thể chạm tới. Nhưng nó thực sự chỉ là một sự thật tiêu chuẩn và gần như hiển nhiên về cách chúng ta viết code trong một môi trường có lexical scope, nơi các function là các giá trị và có thể được truyền theo ý muốn.
 
-**Closure is when a function can remember and access its lexical scope even when it's invoked outside its lexical scope.**
+**Closure là khi một function có thể nhớ và truy cập lexical scope của nó ngay cả khi nó được gọi ra bên ngoài lexical scope của nó.**
 
-Closures can trip us up, for instance with loops, if we're not careful to recognize them and how they work. But they are also an immensely powerful tool, enabling patterns like *modules* in their various forms.
+Closure có thể khiến chúng ta khó chịu, chẳng hạn như với các vòng lặp, nếu chúng ta không cẩn thận để nhận ra chúng và cách chúng hoạt động. Nhưng chúng cũng là một công cụ vô cùng mạnh mẽ, cho phép các pattern như *module* ở các dạng khác nhau.
 
-Modules require two key characteristics: 1) an outer wrapping function being invoked, to create the enclosing scope 2) the return value of the wrapping function must include reference to at least one inner function that then has closure over the private inner scope of the wrapper.
+Module yêu cầu hai đặc điểm chính: 1) một wrapping function (hàm bao bọc) bên ngoài đang được gọi, để tạo enclosing scope (phạm vi bao bọc) 2) giá trị trả về của hàm bao bọc (wrapping function) phải bao gồm tham chiếu đến ít nhất một function bên trong mà sau đó sẽ closure scope bên trong riêng tư của trình bao bọc(wrapper).
 
-Now we can see closures all around our existing code, and we have the ability to recognize and leverage them to our own benefit!
+Giờ đây, chúng ta có thể thấy các closure xung quanh mã hiện tại của mình và chúng ta có khả năng nhận ra và tận dụng chúng để mang lại lợi ích cho chính mình!
