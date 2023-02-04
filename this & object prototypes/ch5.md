@@ -1,17 +1,17 @@
 # You Don't Know JS: *this* & Object Prototypes
 # Chapter 5: Prototypes
 
-In Chapters 3 and 4, we mentioned the `[[Prototype]]` chain several times, but haven't said what exactly it is. We will now examine prototypes in detail.
+Trong những Chương 3 và 4 chúng ta đã đề cập đến chuỗi `[[Prototype]]` nhiều lần, tuy nhiên chưa từng nói nó chính xác là gì. Bây giờ chúng ta sẽ kiểm tra các prototype một cách chi tiết.
 
-**Note:** All of the attempts to emulate class-copy behavior, as described previously in Chapter 4, labeled as variations of "mixins", completely circumvent the `[[Prototype]]` chain mechanism we examine here in this chapter.
+**Lưu Ý:** Tất cả các nỗ lực mô phỏng hành vi sao chép class, như được mô tả trước đó trong Chương 4, được gắn nhãn là các biến thể của "mixin", hoàn toàn phá vỡ cơ chế chuỗi `[[Prototype]]` mà chúng ta sẽ xem xét ở đây trong chương này.
 
 ## `[[Prototype]]`
 
-Objects in JavaScript have an internal property, denoted in the specification as `[[Prototype]]`, which is simply a reference to another object. Almost all objects are given a non-`null` value for this property, at the time of their creation.
+Các Object trong JavaScript có một thuộc tính nội bộ, ký hiệu trong đặc tả kỹ thuật là `[[Prototype]]`, thứ mà chỉ đơn giản là một tham chiếu đến một object khác. Hầu như tất cả các object đều được cung cấp một giá trị khác `null` cho thuộc tính này, tại thời điểm chúng được tạo ra.
 
-**Note:** We will see shortly that it *is* possible for an object to have an empty `[[Prototype]]` linkage, though this is somewhat less common.
+**Lưu Ý:** Chúng ta sẽ sớm thấy rằng *là* khả thi cho một object có liên kết `[[Prototype]]` rỗng, mặc dù điều này hơi ít phổ biến hơn.
 
-Consider:
+Xem xét:
 
 ```js
 var myObject = {
@@ -21,13 +21,13 @@ var myObject = {
 myObject.a; // 2
 ```
 
-What is the `[[Prototype]]` reference used for? In Chapter 3, we examined the `[[Get]]` operation that is invoked when you reference a property on an object, such as `myObject.a`. For that default `[[Get]]` operation, the first step is to check if the object itself has a property `a` on it, and if so, it's used.
+Tham chiếu `[[Prototype]]` được dùng để làm gì? Trong Chương 3, chúng ta đã kiểm tra phương thức `[[Get]]` thứ được gọi khi bạn tham chiếu một thuộc tính trên một object, tựa như `myObject.a`. Đối với phương thức `[[Get]]` mặc định đó, bước đầu tiên là kiểm tra xem bản thân object có thuộc tính `a` trên đó hay không và nếu có thì thuộc tính đó được sử dụng.
 
-**Note:** ES6 Proxies are outside of our discussion scope in this book (will be covered in a later book in the series!), but everything we discuss here about normal `[[Get]]` and `[[Put]]` behavior does not apply if a `Proxy` is involved.
+**Lưu Ý:** ES6 Proxies nằm ngoài phạm vi thảo luận của chúng ta trong cuốn sách này (sẽ được đề cập trong cuốn sách sau của bộ sách này!), nhưng mọi thứ chúng ta thảo luận ở đây về hành vi `[[Get]]` và `[[Put]]` bình thường thì không áp dụng nếu có liên quan đến `Proxy`.
 
-But it's what happens if `a` **isn't** present on `myObject` that brings our attention now to the `[[Prototype]]` link of the object.
+Nhưng đó là điều sẽ xảy ra nếu `a` **không có** trên `myObject` khiến chúng ta chú ý đến liên kết `[[Prototype]]` của object.
 
-The default `[[Get]]` operation proceeds to follow the `[[Prototype]]` **link** of the object if it cannot find the requested property on the object directly.
+Phương thức `[[Get]]` mặc định sẽ tiếp tục theo **liên kết** `[[Prototype]]` của object nếu nó không thể tìm thấy thuộc tính được yêu cầu trên object một cách trực tiếp.
 
 ```js
 var anotherObject = {
@@ -40,15 +40,15 @@ var myObject = Object.create( anotherObject );
 myObject.a; // 2
 ```
 
-**Note:** We will explain what `Object.create(..)` does, and how it operates, shortly. For now, just assume it creates an object with the `[[Prototype]]` linkage we're examining to the object specified.
+**Ghi Chú:** Chúng ta sẽ giải thích `Object.create(..)` làm gì, và nó hoạt động như thế nào, ngắn gọn. Hiện tại, chỉ cần giả sử rằng nó tạo ra một object có liên kết `[[Prototype]]` mà chúng ta đang kiểm tra object được chỉ định.
 
-So, we have `myObject` that is now `[[Prototype]]` linked to `anotherObject`. Clearly `myObject.a` doesn't actually exist, but nevertheless, the property access succeeds (being found on `anotherObject` instead) and indeed finds the value `2`.
+Do đó, chúng ta có `myObject` object mà đã có liên kết `[[Prototype]]` tới `anotherObject`. Rõ ràng `myObject.a` không thực sự tồn tại, nhưng tuy nhiên, truy cập thuộc tính thành công (thay vào đó được tìm thấy trên `anotherObject`) và thực sự tìm thấy giá trị `2`.
 
-But, if `a` weren't found on `anotherObject` either, its `[[Prototype]]` chain, if non-empty, is again consulted and followed.
+Tuy nhiên, nếu `a` không được tìm thấy trên `anotherObject`, chuỗi `[[Prototype]]` của nó, nếu không rỗng, sẽ lại được xem xét tiếp theo.
 
-This process continues until either a matching property name is found, or the `[[Prototype]]` chain ends. If no matching property is *ever* found by the end of the chain, the return result from the `[[Get]]` operation is `undefined`.
+Quá trình này tiếp tục cho đến khi tìm thấy tên thuộc tính phù hợp, hoặc chuỗi `[[Prototype]]` kết thúc. Nếu không tìm thấy thuộc tính phù hợp nào ở cuối chuỗi, thì kết quả trả về từ thao tác `[[Get]]` là `undefined`.
 
-Similar to this `[[Prototype]]` chain look-up process, if you use a `for..in` loop to iterate over an object, any property that can be reached via its chain (and is also `enumerable` -- see Chapter 3) will be enumerated. If you use the `in` operator to test for the existence of a property on an object, `in` will check the entire chain of the object (regardless of *enumerability*).
+Tương tự với quá trình tra cứu chuỗi `[[Prototype]]` này, nếu bạn sử dụng một vòng lặp `for..in` để duyệt qua một object, bất kỳ thuộc tính nào có thể được truy cập thông qua chuỗi của nó (và cũng là `enumerable` -- xem Chương 3) sẽ được liệt kê. Nếu bạn sử dụng toán tử `in` để kiểm tra sự tồn tại của một thuộc tính trên một object, `in` sẽ kiểm tra toàn bộ chuỗi của object (bất kể property descriptor `enumerable` có giá trị là `true` hay `false`).
 
 ```js
 var anotherObject = {
@@ -66,47 +66,47 @@ for (var k in myObject) {
 ("a" in myObject); // true
 ```
 
-So, the `[[Prototype]]` chain is consulted, one link at a time, when you perform property look-ups in various fashions. The look-up stops once the property is found or the chain ends.
+Vì vậy, chuỗi `[[Prototype]]` được tham khảo, mỗi lần một liên kết, khi bạn thực hiện tra cứu thuộc tính theo nhiều cách khác nhau. Quá trình tra cứu dừng lại khi tìm thấy thuộc tính hoặc chuỗi kết thúc.
 
 ### `Object.prototype`
 
-But *where* exactly does the `[[Prototype]]` chain "end"?
+Nhưng chính xác chuỗi `[[Prototype]]` "kết thúc" *ở đâu*?
 
-The top-end of every *normal* `[[Prototype]]` chain is the built-in `Object.prototype`. This object includes a variety of common utilities used all over JS, because all normal (built-in, not host-specific extension) objects in JavaScript "descend from" (aka, have at the top of their `[[Prototype]]` chain) the `Object.prototype` object.
+Phần trên cùng của mỗi chuỗi *normal* `[[Prototype]]` là build-in `Object.prototype`. Object này bao gồm nhiều utinity phổ biến được sử dụng trên toàn bộ JS, bởi vì tất cả các object thông thường (build-in, not host-specific extension) trong JavaScript đều "xuất phát từ" (hay còn gọi là, có ở đầu chuỗi `[[Prototype]]` của họ) `Object.prototype` object.
 
-Some utilities found here you may be familiar with include `.toString()` and `.valueOf()`. In Chapter 3, we introduced another: `.hasOwnProperty(..)`. And yet another function on `Object.prototype` you may not be familiar with, but which we'll address later in this chapter, is `.isPrototypeOf(..)`.
+Một số utinity được tìm thấy ở đây mà bạn có thể quen thuộc bao gồm `.toString()` và `.valueOf()`. Trong Chương 3, chúng ta đã giới thiệu: `.hasOwnProperty(..)`. Và còn một function khác trên `Object.prototype` mà bạn có thể không quen thuộc, nhưng chúng ta sẽ đề cập đến function này sau trong chương này, đó là `.isPrototypeOf(..)`.
 
 ### Setting & Shadowing Properties
 
-Back in Chapter 3, we mentioned that setting properties on an object was more nuanced than just adding a new property to the object or changing an existing property's value. We will now revisit this situation more completely.
+Trở lại Chương 3, chúng ta đã đề cập rằng việc thiết lập các thuộc tính trên một object mang nhiều sắc thái hơn là chỉ thêm một thuộc tính mới vào object hoặc thay đổi giá trị của một thuộc tính hiện có. Bây giờ chúng ta sẽ xem xét lại tình huống này một cách đầy đủ hơn.
 
 ```js
 myObject.foo = "bar";
 ```
 
-If the `myObject` object already has a normal data accessor property called `foo` directly present on it, the assignment is as simple as changing the value of the existing property.
+Nếu object `myObject` đã có một thuộc tính trình truy cập dữ liệu bình thường được gọi là `foo` hiện diện trực tiếp trên object đó, thì việc gán cũng đơn giản như thay đổi giá trị của thuộc tính hiện có.
 
-If `foo` is not already present directly on `myObject`, the `[[Prototype]]` chain is traversed, just like for the `[[Get]]` operation. If `foo` is not found anywhere in the chain, the property `foo` is added directly to `myObject` with the specified value, as expected.
+Nếu `foo` chưa có mặt trực tiếp trên `myObject`, chuỗi `[[Prototype]]` được duyệt qua, giống như thao tác `[[Get]]`. Nếu `foo` không được tìm thấy ở bất kì đâu trong chuỗi, property `foo` được thêm trực tiếp vào `myObject` với giá trị đã chỉ định, như mong đợi.
 
-However, if `foo` is already present somewhere higher in the chain, nuanced (and perhaps surprising) behavior can occur with the `myObject.foo = "bar"` assignment. We'll examine that more in just a moment.
+Tuy nhiên, nếu `foo` đã có mặt ở đâu đó cao hơn trong chuỗi, hành vi sắc thái (và có lẽ đáng ngạc nhiên) có thể xảy ra với phép gán `myObject.foo = "bar"`. Chúng ta sẽ kiểm tra điều đó nhiều hơn chỉ trong giây lát.
 
-If the property name `foo` ends up both on `myObject` itself and at a higher level of the `[[Prototype]]` chain that starts at `myObject`, this is called *shadowing*. The `foo` property directly on `myObject` *shadows* any `foo` property which appears higher in the chain, because the `myObject.foo` look-up would always find the `foo` property that's lowest in the chain.
+Nếu tên thuộc tính `foo` kết thúc trên chính `myObject` và ở cấp độ cao hơn của chuỗi `[[Prototype]]` bắt đầu từ `myObject`, điều này được gọi là *shadowing*. Thuộc tính `foo` trực tiếp trên `myObject` *shadows* bất kỳ thuộc tính `foo` nào xuất hiện cao hơn trong chuỗi, bởi vì tra cứu `myObject.foo` sẽ luôn tìm thấy thuộc tính `foo` thấp nhất trong chuỗi.
 
-As we just hinted, shadowing `foo` on `myObject` is not as simple as it may seem. We will now examine three scenarios for the `myObject.foo = "bar"` assignment when `foo` is **not** already on `myObject` directly, but **is** at a higher level of `myObject`'s `[[Prototype]]` chain:
+Như chúng ta vừa gợi ý, shadowing `foo` trên `myObject` không đơn giản như vẻ ngoài của nó. Bây giờ chúng ta sẽ kiểm tra ba tình huống cho phép gán `myObject.foo = "bar"` khi `foo` **không** trực tiếp có trên `myObject`, nhưng **ở** cấp độ cao hơn của  chuỗi `[[Prototype]]` của object `myObject`:
 
-1. If a normal data accessor (see Chapter 3) property named `foo` is found anywhere higher on the `[[Prototype]]` chain, **and it's not marked as read-only (`writable:false`)** then a new property called `foo` is added directly to `myObject`, resulting in a **shadowed property**.
-2. If a `foo` is found higher on the `[[Prototype]]` chain, but it's marked as **read-only (`writable:false`)**, then both the setting of that existing property as well as the creation of the shadowed property on `myObject` **are disallowed**. If the code is running in `strict mode`, an error will be thrown. Otherwise, the setting of the property value will silently be ignored. Either way, **no shadowing occurs**.
-3. If a `foo` is found higher on the `[[Prototype]]` chain and it's a setter (see Chapter 3), then the setter will always be called. No `foo` will be added to (aka, shadowed on) `myObject`, nor will the `foo` setter be redefined.
+1. Nếu một thuộc tính của trình truy cập dữ liệu thông thường (xem Chương 3) có tên `foo` được tìm thấy ở vị trí cao hơn trên chuỗi `[[Prototype]]`, **và thuộc tính đó không được đánh dấu là readonly (`writable: false`)** thì một thuộc tính mới có tên `foo` được thêm trực tiếp vào `myObject`, dẫn đến thuộc tính **shadowed**.
+2. Nếu một `foo` được tìm thấy cao hơn trên chuỗi `[[Prototype]]`, nhưng nó được đánh dấu là **readonly (`writable: false`)**, thì cả cài đặt của thuộc tính hiện có đó cũng như việc tạo thuộc tính shadowed trên `myObject` **không được phép**. Nếu code đang chạy ở `strict mode`, sẽ xảy ra lỗi. Nếu không, cài đặt của giá trị thuộc tính sẽ âm thầm bị bỏ qua. Dù bằng cách nào, **không xảy ra hiện tượng shadowing**.
+3. Nếu một `foo` được tìm thấy cao hơn trên chuỗi `[[Prototype]]` và đó là một setter (xem Chương 3), thì setter sẽ luôn được gọi. Sẽ không có `foo` nào được thêm vào (hay còn gọi là shadowed trên) `myObject`, cũng như setter `foo` sẽ không được xác định lại.
 
-Most developers assume that assignment of a property (`[[Put]]`) will always result in shadowing if the property already exists higher on the `[[Prototype]]` chain, but as you can see, that's only true in one (#1) of the three situations just described.
+Hầu hết các nhà phát triển cho rằng việc gán một thuộc tính (`[[Put]]`) sẽ luôn dẫn đến shadowing nếu thuộc tính đó đã tồn tại ở vị trí cao hơn trong chuỗi `[[Prototype]]`, nhưng như bạn có thể thấy, điều đó chỉ đúng trong một (#1) trong ba tình huống vừa được mô tả.
 
-If you want to shadow `foo` in cases #2 and #3, you cannot use `=` assignment, but must instead use `Object.defineProperty(..)` (see Chapter 3) to add `foo` to `myObject`.
+Nếu bạn muốn tạo bóng `foo` trong trường hợp #2 và #3, bạn không thể sử dụng phép gán `=` mà phải sử dụng `Object.defineProperty(..)` (xem Chương 3) để thêm `foo` vào `myObject`.
 
-**Note:** Case #2 may be the most surprising of the three. The presence of a *read-only* property prevents a property of the same name being implicitly created (shadowed) at a lower level of a `[[Prototype]]` chain. The reason for this restriction is primarily to reinforce the illusion of class-inherited properties. If you think of the `foo` at a higher level of the chain as having been inherited (copied down) to `myObject`, then it makes sense to enforce the non-writable nature of that `foo` property on `myObject`. If you however separate the illusion from the fact, and recognize that no such inheritance copying *actually* occurred (see Chapters 4 and 5), it's a little unnatural that `myObject` would be prevented from having a `foo` property just because some other object had a non-writable `foo` on it. It's even stranger that this restriction only applies to `=` assignment, but is not enforced when using `Object.defineProperty(..)`.
+**Lưu Ý:** Trường hợp #2 có thể là trường hợp đáng ngạc nhiên nhất trong ba trường hợp. Sự hiện diện của thuộc tính *read-only* ngăn không cho thuộc tính cùng tên được tạo hoàn toàn (shadowed) ở cấp độ thấp hơn của chuỗi `[[Prototype]]`. Lý do cho hạn chế này chủ yếu là để củng cố ảo tưởng về các thuộc tính kế thừa của class. Nếu bạn nghĩ `foo` ở cấp độ cao hơn của chuỗi như đã được kế thừa (sao chép) sang `myObject`, thì bạn nên thực thi bản chất không thể ghi của thuộc tính `foo` đó trên `myObject`. Tuy nhiên, nếu bạn tách ảo tưởng ra khỏi thực tế và nhận ra rằng không có sự sao chép kế thừa nào như vậy *thực sự* xảy ra (xem Chương 4 và 5), sẽ hơi bất thường khi `myObject` sẽ bị ngăn không có thuộc tính `foo` chỉ vì một số đối tượng khác có `foo` không thể ghi trên đó. Lạ lùng hơn nữa là hạn chế này chỉ áp dụng cho phép gán `=`, nhưng không được thực thi khi sử dụng `Object.defineProperty(..)`.
 
-Shadowing with **methods** leads to ugly *explicit pseudo-polymorphism* (see Chapter 4) if you need to delegate between them. Usually, shadowing is more complicated and nuanced than it's worth, **so you should try to avoid it if possible**. See Chapter 6 for an alternative design pattern, which among other things discourages shadowing in favor of cleaner alternatives.
+Shadowing với **phương thức** dẫn đến *explicit pseudo-polimorphism* xấu xí (xem Chương 4) nếu bạn cần ủy quyền giữa chúng. Thông thường, tạo bóng phức tạp và có nhiều sắc thái hơn so với giá trị của nó, **vì vậy bạn nên cố gắng tránh nó nếu có thể**. Xem Chương 6 để biết một design pattern thay thế, trong số những thứ khác, không khuyến khích shadowing để có lợi cho các lựa chọn thay thế rõ ràng hơn.
 
-Shadowing can even occur implicitly in subtle ways, so care must be taken if trying to avoid it. Consider:
+Shadowing thậm chí có thể xảy ra ngầm theo những cách tinh vi, vì vậy cần phải cẩn thận nếu cố gắng tránh nó. Xem xét:
 
 ```js
 var anotherObject = {
@@ -129,25 +129,25 @@ myObject.a; // 3
 myObject.hasOwnProperty( "a" ); // true
 ```
 
-Though it may appear that `myObject.a++` should (via delegation) look-up and just increment the `anotherObject.a` property itself *in place*, instead the `++` operation corresponds to `myObject.a = myObject.a + 1`. The result is `[[Get]]` looking up `a` property via `[[Prototype]]` to get the current value `2` from `anotherObject.a`, incrementing the value by one, then `[[Put]]` assigning the `3` value to a new shadowed property `a` on `myObject`. Oops!
+Mặc dù có vẻ như `myObject.a++` nên tra cứu (thông qua ủy quyền) và chỉ cần tăng chính thuộc tính `anotherObject.a` *tại chỗ*, thay vào đó thao tác `++` tương ứng với `myObject.a = myObject.a + 1`. Kết quả là `[[Get]]` tra cứu thuộc tính `a` qua `[[Prototype]]` để lấy giá trị hiện tại `2` từ `anotherObject.a`, tăng giá trị lên một, sau đó `[[Put]]` gán giá trị `3` cho thuộc tính shadowed mới `a` trên `myObject`. Ối!
 
-Be very careful when dealing with delegated properties that you modify. If you wanted to increment `anotherObject.a`, the only proper way is `anotherObject.a++`.
+Hãy thật cẩn thận khi xử lý các thuộc tính được ủy quyền mà bạn sửa đổi. Nếu bạn muốn tăng `anotherObject.a`, cách thích hợp duy nhất là `anotherObject.a++`.
 
 ## "Class"
 
-At this point, you might be wondering: "*Why* does one object need to link to another object?" What's the real benefit? That is a very appropriate question to ask, but we must first understand what `[[Prototype]]` is **not** before we can fully understand and appreciate what it *is* and how it's useful.
+Tại thời điểm này, bạn có thể tự hỏi: "*Tại sao* một object cần liên kết với một object khác?" Lợi ích thực sự là gì? Đó là một câu hỏi rất thích hợp để đặt ra, nhưng trước tiên chúng ta phải hiểu `[[Prototype]]` **không phải là gì** trước khi chúng ta có thể hiểu và đánh giá đầy đủ nó *là gì* và nó hữu ích như thế nào.
 
-As we explained in Chapter 4, in JavaScript, there are no abstract patterns/blueprints for objects called "classes" as there are in class-oriented languages. JavaScript **just** has objects.
+Như chúng tôi đã giải thích trong Chương 4, trong JavaScript, không có abstract patterns/blueprint nào cho các object được gọi là "class" như trong các ngôn ngữ class-oriented. JavaScript **chỉ** có các object.
 
-In fact, JavaScript is **almost unique** among languages as perhaps the only language with the right to use the label "object oriented", because it's one of a very short list of languages where an object can be created directly, without a class at all.
+Trên thực tế, JavaScript **gần như là duy nhất** trong số các ngôn ngữ vì có lẽ là ngôn ngữ duy nhất có quyền sử dụng nhãn "hướng đối tượng", bởi vì đây là một trong danh sách rất ngắn các ngôn ngữ mà một object có thể được tạo trực tiếp mà không cần cả class.
 
-In JavaScript, classes can't (being that they don't exist!) describe what an object can do. The object defines its own behavior directly. **There's *just* the object.**
+Trong JavaScript, các class không thể (vì chúng không tồn tại!) mô tả những gì một object có thể làm. Object xác định hành vi của chính nó trực tiếp. ***chỉ* có object.**
 
 ### "Class" Functions
 
-There's a peculiar kind of behavior in JavaScript that has been shamelessly abused for years to *hack* something that *looks* like "classes". We'll examine this approach in detail.
+Có một loại hành vi đặc biệt trong JavaScript đã bị lạm dụng một cách đáng xấu hổ trong nhiều năm để *hack* thứ gì đó *trông* giống như "class". Chúng ta sẽ xem xét phương pháp này một cách chi tiết.
 
-The peculiar "sort-of class" behavior hinges on a strange characteristic of functions: all functions by default get a public, non-enumerable (see Chapter 3) property on them called `prototype`, which points at an otherwise arbitrary object.
+Hành vi "sort-of class" đặc biệt xoay quanh một đặc điểm kỳ lạ của các function: theo mặc định, tất cả các function đều có thuộc tính công khai, non-enumerable (xem Chương 3) trên chúng được gọi là `prototype`, thuộc tính này trỏ đến một object tùy ý khác.
 
 ```js
 function Foo() {
@@ -157,13 +157,13 @@ function Foo() {
 Foo.prototype; // { }
 ```
 
-This object is often called "Foo's prototype", because we access it via an unfortunately-named `Foo.prototype` property reference. However, that terminology is hopelessly destined to lead us into confusion, as we'll see shortly. Instead, I will call it "the object formerly known as Foo's prototype". Just kidding. How about: "object arbitrarily labeled 'Foo dot prototype'"?
+Object này thường được gọi là "prototype của Foo", bởi vì chúng ta truy cập nó thông qua tham chiếu thuộc tính `Foo.prototype` có tên rất tiếc. Tuy nhiên, thuật ngữ đó được định sẵn một cách vô vọng là dẫn chúng ta đến sự nhầm lẫn, như chúng ta sẽ thấy ngay sau đây. Thay vào đó, tôi sẽ gọi nó là "object trước đây được gọi là prototype của Foo". Chỉ đùa thôi. Làm thế nào về: "object được gắn nhãn tùy ý 'Foo chấm prototype'"?
 
-Whatever we call it, what exactly is this object?
+Dù chúng ta gọi nó là gì, object này chính xác là gì?
 
-The most direct way to explain it is that each object created from calling `new Foo()` (see Chapter 2) will end up (somewhat arbitrarily) `[[Prototype]]`-linked to this "Foo dot prototype" object.
+Cách giải thích trực tiếp nhất là mỗi object được tạo từ việc gọi `new Foo()` (xem Chương 2) sẽ kết thúc (hơi tùy ý) `[[Prototype]]`-được liên kết với object "Foo chấm prototype" này.
 
-Let's illustrate:
+Hãy minh họa:
 
 ```js
 function Foo() {
@@ -175,53 +175,53 @@ var a = new Foo();
 Object.getPrototypeOf( a ) === Foo.prototype; // true
 ```
 
-When `a` is created by calling `new Foo()`, one of the things (see Chapter 2 for all *four* steps) that happens is that `a` gets an internal `[[Prototype]]` link to the object that `Foo.prototype` is pointing at.
+Khi `a` được tạo bằng cách gọi `new Foo()`, một trong những điều (xem Chương 2 để biết tất cả *bốn* bước) xảy ra là `a` nhận được liên kết `[[Prototype]]` nội bộ tới object mà `Foo.prototype` đang trỏ tới.
 
-Stop for a moment and ponder the implications of that statement.
+Hãy dừng lại một chút và suy ngẫm về hàm ý của câu nói đó.
 
-In class-oriented languages, multiple **copies** (aka, "instances") of a class can be made, like stamping something out from a mold. As we saw in Chapter 4, this happens because the process of instantiating (or inheriting from) a class means, "copy the behavior plan from that class into a physical object", and this is done again for each new instance.
+Trong các ngôn ngữ class-oriented, có thể tạo nhiều **bản sao** (hay còn gọi là "instances") của một class, giống như dập một thứ gì đó ra khỏi khuôn. Như chúng ta đã thấy trong Chương 4, điều này xảy ra do quá trình khởi tạo (hoặc kế thừa từ) một class có nghĩa là "sao chép kế hoạch hành vi từ class đó vào một object vật lý" và quá trình này được thực hiện lại cho mỗi instance mới.
 
-But in JavaScript, there are no such copy-actions performed. You don't create multiple instances of a class. You can create multiple objects that `[[Prototype]]` *link* to a common object. But by default, no copying occurs, and thus these objects don't end up totally separate and disconnected from each other, but rather, quite ***linked***.
+Nhưng trong JavaScript, không có hành động sao chép nào được thực hiện. Bạn không tạo nhiều instance của một class. Bạn có thể tạo nhiều object `[[Prototype]]` *liên kết* với một object chung. Nhưng theo mặc định, không có sự sao chép nào xảy ra và do đó, các object này không hoàn toàn tách biệt và không kết nối với nhau, mà thay vào đó, khá ***liên kết***.
 
-`new Foo()` results in a new object (we called it `a`), and **that** new object `a` is internally `[[Prototype]]` linked to the `Foo.prototype` object.
+`new Foo()` dẫn đến một object mới (chúng ta gọi nó là `a`) và object mới **đó** `a` được `[[Prototype]]` liên kết nội bộ với object `Foo.prototype`.
 
-**We end up with two objects, linked to each other.** That's *it*. We didn't instantiate a class. We certainly didn't do any copying of behavior from a "class" into a concrete object. We just caused two objects to be linked to each other.
+**Chúng ta kết thúc với hai object, được liên kết với nhau.** Đó là *nó*. Chúng ta đã không khởi tạo một class. Chúng ta chắc chắn đã không thực hiện bất kỳ hành vi sao chép nào từ một "class" vào một object cụ thể. Chúng ta chỉ làm cho hai object được liên kết với nhau.
 
-In fact, the secret, which eludes most JS developers, is that the `new Foo()` function calling had really almost nothing *direct* to do with the process of creating the link. **It was sort of an accidental side-effect.** `new Foo()` is an indirect, round-about way to end up with what we want: **a new object linked to another object**.
+Trên thực tế, bí mật khiến hầu hết các nhà phát triển JS lảng tránh, đó là việc gọi hàm `new Foo()` thực sự hầu như không có gì *trực tiếp* liên quan đến quá trình tạo liên kết. **Đó là một side-effect tình cờ.** `new Foo()` là một cách gián tiếp, vòng vo để đạt được điều chúng ta muốn: **một object mới được liên kết với một object khác**.
 
-Can we get what we want in a more *direct* way? **Yes!** The hero is `Object.create(..)`. But we'll get to that in a little bit.
+Chúng ta có thể đạt được điều mình muốn theo cách *trực tiếp* hơn không? **Có!** Anh hùng là `Object.create(..)`. Nhưng chúng ta sẽ đề cập đến nó sau.
 
 #### What's in a name?
 
-In JavaScript, we don't make *copies* from one object ("class") to another ("instance"). We make *links* between objects. For the `[[Prototype]]` mechanism, visually, the arrows move from right to left, and from bottom to top.
+Trong JavaScript, chúng ta không tạo *bản sao* từ object này ("class") sang object khác ("instance"). Chúng ta tạo *liên kết* giữa các object. Đối với cơ chế `[[Prototype]]`, về mặt trực quan, các mũi tên di chuyển từ phải sang trái và từ dưới lên trên.
 
 <img src="fig3.png">
 
-This mechanism is often called "prototypal inheritance" (we'll explore the code in detail shortly), which is commonly said to be the dynamic-language version of "classical inheritance". It's an attempt to piggy-back on the common understanding of what "inheritance" means in the class-oriented world, but *tweak* (**read: pave over**) the understood semantics, to fit dynamic scripting.
+Cơ chế này thường được gọi là "prototype inheritance" (chúng ta sẽ khám phá chi tiết về code ngay sau đây), thường được cho là phiên bản ngôn ngữ động của "classical inheritance (kế thừa cổ điển)". Đó là một nỗ lực để dựa trên sự hiểu biết chung về ý nghĩa của "kế thừa" trong thế giới class-oriented, nhưng *chỉnh sửa* (**đọc: mở rộng**) ngữ nghĩa đã hiểu, để phù hợp với kịch bản động.
 
-The word "inheritance" has a very strong meaning (see Chapter 4), with plenty of mental precedent. Merely adding "prototypal" in front to distinguish the *actually nearly opposite* behavior in JavaScript has left in its wake nearly two decades of miry confusion.
+Từ "inheritance (thừa kế)" có một ý nghĩa rất mạnh mẽ (xem Chương 4), với rất nhiều tiền lệ về mặt tinh thần. Việc chỉ thêm "prototypal (nguyên mẫu)" vào phía trước để phân biệt hành vi *thực sự gần như ngược lại* trong JavaScript đã để lại hậu quả là gần hai thập kỷ hỗn loạn.
 
-I like to say that sticking "prototypal" in front of "inheritance" to drastically reverse its actual meaning is like holding an orange in one hand, an apple in the other, and insisting on calling the apple a "red orange". No matter what confusing label I put in front of it, that doesn't change the *fact* that one fruit is an apple and the other is an orange.
+Tôi muốn nói rằng việc đặt "prototypal" trước "inheritance" để đảo ngược hoàn toàn ý nghĩa thực tế của nó giống như một tay cầm quả cam, tay kia cầm quả táo và khăng khăng gọi quả táo là "quả cam đỏ". Bất kể tôi dán nhãn khó hiểu nào trước nó, điều đó không thay đổi *sự thật* rằng một loại quả là táo và quả kia là cam.
 
-The better approach is to plainly call an apple an apple -- to use the most accurate and direct terminology. That makes it easier to understand both their similarities and their **many differences**, because we all have a simple, shared understanding of what "apple" means.
+Cách tiếp cận tốt hơn là gọi một cách rõ ràng một quả táo là một quả táo -- sử dụng thuật ngữ trực tiếp và chính xác nhất. Điều đó giúp dễ dàng hiểu được cả điểm tương đồng và **nhiều điểm khác biệt** của chúng, bởi vì tất cả chúng ta đều có cách hiểu đơn giản, được chia sẻ chung về ý nghĩa của "quả táo".
 
-Because of the confusion and conflation of terms, I believe the label "prototypal inheritance" itself (and trying to mis-apply all its associated class-orientation terminology, like "class", "constructor", "instance", "polymorphism", etc) has done **more harm than good** in explaining how JavaScript's mechanism *really* works.
+Do sự nhầm lẫn và kết hợp các thuật ngữ, tôi tin rằng chính nhãn "prototypal inheritance" (và cố gắng áp dụng sai tất cả các thuật ngữ class-orientation liên quan của nó, như "class", "constructor", "instance", "polymorphism", v.v.) đã **có hại nhiều hơn có lợi** trong việc giải thích cơ chế *thực sự* của JavaScript hoạt động như thế nào.
 
-"Inheritance" implies a *copy* operation, and JavaScript doesn't copy object properties (natively, by default). Instead, JS creates a link between two objects, where one object can essentially *delegate* property/function access to another object. "Delegation" (see Chapter 6) is a much more accurate term for JavaScript's object-linking mechanism.
+"Inheritance" ngụ ý thao tác *sao chép* và JavaScript không sao chép các thuộc tính object (theo mặc định, nguyên bản). Thay vào đó, JS tạo một liên kết giữa hai object, trong đó một object về cơ bản có thể *delegate (ủy nhiệm)* quyền truy cập thuộc tính/function cho một object khác. "Delegate (Ủy quyền)" (xem Chương 6) là một thuật ngữ chính xác hơn nhiều cho cơ chế liên kết object của JavaScript.
 
-Another term which is sometimes thrown around in JavaScript is "differential inheritance". The idea here is that we describe an object's behavior in terms of what is *different* from a more general descriptor. For example, you explain that a car is a kind of vehicle, but one that has exactly 4 wheels, rather than re-describing all the specifics of what makes up a general vehicle (engine, etc).
+Một thuật ngữ khác đôi khi được sử dụng trong JavaScript là "differential inheritance". Ý tưởng ở đây là chúng ta mô tả hành vi của một object theo những gì *khác* với một bộ mô tả tổng quát hơn. Ví dụ: bạn giải thích rằng ô tô là một loại phương tiện, nhưng là phương tiện có chính xác 4 bánh, thay vì mô tả lại tất cả các chi tiết cụ thể về những gì tạo nên một phương tiện nói chung (động cơ, v.v.).
 
-If you try to think of any given object in JS as the sum total of all behavior that is *available* via delegation, and **in your mind you flatten** all that behavior into one tangible *thing*, then you can (sorta) see how "differential inheritance" might fit.
+Nếu bạn cố gắng coi bất kỳ object cụ thể nào trong JS là tổng của tất cả các hành vi *có sẵn* thông qua delegation (ủy quyền) và **trong tâm trí của bạn, bạn làm phẳng** tất cả các hành vi đó thành một *thứ* hữu hình, thì bạn có thể (sắp xếp) xem "differential inheritance" có thể phù hợp như thế nào.
 
-But just like with "prototypal inheritance", "differential inheritance" pretends that your mental model is more important than what is physically happening in the language. It overlooks the fact that object `B` is not actually differentially constructed, but is instead built with specific characteristics defined, alongside "holes" where nothing is defined. It is in these "holes" (gaps in, or lack of, definition) that delegation *can* take over and, on the fly, "fill them in" with delegated behavior.
+Nhưng cũng giống như "prototypal inheritance", "differential inheritance" giả định rằng mô hình tinh thần của bạn quan trọng hơn những gì đang diễn ra trong ngôn ngữ. Nó bỏ qua thực tế là object `B` không thực sự được xây dựng theo cách khác, mà thay vào đó được xây dựng với các đặc điểm cụ thể được xác định, bên cạnh các "lỗ hổng" không có gì được xác định. Chính trong những "lỗ hổng" này (khoảng trống hoặc thiếu định nghĩa) mà deligation *có thể* đảm nhận và nhanh chóng "lấp đầy chúng" bằng hành vi được deligated.
 
-The object is not, by native default, flattened into the single differential object, **through copying**, that the mental model of "differential inheritance" implies. As such, "differential inheritance" is just not as natural a fit for describing how JavaScript's `[[Prototype]]` mechanism actually works.
+Theo mặc định, object không được làm phẳng thành một object khác biệt duy nhất, **thông qua sao chép**, mà mô hình tinh thần của "differential inheritance" ngụ ý. Do đó, "differential inheritance" không phải là từ thích hợp để mô tả cơ chế `[[Prototype]]` của JavaScript thực sự hoạt động như thế nào.
 
-You *can choose* to prefer the "differential inheritance" terminology and mental model, as a matter of taste, but there's no denying the fact that it *only* fits the mental acrobatics in your mind, not the physical behavior in the engine.
+Bạn *có thể chọn* thích thuật ngữ "differential inheritance" và mô hình tinh thần hơn, như một vấn đề sở thích, nhưng không thể phủ nhận thực tế rằng nó *chỉ* phù hợp với các pha nhào lộn tinh thần trong tâm trí bạn, chứ không phải hành vi vật lý trong engine.
 
 ### "Constructors"
 
-Let's go back to some earlier code:
+Hãy quay lại một số đoạn code trước đó:
 
 ```js
 function Foo() {
@@ -231,11 +231,11 @@ function Foo() {
 var a = new Foo();
 ```
 
-What exactly leads us to think `Foo` is a "class"?
+Chính xác thì điều gì khiến chúng ta nghĩ `Foo` là một "class"?
 
-For one, we see the use of the `new` keyword, just like class-oriented languages do when they construct class instances. For another, it appears that we are in fact executing a *constructor* method of a class, because `Foo()` is actually a method that gets called, just like how a real class's constructor gets called when you instantiate that class.
+Đầu tiên, chúng ta thấy việc sử dụng từ khóa `new`, giống như các ngôn ngữ class-oriented thực hiện khi chúng xây dựng các instance của class. Mặt khác, có vẻ như chúng ta đang thực thi một phương thức *constructor* của một class, bởi vì `Foo()` thực sự là một phương thức được gọi, giống như cách constructor(hàm tạo) của một class thực được gọi khi bạn khởi tạo class đó.
 
-To further the confusion of "constructor" semantics, the arbitrarily labeled `Foo.prototype` object has another trick up its sleeve. Consider this code:
+Để tăng thêm sự nhầm lẫn về ngữ nghĩa của "constructor", object `Foo.prototype` được gắn nhãn tùy ý có một thủ thuật khác trong tay áo của nó. Hãy xem xét code này:
 
 ```js
 function Foo() {
@@ -248,21 +248,17 @@ var a = new Foo();
 a.constructor === Foo; // true
 ```
 
-The `Foo.prototype` object by default (at declaration time on line 1 of the snippet!) gets a public, non-enumerable (see Chapter 3) property called `.constructor`, and this property is a reference back to the function (`Foo` in this case) that the object is associated with. Moreover, we see that object `a` created by the "constructor" call `new Foo()` *seems* to also have a property on it called `.constructor` which similarly points to "the function which created it".
-
-**Note:** This is not actually true. `a` has no `.constructor` property on it, and though `a.constructor` does in fact resolve to the `Foo` function, "constructor" **does not actually mean** "was constructed by", as it appears. We'll explain this strangeness shortly.
-
-Oh, yeah, also... by convention in the JavaScript world, "class"es are named with a capital letter, so the fact that it's `Foo` instead of `foo` is a strong clue that we intend it to be a "class". That's totally obvious to you, right!?
-
-**Note:** This convention is so strong that many JS linters actually *complain* if you call `new` on a method with a lowercase name, or if we don't call `new` on a function that happens to start with a capital letter. That sort of boggles the mind that we struggle so much to get (fake) "class-orientation" *right* in JavaScript that we create linter rules to ensure we use capital letters, even though the capital letter doesn't mean ***anything* at all** to the JS engine.
-
+Theo mặc định, object `Foo.prototype` (tại thời điểm khai báo trên dòng 1 của đoạn code!) có một thuộc tính công khai, non-enumerable (xem Chương 3) có tên là `.constructor` và thuộc tính này là một tham chiếu trở lại Function (`Foo` trong trường hợp này) mà object được liên kết với. Hơn nữa, chúng ta thấy rằng object `a` được tạo bởi lệnh gọi "constructor" `new Foo()` *dường như* cũng có một thuộc tính trên đó gọi là `.constructor` tương tự trỏ đến "function đã tạo ra nó".
+**Lưu ý:** Điều này không thực sự đúng. `a` không có thuộc tính `.constructor` trên đó và mặc dù `a.constructor` trên thực tế phân giải thành hàm `Foo`, nhưng "constructor" **không thực sự có nghĩa là** "được xây dựng bởi", vì nó xuất hiện. Chúng tôi sẽ giải thích sự kỳ lạ này ngay sau đây.
+Ồ, vâng, còn nữa... theo quy ước trong thế giới JavaScript, các "class" được đặt tên bằng chữ in hoa, vì vậy thực tế là `Foo` thay vì `foo` là một manh mối rõ ràng mà chúng tôi dự định nó là một "class". Điều đó hoàn toàn rõ ràng với bạn, phải không!?
+**Lưu ý:** Quy ước này mạnh đến nỗi nhiều JS linters thực sự *phàn nàn* nếu bạn gọi `new` trên một phương thức có tên viết thường hoặc nếu chúng ta không gọi `new` trên một function bắt đầu bằng một chữ in hoa. Điều đó khiến chúng tôi phải vật lộn rất nhiều để có được "class-orientation" *đúng* (giả mạo) trong JavaScript đến mức chúng tôi tạo ra các quy tắc linter để đảm bảo chúng tôi sử dụng chữ in hoa, mặc dù chữ in hoa không có nghĩa là ***bất cứ điều gì* ở tất cả** với JS engine.
 #### Constructor Or Call?
 
-In the above snippet, it's tempting to think that `Foo` is a "constructor", because we call it with `new` and we observe that it "constructs" an object.
+Trong đoạn mã trên, thật hấp dẫn khi nghĩ rằng `Foo` là một "constructor", bởi vì chúng ta gọi nó bằng `new` và chúng ta quan sát thấy rằng nó "dựng" một object.
 
-In reality, `Foo` is no more a "constructor" than any other function in your program. Functions themselves are **not** constructors. However, when you put the `new` keyword in front of a normal function call, that makes that function call a "constructor call". In fact, `new` sort of hijacks any normal function and calls it in a fashion that constructs an object, **in addition to whatever else it was going to do**.
+Trên thực tế, `Foo` không phải là một "constructor" hơn bất kỳ function nào khác trong chương trình của bạn. Bản thân các function **không** phải là constructor(hàm tạo). Tuy nhiên, khi bạn đặt từ khóa `new` trước một lệnh gọi function bình thường, điều đó làm cho function đó gọi một "lệnh gọi constructor". Trên thực tế, kiểu `new` chiếm quyền điều khiển bất kỳ function bình thường nào và gọi nó theo kiểu xây dựng một object, **ngoài bất kỳ chức năng nào khác mà nó sẽ thực hiện**.
 
-For example:
+Ví dụ:
 
 ```js
 function NothingSpecial() {
@@ -275,17 +271,17 @@ var a = new NothingSpecial();
 a; // {}
 ```
 
-`NothingSpecial` is just a plain old normal function, but when called with `new`, it *constructs* an object, almost as a side-effect, which we happen to assign to `a`. The **call** was a *constructor call*, but `NothingSpecial` is not, in and of itself, a *constructor*.
+`NothingSpecial` chỉ là một function bình thường đơn giản, tuy nhiên khi được gọi với `new`, nó *xây dựng* một object, gần như là một side-effect, mà chúng ta tình cờ gán cho `a`. Lệnh **gọi** là một *lệnh gọi constructor*, nhưng `NothingSpecial`, về bản chất không phải là một *constructor*.
 
-In other words, in JavaScript, it's most appropriate to say that a "constructor" is **any function called with the `new` keyword** in front of it.
+Nói cách khác, trong JavaScript, cách thích hợp nhất để nói rằng "constructor" là **bất kỳ function nào được gọi với từ khóa `new`** phía trước nó.
 
-Functions aren't constructors, but function calls are "constructor calls" if and only if `new` is used.
+Các function không phải là constructor, nhưng các lệnh gọi function là "các lệnh gọi constructor" khi và chỉ khi `new` được sử dụng.
 
 ### Mechanics
 
-Are *those* the only common triggers for ill-fated "class" discussions in JavaScript?
+Có phải *những* đó là trình kích hoạt phổ biến duy nhất cho các cuộc thảo luận "class" xấu số trong JavaScript không?
 
-**Not quite.** JS developers have strived to simulate as much as they can of class-orientation:
+**Không hoàn toàn.** Các nhà phát triển JS đã cố gắng mô phỏng nhiều nhất có thể về class-orientation:
 
 ```js
 function Foo(name) {
@@ -303,29 +299,29 @@ a.myName(); // "a"
 b.myName(); // "b"
 ```
 
-This snippet shows two additional "class-orientation" tricks in play:
+Đoạn mã này hiển thị hai thủ thuật "class-orientation" bổ sung đang chơi:
 
-1. `this.name = name`: adds the `.name` property onto each object (`a` and `b`, respectively; see Chapter 2 about `this` binding), similar to how class instances encapsulate data values.
+1. `this.name = name`: thêm thuộc tính `.name` vào mỗi object (tương ứng `a` và `b`; xem Chapter 2 về  `this` binding), tương tự như cách các thể hiện của class đóng gói các giá trị dữ liệu.
 
-2. `Foo.prototype.myName = ...`: perhaps the more interesting technique, this adds a property (function) to the `Foo.prototype` object. Now, `a.myName()` works, but perhaps surprisingly. How?
+2. `Foo.prototype.myName = ...`: có lẽ là kĩ thuật thú vị hơn, kĩ thuật này thêm thuộc tính (function) vào object `Foo.prototype`. Bây giờ, `a.myName()` hoạt động, nhưng có lẽ đáng ngạc nhiên. Thế nào?
 
-In the above snippet, it's strongly tempting to think that when `a` and `b` are created, the properties/functions on the `Foo.prototype` object are *copied* over to each of `a` and `b` objects. **However, that's not what happens.**
+Trong đoạn mã trên, thật thú vị khi nghĩ rằng `a` và `b` được tạo, các properties/functions trên object `Foo.prototype` được *sao chép* qua từng object `a` và `b`. **Tuy nhiên, điều đó không xảy ra.**
 
-At the beginning of this chapter, we explained the `[[Prototype]]` link, and how it provides the fall-back look-up steps if a property reference isn't found directly on an object, as part of the default `[[Get]]` algorithm.
+Ở đầu chương này, chúng ta đã giải thích về liên kết `[[Prototype]]`, và cách nó cung cấp các bước tra cứu dự phòng nếu không tìm thấy tham chiếu thuộc tính trực tiếp trên một object, như là một phần của thuật toán `[[Get]]` mặc định.
 
-So, by virtue of how they are created, `a` and `b` each end up with an internal `[[Prototype]]` linkage to `Foo.prototype`. When `myName` is not found on `a` or `b`, respectively, it's instead found (through delegation, see Chapter 6) on `Foo.prototype`.
+Vì vậy, tùy thuộc vào cách chúng được tạo ra, `a` và `b` đều kết thúc bằng một liên kết `[[Prototype]]` bên trong với `Foo.prototype`. Khi `myName` không tìm thấy trên `a` hoặc `b`, tương ứng, nó sẽ được tìm thấy (thông qua deligation(uỷ quyền), xem Chapter 6) trên `Foo.prototype`.
 
 #### "Constructor" Redux
 
-Recall the discussion from earlier about the `.constructor` property, and how it *seems* like `a.constructor === Foo` being true means that `a` has an actual `.constructor` property on it, pointing at `Foo`? **Not correct.**
+Nhớ lại cuộc thảo luận trước đó về thuộc tính `.constructor`, và cách nó *có vẻ* giống như `a.constructor === Foo` có nghĩa là `a` có một thuộc tính `.constructor` thực sự trên nó, chỉ vào `Foo`? **Không chính xác.**
 
-This is just unfortunate confusion. In actuality, the `.constructor` reference is also *delegated* up to `Foo.prototype`, which **happens to**, by default, have a `.constructor` that points at `Foo`.
+Đây chỉ là sự nhầm lẫn đáng tiếc. Trên thực tế, tham chiếu `.constructor` cũng được *ủy quyền* cho tới `Foo.prototype`, mà **xảy ra với**, theo mặc định, có `.constructor` trỏ tới `Foo`.
 
-It *seems* awfully convenient that an object `a` "constructed by" `Foo` would have access to a `.constructor` property that points to `Foo`. But that's nothing more than a false sense of security. It's a happy accident, almost tangentially, that `a.constructor` *happens* to point at `Foo` via this default `[[Prototype]]` delegation. There are actually several ways that the ill-fated assumption of `.constructor` meaning "was constructed by" can come back to bite you.
+*Có vẻ* vô cùng tiện lợi khi một object `a` "được xây dựng bởi" `Foo` sẽ có quyền truy cập vào thuộc tính `.constructor` trỏ đến `Foo`. Nhưng đó chẳng qua chỉ là một cảm giác an toàn giả tạo. Thật là một sự tình cờ thú vị, gần như là ngẫu nhiên, khi `a.constructor` *xảy ra* trỏ vào `Foo` thông qua ủy quyền `[[Prototype]]` mặc định này. Trên thực tế, có một số cách mà giả định tồi tệ về `.constructor` có nghĩa là "được xây dựng bởi" có thể quay lại cắn bạn.
 
-For one, the `.constructor` property on `Foo.prototype` is only there by default on the object created when `Foo` the function is declared. If you create a new object, and replace a function's default `.prototype` object reference, the new object will not by default magically get a `.constructor` on it.
+Đầu tiên, thuộc tính `.constructor` trên `Foo.prototype` chỉ có ở đó theo mặc định trên object được tạo khi hàm `Foo` được khai báo. Nếu bạn tạo một object mới và thay thế tham chiếu đối tượng `.prototype` mặc định của hàm, đối tượng mới theo mặc định sẽ không có một `.constructor` trên đó một cách kỳ diệu.
 
-Consider:
+Xem xét:
 
 ```js
 function Foo() { /* .. */ }
@@ -337,15 +333,15 @@ a1.constructor === Foo; // false!
 a1.constructor === Object; // true!
 ```
 
-`Object(..)` didn't "construct" `a1` did it? It sure seems like `Foo()` "constructed" it. Many developers think of `Foo()` as doing the construction, but where everything falls apart is when you think "constructor" means "was constructed by", because by that reasoning, `a1.constructor` should be `Foo`, but it isn't!
+`Object(..)` không "xây dựng" `a1` phải không? Có vẻ như `Foo()` đã "xây dựng" nó. Nhiều nhà phát triển nghĩ `Foo()` giống như việc xây dựng, nhưng mọi thứ trở nên tồi tệ khi bạn nghĩ "constructor" có nghĩa là "được xây dựng bởi", bởi vì theo lý luận đó, `a1.constructor` phải là `Foo`, nhưng không phải vậy!
 
-What's happening? `a1` has no `.constructor` property, so it delegates up the `[[Prototype]]` chain to `Foo.prototype`. But that object doesn't have a `.constructor` either (like the default `Foo.prototype` object would have had!), so it keeps delegating, this time up to `Object.prototype`, the top of the delegation chain. *That* object indeed has a `.constructor` on it, which points to the built-in `Object(..)` function.
+Điều gì đang xảy ra? `a1` không có thuộc tính `.constructor`, do đó, nó ủy quyền chuỗi `[[Prototype]]` cho `Foo.prototype`. Nhưng đối tượng đó cũng không có `.constructor` (giống như đối tượng `Foo.prototype` mặc định sẽ có!), vì vậy nó tiếp tục ủy quyền, lần này lên tới `Object.prototype`, đầu chuỗi ủy quyền . Đối tượng *Đó* thực sự có một `.constructor` trên đó, trỏ đến hàm `Object(..)` được tích hợp sẵn.
 
 **Misconception, busted.**
 
-Of course, you can add `.constructor` back to the `Foo.prototype` object, but this takes manual work, especially if you want to match native behavior and have it be non-enumerable (see Chapter 3).
+Tất nhiên, bạn có thể thêm `.constructor` trở lại đối tượng `Foo.prototype`, nhưng việc này cần thực hiện thủ công, đặc biệt nếu bạn muốn khớp native behavier và non-enumerable (xem Chương 3).
 
-For example:
+Cho ví dụ:
 
 ```js
 function Foo() { /* .. */ }
@@ -363,31 +359,31 @@ Object.defineProperty( Foo.prototype, "constructor" , {
 } );
 ```
 
-That's a lot of manual work to fix `.constructor`. Moreover, all we're really doing is perpetuating the misconception that "constructor" means "was constructed by". That's an *expensive* illusion.
+Đó là rất nhiều công việc thủ công để sửa `.constructor`. Hơn nữa, tất cả những gì chúng ta đang thực sự làm là duy trì quan niệm sai lầm rằng "constructor" có nghĩa là "được xây dựng bởi". Đó là một ảo ảnh *tốn kém*.
 
-The fact is, `.constructor` on an object arbitrarily points, by default, at a function who, reciprocally, has a reference back to the object -- a reference which it calls `.prototype`. The words "constructor" and "prototype" only have a loose default meaning that might or might not hold true later. The best thing to do is remind yourself, "constructor does not mean constructed by".
+Thực tế là, `.constructor` trên một object, theo mặc định, tùy ý chỉ vào một hàm có tham chiếu ngược trở lại object -- một tham chiếu mà nó gọi là `.prototype`. Các từ "constructor" và "prototype" chỉ có một ý nghĩa mặc định lỏng lẻo có thể đúng hoặc không đúng sau này. Điều tốt nhất cần làm là nhắc nhở bản thân, "constructor không có nghĩa là được xây dựng bởi".
 
-`.constructor` is not a magic immutable property. It *is* non-enumerable (see snippet above), but its value is writable (can be changed), and moreover, you can add or overwrite (intentionally or accidentally) a property of the name `constructor` on any object in any `[[Prototype]]` chain, with any value you see fit.
+`.constructor` không phải là thuộc tính magic immutable (bất biến ma thuật). Nó *là* non-enumerable (xem đoạn trích ở trên), nhưng giá trị của nó có thể ghi được (có thể thay đổi), và hơn nữa, bạn có thể thêm hoặc ghi đè (cố ý hoặc vô tình) một thuộc tính có tên `constructor` trên bất kỳ object nào trong bất kỳ chuỗi `[[Prototype]]`, với bất kỳ giá trị nào bạn thấy phù hợp.
 
-By virtue of how the `[[Get]]` algorithm traverses the `[[Prototype]]` chain, a `.constructor` property reference found anywhere may resolve quite differently than you'd expect.
+Nhờ cách thuật toán `[[Get]]` đi qua chuỗi `[[Prototype]]`, một tham chiếu thuộc tính `.constructor` được tìm thấy ở bất kỳ đâu có thể giải quyết hoàn toàn khác so với bạn mong đợi.
 
-See how arbitrary its meaning actually is?
+Xem ý nghĩa của nó thực sự tùy ý như thế nào?
 
-The result? Some arbitrary object-property reference like `a1.constructor` cannot actually be *trusted* to be the assumed default function reference. Moreover, as we'll see shortly, just by simple omission, `a1.constructor` can even end up pointing somewhere quite surprising and insensible.
+Kết quả? Một số tham chiếu object-property tùy ý như `a1.constructor` thực sự không thể được *tin cậy* làm tham chiếu hàm mặc định được giả định. Hơn nữa, như chúng ta sẽ thấy ngay sau đây, chỉ bằng một thiếu sót đơn giản, `a1.constructor` thậm chí có thể dẫn đến một điểm nào đó khá bất ngờ và khó hiểu.
 
-`.constructor` is extremely unreliable, and an unsafe reference to rely upon in your code. **Generally, such references should be avoided where possible.**
+`.constructor` cực kỳ không đáng tin cậy và là một tham chiếu không an toàn để dựa vào trong code của bạn. **Nói chung, nên tránh những tham chiếu như vậy nếu có thể.**
 
 ## "(Prototypal) Inheritance"
 
-We've seen some approximations of "class" mechanics as typically hacked into JavaScript programs. But JavaScript "class"es would be rather hollow if we didn't have an approximation of "inheritance".
+Chúng tôi đã thấy một số cơ chế "class" thường bị tấn công vào các chương trình JavaScript. Nhưng các "class" JavaScript sẽ khá trống rỗng nếu chúng ta không có tính chất gần giống "tính kế thừa".
 
-Actually, we've already seen the mechanism which is commonly called "prototypal inheritance" at work when `a` was able to "inherit from" `Foo.prototype`, and thus get access to the `myName()` function. But we traditionally think of "inheritance" as being a relationship between two "classes", rather than between "class" and "instance".
+Trên thực tế, chúng ta đã thấy cơ chế thường được gọi là "prototypal inheritance" hoạt động khi `a` có thể "kế thừa từ" `Foo.prototype` và do đó có quyền truy cập vào hàm `myName()`. Nhưng theo truyền thống, chúng ta nghĩ về "thừa kế" là mối quan hệ giữa hai "class", chứ không phải giữa "class" và "instance".
 
 <img src="fig3.png">
 
-Recall this figure from earlier, which shows not only delegation from an object (aka, "instance") `a1` to object `Foo.prototype`, but from `Bar.prototype` to `Foo.prototype`, which somewhat resembles the concept of Parent-Child class inheritance. *Resembles*, except of course for the direction of the arrows, which show these are delegation links rather than copy operations.
+Nhớ lại hình này từ trước đó, không chỉ hiển thị ủy quyền từ một object (hay còn gọi là "instance") `a1` sang object `Foo.prototype`, mà còn từ `Bar.prototype` sang `Foo.prototype`, phần nào giống với khái niệm kế thừa lớp Cha-Con. *Giống nhau*, tất nhiên là ngoại trừ hướng của các mũi tên, cho thấy đây là các liên kết ủy quyền chứ không phải thao tác sao chép.
 
-And, here's the typical "prototype style" code that creates such links:
+Và, đây là mã "protype style" điển hình tạo ra các liên kết như vậy:
 
 ```js
 function Foo(name) {
@@ -421,15 +417,15 @@ a.myName(); // "a"
 a.myLabel(); // "obj a"
 ```
 
-**Note:** To understand why `this` points to `a` in the above code snippet, see Chapter 2.
+**Lưu ý:** Để hiểu tại sao `this` trỏ tới `a` trong đoạn mã trên, hãy xem Chương 2.
 
-The important part is `Bar.prototype = Object.create( Foo.prototype )`. `Object.create(..)` *creates* a "new" object out of thin air, and links that new object's internal `[[Prototype]]` to the object you specify (`Foo.prototype` in this case).
+Phần quan trọng là `Bar.prototype = Object.create( Foo.prototype )`. `Object.create(..)` *tạo* một đối tượng "mới" ngoài luồng và liên kết `[[Prototype]` bên trong của đối tượng mới đó với đối tượng bạn chỉ định (`Foo.prototype` trong trường hợp này).
 
-In other words, that line says: "make a *new* 'Bar dot prototype' object that's linked to 'Foo dot prototype'."
+Nói cách khác, dòng đó có nội dung: "tạo đối tượng *mới* 'Bar dot prototype' được liên kết với 'Foo dot prototype'."
 
-When `function Bar() { .. }` is declared, `Bar`, like any other function, has a `.prototype` link to its default object. But *that* object is not linked to `Foo.prototype` like we want. So, we create a *new* object that *is* linked as we want, effectively throwing away the original incorrectly-linked object.
+Khi `function Bar() { .. }` được khai báo, `Bar`, giống như bất kỳ hàm nào khác, có liên kết `.prototype` tới đối tượng mặc định của nó. Nhưng đối tượng *đó* không được liên kết với `Foo.prototype` như chúng ta muốn. Vì vậy, chúng ta tạo một đối tượng *mới* mà *được* liên kết như chúng ta muốn, loại bỏ đối tượng được liên kết không chính xác ban đầu một cách hiệu quả.
 
-**Note:** A common mis-conception/confusion here is that either of the following approaches would *also* work, but they do not work as you'd expect:
+**Lưu ý:** Một sự nhầm lẫn/quan niệm sai phổ biến ở đây là một trong hai cách tiếp cận sau đây sẽ *cũng* hoạt động, nhưng chúng không hoạt động như bạn mong đợi:
 
 ```js
 // doesn't work like you want!
@@ -440,15 +436,15 @@ Bar.prototype = Foo.prototype;
 Bar.prototype = new Foo();
 ```
 
-`Bar.prototype = Foo.prototype` doesn't create a new object for `Bar.prototype` to be linked to. It just makes `Bar.prototype` be another reference to `Foo.prototype`, which effectively links `Bar` directly to **the same object as** `Foo` links to: `Foo.prototype`. This means when you start assigning, like `Bar.prototype.myLabel = ...`, you're modifying **not a separate object** but *the* shared `Foo.prototype` object itself, which would affect any objects linked to `Foo.prototype`. This is almost certainly not what you want. If it *is* what you want, then you likely don't need `Bar` at all, and should just use only `Foo` and make your code simpler.
+`Bar.prototype = Foo.prototype` không tạo đối tượng mới để `Bar.prototype` được liên kết tới. Nó chỉ làm cho `Bar.prototype` trở thành một tham chiếu khác đến `Foo.prototype`, liên kết trực tiếp `Bar` với ** cùng một đối tượng như ** `Foo` liên kết tới: `Foo.prototype` một cách hiệu quả. Điều này có nghĩa là khi bạn bắt đầu gán, chẳng hạn như `Bar.prototype.myLabel = ...`, bạn đang sửa đổi **không phải một đối tượng riêng biệt** mà *chính đối tượng `Foo.prototype` được chia sẻ*, điều này sẽ ảnh hưởng đến bất kỳ đối tượng nào được liên kết với `Foo.prototype`. Đây gần như chắc chắn không phải là những gì bạn muốn. Nếu nó *là* thứ bạn muốn, thì bạn có thể không cần `Bar` và chỉ nên sử dụng `Foo` và làm cho mã của bạn đơn giản hơn.
 
-`Bar.prototype = new Foo()` **does in fact** create a new object which is duly linked to `Foo.prototype` as we'd want. But, it uses the `Foo(..)` "constructor call" to do it. If that function has any side-effects (such as logging, changing state, registering against other objects, **adding data properties to `this`**, etc.), those side-effects happen at the time of this linking (and likely against the wrong object!), rather than only when the eventual `Bar()` "descendants" are created, as would likely be expected.
+`Bar.prototype = new Foo()` **thực tế** có tạo một đối tượng mới được liên kết hợp lệ với `Foo.prototype` như chúng ta muốn. Tuy nhiên, nó sử dụng lệnh gọi hàm tạo `Foo(..)` để làm điều đó. Nếu chức năng đó có bất kỳ tác dụng phụ nào (chẳng hạn như ghi nhật ký, thay đổi trạng thái, đăng ký đối với các đối tượng khác, **thêm thuộc tính dữ liệu vào `this`**, v.v.), thì những tác dụng phụ đó xảy ra tại thời điểm liên kết này (và có khả năng chống lại đối tượng sai!), thay vì chỉ khi "hậu duệ" `Bar()` cuối cùng được tạo ra, như có thể được mong đợi.
 
-So, we're left with using `Object.create(..)` to make a new object that's properly linked, but without having the side-effects of calling `Foo(..)`. The slight downside is that we have to create a new object, throwing the old one away, instead of modifying the existing default object we're provided.
+Vì vậy, chúng ta chỉ còn cách sử dụng `Object.create(..)` để tạo một đối tượng mới được liên kết đúng cách, nhưng không gặp side-effects của việc gọi `Foo(..)`. Nhược điểm nhỏ là chúng ta phải tạo một đối tượng mới, loại bỏ đối tượng cũ thay vì sửa đổi đối tượng mặc định hiện có mà chúng ta đã cung cấp.
 
-It would be *nice* if there was a standard and reliable way to modify the linkage of an existing object. Prior to ES6, there's a non-standard and not fully-cross-browser way, via the `.__proto__` property, which is settable. ES6 adds a `Object.setPrototypeOf(..)` helper utility, which does the trick in a standard and predictable way.
+Sẽ là *tốt* nếu có một cách tiêu chuẩn và đáng tin cậy để sửa đổi liên kết của một đối tượng hiện có. Trước ES6, có một cách không chuẩn và không hoàn toàn đa trình duyệt, thông qua thuộc tính `.__proto__`, có thể cài đặt được. ES6 bổ sung tiện ích trợ giúp `Object.setPrototypeOf(..)`, thực hiện thủ thuật theo cách tiêu chuẩn và có thể dự đoán được.
 
-Compare the pre-ES6 and ES6-standardized techniques for linking `Bar.prototype` to `Foo.prototype`, side-by-side:
+So sánh các kỹ thuật được chuẩn hóa pre-ES6 và ES6 để liên kết `Bar.prototype` với `Foo.prototype`, với nhau:
 
 ```js
 // pre-ES6
@@ -460,13 +456,13 @@ Bar.prototype = Object.create( Foo.prototype );
 Object.setPrototypeOf( Bar.prototype, Foo.prototype );
 ```
 
-Ignoring the slight performance disadvantage (throwing away an object that's later garbage collected) of the `Object.create(..)` approach, it's a little bit shorter and may be perhaps a little easier to read than the ES6+ approach. But it's probably a syntactic wash either way.
+Bỏ qua nhược điểm nhỏ về hiệu suất (vứt đi một đối tượng mà sau này được thu gom rác) của phương pháp `Object.create(..)`, phương pháp này ngắn hơn một chút và có lẽ dễ đọc hơn một chút so với phương pháp ES6+. Nhưng nó có lẽ là một cú pháp rửa theo cách nào đó.
 
 ### Inspecting "Class" Relationships
 
-What if you have an object like `a` and want to find out what object (if any) it delegates to? Inspecting an instance (just an object in JS) for its inheritance ancestry (delegation linkage in JS) is often called *introspection* (or *reflection*) in traditional class-oriented environments.
+Điều gì sẽ xảy ra nếu bạn có một object như `a` và muốn tìm hiểu xem nó ủy quyền cho object nào (nếu có)? Kiểm tra một instance (chỉ là một object trong JS) để tìm tổ tiên thừa kế của nó (liên kết ủy quyền trong JS) thường được gọi là *introspection(nội quan)* (hoặc *reflection(phản ánh)*) trong các môi trường class-oriented truyền thống.
 
-Consider:
+Xem xét:
 
 ```js
 function Foo() {
@@ -478,21 +474,21 @@ Foo.prototype.blah = ...;
 var a = new Foo();
 ```
 
-How do we then introspect `a` to find out its "ancestry" (delegation linkage)? The first approach embraces the "class" confusion:
+Sau đó, làm thế nào để chúng ta xem xét nội quan `a` để tìm ra "tổ tiên" của nó (liên kết ủy nhiệm)? Cách tiếp cận đầu tiên bao trùm sự nhầm lẫn "class":
 
 ```js
 a instanceof Foo; // true
 ```
 
-The `instanceof` operator takes a plain object as its left-hand operand and a **function** as its right-hand operand. The question `instanceof` answers is: **in the entire `[[Prototype]]` chain of `a`, does the object arbitrarily pointed to by `Foo.prototype` ever appear?**
+Toán tử `instanceof` lấy một object đơn giản làm toán hạng bên trái và **function** làm toán hạng bên phải. Câu trả lời cho câu hỏi `instanceof` là: **trong toàn bộ chuỗi `[[Prototype]]` của `a`, đối tượng được chỉ định tùy ý bởi `Foo.prototype` có bao giờ xuất hiện không?**
 
-Unfortunately, this means that you can only inquire about the "ancestry" of some object (`a`) if you have some **function** (`Foo`, with its attached `.prototype` reference) to test with. If you have two arbitrary objects, say `a` and `b`, and want to find out if *the objects* are related to each other through a `[[Prototype]]` chain, `instanceof` alone can't help.
+Thật không may, điều này có nghĩa là bạn chỉ có thể hỏi về "tổ tiên" của một số đối tượng (`a`) nếu bạn có một số **function** (`Foo`, với tham chiếu `.prototype` đính kèm) để kiểm tra. Nếu bạn có hai đối tượng tùy ý, chẳng hạn như `a` và `b`, và muốn tìm hiểu xem liệu *các đối tượng* có liên quan với nhau thông qua chuỗi `[[Prototype]]` hay không thì chỉ riêng `instanceof` cũng không giúp được gì .
 
-**Note:** If you use the built-in `.bind(..)` utility to make a hard-bound function (see Chapter 2), the function created will not have a `.prototype` property. Using `instanceof` with such a function transparently substitutes the `.prototype` of the *target function* that the hard-bound function was created from.
+**Lưu ý:** Nếu bạn sử dụng tiện ích `.bind(..)` tích hợp sẵn để tạo hàm liên kết cứng (xem Chương 2), hàm được tạo sẽ không có thuộc tính `.prototype`. Việc sử dụng `instanceof` với hàm như vậy sẽ thay thế rõ ràng `.prototype` của *target function* mà từ đó hàm liên kết cứng được tạo ra.
 
-It's fairly uncommon to use hard-bound functions as "constructor calls", but if you do, it will behave as if the original *target function* was invoked instead, which means that using `instanceof` with a hard-bound function also behaves according to the original function.
+Khá hiếm khi sử dụng các hàm giới hạn cứng làm "lời gọi hàm tạo", nhưng nếu bạn làm như vậy, nó sẽ hoạt động như thể *hàm mục tiêu* ban đầu được gọi thay thế, điều đó có nghĩa là sử dụng `instanceof` với một hàm giới hạn cứng cũng hoạt động theo chức năng ban đầu.
 
-This snippet illustrates the ridiculousness of trying to reason about relationships between **two objects** using "class" semantics and `instanceof`:
+Đoạn mã này minh họa sự lố bịch của việc cố gắng suy luận về mối quan hệ giữa **hai đối tượng** bằng cách sử dụng ngữ nghĩa "class" và `instanceof`:
 
 ```js
 // helper utility to see if `o1` is
@@ -509,19 +505,19 @@ var b = Object.create( a );
 isRelatedTo( b, a ); // true
 ```
 
-Inside `isRelatedTo(..)`, we borrow a throw-away function `F`, reassign its `.prototype` to arbitrarily point to some object `o2`, then ask if `o1` is an "instance of" `F`. Obviously `o1` isn't *actually* inherited or descended or even constructed from `F`, so it should be clear why this kind of exercise is silly and confusing. **The problem comes down to the awkwardness of class semantics forced upon JavaScript**, in this case as revealed by the indirect semantics of `instanceof`.
+Bên trong `isRelatedTo(..)`, chúng tôi mượn một hàm loại bỏ `F`, gán lại `.prototype` của nó để trỏ tùy ý tới đối tượng `o2` nào đó, sau đó hỏi xem `o1` có phải là "instance của" `F không `. Rõ ràng là `o1` không *thực sự* kế thừa hoặc có nguồn gốc hoặc thậm chí được xây dựng từ `F`, vì vậy cần hiểu rõ tại sao loại bài tập này lại ngớ ngẩn và khó hiểu. **Vấn đề bắt nguồn từ sự lúng túng của ngữ nghĩa class bắt buộc đối với JavaScript**, trong trường hợp này được tiết lộ bởi ngữ nghĩa gián tiếp của `instanceof`.
 
-The second, and much cleaner, approach to `[[Prototype]]` reflection is:
+Cách thứ hai, và rõ ràng hơn nhiều, đối với phản ánh `[[Prototype]]` là:
 
 ```js
 Foo.prototype.isPrototypeOf( a ); // true
 ```
 
-Notice that in this case, we don't really care about (or even *need*) `Foo`, we just need an **object** (in our case, arbitrarily labeled `Foo.prototype`) to test against another **object**. The question `isPrototypeOf(..)` answers is: **in the entire `[[Prototype]]` chain of `a`, does `Foo.prototype` ever appear?**
+Lưu ý rằng trong trường hợp này, chúng ta không thực sự quan tâm (hoặc thậm chí *cần*) `Foo`, chúng ta chỉ cần một **object** (trong trường hợp của chúng ta, được gắn nhãn tùy ý `Foo.prototype`) để kiểm tra đối tượng khác **vật**. Câu trả lời cho câu hỏi `isPrototypeOf(..)` là: **trong toàn bộ chuỗi `[[Prototype]]` của `a`, `Foo.prototype` có bao giờ xuất hiện không?**
 
-Same question, and exact same answer. But in this second approach, we don't actually need the indirection of referencing a **function** (`Foo`) whose `.prototype` property will automatically be consulted.
+Cùng một câu hỏi, và chính xác cùng một câu trả lời. Nhưng trong cách tiếp cận thứ hai này, chúng ta thực sự không cần sự gián tiếp tham chiếu một **hàm** (`Foo`) có thuộc tính `.prototype` sẽ tự động được tham khảo.
 
-We *just need* two **objects** to inspect a relationship between them. For example:
+Chúng ta *chỉ cần* hai **đối tượng** để kiểm tra mối quan hệ giữa chúng. Ví dụ:
 
 ```js
 // Simply: does `b` appear anywhere in
@@ -529,33 +525,33 @@ We *just need* two **objects** to inspect a relationship between them. For examp
 b.isPrototypeOf( c );
 ```
 
-Notice, this approach doesn't require a function ("class") at all. It just uses object references directly to `b` and `c`, and inquires about their relationship. In other words, our `isRelatedTo(..)` utility above is built-in to the language, and it's called `isPrototypeOf(..)`.
+Lưu ý, phương pháp này hoàn toàn không yêu cầu một function ("class") nào. Nó chỉ sử dụng các tham chiếu đối tượng trực tiếp đến `b` và `c`, đồng thời hỏi về mối quan hệ của chúng. Nói cách khác, tiện ích `isRelatedTo(..)` ở trên của chúng ta được tích hợp sẵn trong ngôn ngữ và được gọi là `isPrototypeOf(..)`.
 
-We can also directly retrieve the `[[Prototype]]` of an object. As of ES5, the standard way to do this is:
+Chúng ta cũng có thể truy xuất trực tiếp `[[Prototype]]` của một đối tượng. Kể từ ES5, cách tiêu chuẩn để làm điều này là:
 
 ```js
 Object.getPrototypeOf( a );
 ```
 
-And you'll notice that object reference is what we'd expect:
+Và bạn sẽ nhận thấy rằng tham chiếu đối tượng là những gì chúng ta mong đợi:
 
 ```js
 Object.getPrototypeOf( a ) === Foo.prototype; // true
 ```
 
-Most browsers (not all!) have also long supported a non-standard alternate way of accessing the internal `[[Prototype]]`:
+Hầu hết các trình duyệt (không phải tất cả!) từ lâu cũng đã hỗ trợ một cách thay thế không chuẩn để truy cập `[[Prototype]]` nội bộ:
 
 ```js
 a.__proto__ === Foo.prototype; // true
 ```
 
-The strange `.__proto__` (not standardized until ES6!) property "magically" retrieves the internal `[[Prototype]]` of an object as a reference, which is quite helpful if you want to directly inspect (or even traverse: `.__proto__.__proto__...`) the chain.
+Thuộc tính `.__proto__` kỳ lạ (không được chuẩn hóa cho đến ES6!) "một cách kỳ diệu" truy xuất `[[Prototype]]` bên trong của một đối tượng làm tham chiếu, điều này khá hữu ích nếu bạn muốn kiểm tra trực tiếp (hoặc thậm chí duyệt qua: chuỗi ` .__proto__.__proto__...`).
 
-Just as we saw earlier with `.constructor`, `.__proto__` doesn't actually exist on the object you're inspecting (`a` in our running example). In fact, it exists (non-enumerable; see Chapter 2) on the built-in `Object.prototype`, along with the other common utilities (`.toString()`, `.isPrototypeOf(..)`, etc).
+Giống như chúng ta đã thấy trước đó với `.constructor`, `.__proto__` không thực sự tồn tại trên đối tượng mà bạn đang kiểm tra (`a` trong ví dụ đang chạy của chúng ta). Trên thực tế, nó tồn tại (non-enumerable; xem Chương 2) trên `Object.prototype` tích hợp sẵn, cùng với các tiện ích phổ biến khác (`.toString()`, `.isPrototypeOf(..)`, v.v.) .
 
-Moreover, `.__proto__` looks like a property, but it's actually more appropriate to think of it as a getter/setter (see Chapter 3).
+Ngoài ra, `.__proto__` trông giống như một thuộc tính, nhưng thực ra sẽ phù hợp hơn nếu coi nó như một getter/setter (xem Chương 3).
 
-Roughly, we could envision `.__proto__` implemented (see Chapter 3 for object property definitions) like this:
+Đại khái, chúng ta có thể hình dung `.__proto__` được triển khai (xem Chương 3 để biết định nghĩa thuộc tính đối tượng) như sau:
 
 ```js
 Object.defineProperty( Object.prototype, "__proto__", {
@@ -570,31 +566,31 @@ Object.defineProperty( Object.prototype, "__proto__", {
 } );
 ```
 
-So, when we access (retrieve the value of) `a.__proto__`, it's like calling `a.__proto__()` (calling the getter function). *That* function call has `a` as its `this` even though the getter function exists on the `Object.prototype` object (see Chapter 2 for `this` binding rules), so it's just like saying `Object.getPrototypeOf( a )`.
+Vì vậy, khi chúng ta truy cập (lấy giá trị của) `a.__proto__`, nó giống như gọi `a.__proto__()` (gọi hàm getter). *Lời gọi hàm đó* có `a` là `this` của nó mặc dù hàm getter tồn tại trên đối tượng `Object.prototype` (xem Chương 2 để biết các quy tắc ràng buộc `this`), vì vậy nó giống như nói `Object.getPrototypeOf( a )`.
 
-`.__proto__` is also a settable property, just like using ES6's `Object.setPrototypeOf(..)` shown earlier. However, generally you **should not change the `[[Prototype]]` of an existing object**.
+`.__proto__` cũng là một thuộc tính có thể thiết lập, giống như sử dụng `Object.setPrototypeOf(..)` của ES6 đã trình bày trước đó. Tuy nhiên, nhìn chung bạn **không nên thay đổi `[[Prototype]]` của một đối tượng hiện có**.
 
-There are some very complex, advanced techniques used deep in some frameworks that allow tricks like "subclassing" an `Array`, but this is commonly frowned on in general programming practice, as it usually leads to *much* harder to understand/maintain code.
+Có một số kỹ thuật nâng cao, rất phức tạp được sử dụng sâu trong một số framework cho phép thực hiện các thủ thuật như "subclassing" một `Array`, nhưng điều này thường không được chấp nhận trong thực tiễn lập trình nói chung, vì nó thường dẫn đến *rất nhiều* khó hiểu/bảo trì mã hơn .
 
-**Note:** As of ES6, the `class` keyword will allow something that approximates "subclassing" of built-in's like `Array`. See Appendix A for discussion of the `class` syntax added in ES6.
+**Lưu ý:** Kể từ ES6, từ khóa `class` sẽ cho phép thứ gì đó gần đúng với "subclassing" của tích hợp sẵn như `Array`. Xem Phụ lục A để thảo luận về cú pháp `class` được thêm vào trong ES6.
 
-The only other narrow exception (as mentioned earlier) would be setting the `[[Prototype]]` of a default function's `.prototype` object to reference some other object (besides `Object.prototype`). That would avoid replacing that default object entirely with a new linked object. Otherwise, **it's best to treat object `[[Prototype]]` linkage as a read-only characteristic** for ease of reading your code later.
+Ngoại lệ hẹp duy nhất khác (như đã đề cập trước đó) sẽ là đặt `[[Prototype]]` của đối tượng `.prototype` của hàm mặc định để tham chiếu một số đối tượng khác (ngoài `Object.prototype`). Điều đó sẽ tránh thay thế hoàn toàn đối tượng mặc định đó bằng một đối tượng được liên kết mới. Mặt khác, **tốt nhất là coi liên kết `[[Prototype]]` của đối tượng là đặc điểm chỉ đọc** để dễ đọc mã của bạn sau này.
 
-**Note:** The JavaScript community unofficially coined a term for the double-underscore, specifically the leading one in properties like `__proto__`: "dunder". So, the "cool kids" in JavaScript would generally pronounce `__proto__` as "dunder proto".
+**Lưu ý:** Cộng đồng JavaScript đã đặt ra thuật ngữ không chính thức cho dấu gạch dưới kép, cụ thể là dấu gạch dưới ở đầu trong các thuộc tính như `__proto__`: "dunder". Vì vậy, "những đứa trẻ tuyệt vời" trong JavaScript thường phát âm `__proto__` là "dunder proto".
 
 ## Object Links
 
-As we've now seen, the `[[Prototype]]` mechanism is an internal link that exists on one object which references some other object.
+Như chúng ta đã thấy, cơ chế `[[Prototype]]` là một liên kết nội bộ tồn tại trên một đối tượng tham chiếu đến một số đối tượng khác.
 
-This linkage is (primarily) exercised when a property/method reference is made against the first object, and no such property/method exists. In that case, the `[[Prototype]]` linkage tells the engine to look for the property/method on the linked-to object. In turn, if that object cannot fulfill the look-up, its `[[Prototype]]` is followed, and so on. This series of links between objects forms what is called the "prototype chain".
+Mối liên kết này (chủ yếu) được thực hiện khi tham chiếu thuộc tính/phương thức được tạo đối với đối tượng đầu tiên và không tồn tại thuộc tính/phương thức nào như vậy. Trong trường hợp đó, liên kết `[[Prototype]]` báo cho công cụ tìm kiếm thuộc tính/phương thức trên đối tượng được liên kết với. Đổi lại, nếu đối tượng đó không thể hoàn thành tra cứu, `[[Prototype]]` của nó sẽ được theo sau, v.v. Chuỗi liên kết này giữa các đối tượng tạo thành cái được gọi là "prototype chain".
 
 ### `Create()`ing Links
 
-We've thoroughly debunked why JavaScript's `[[Prototype]]` mechanism is **not** like *classes*, and we've seen how it instead creates **links** between proper objects.
+Chúng ta đã giải thích cặn kẽ lý do tại sao cơ chế `[[Prototype]]` của JavaScript **không** giống như *các class* và chúng ta đã thấy cách nó tạo ra các **liên kết** giữa các object riêng biệt.
 
-What's the point of the `[[Prototype]]` mechanism? Why is it so common for JS developers to go to so much effort (emulating classes) in their code to wire up these linkages?
+Ý nghĩa của cơ chế `[[Prototype]]` là gì? Tại sao các nhà phát triển JS lại nỗ lực rất nhiều (mô phỏng các class) trong code của họ để kết nối các liên kết này?
 
-Remember we said much earlier in this chapter that `Object.create(..)` would be a hero? Now, we're ready to see how.
+Hãy nhớ rằng chúng tôi đã nói trước đó rất nhiều trong chương này rằng `Object.create(..)` sẽ là một anh hùng? Bây giờ, chúng tôi đã sẵn sàng để xem làm thế nào.
 
 ```js
 var foo = {
@@ -608,15 +604,15 @@ var bar = Object.create( foo );
 bar.something(); // Tell me something good...
 ```
 
-`Object.create(..)` creates a new object (`bar`) linked to the object we specified (`foo`), which gives us all the power (delegation) of the `[[Prototype]]` mechanism, but without any of the unnecessary complication of `new` functions acting as classes and constructor calls, confusing `.prototype` and `.constructor` references, or any of that extra stuff.
+`Object.create(..)` tạo một đối tượng mới (`bar`) được liên kết với đối tượng mà chúng ta đã chỉ định (`foo`), cung cấp cho chúng ta tất cả quyền lực (ủy quyền) của cơ chế `[[Prototype]]`, nhưng không có bất kỳ sự phức tạp không cần thiết nào của các hàm `new` hoạt động như các class và lệnh gọi constructor, gây nhầm lẫn giữa các tham chiếu `.prototype` và `.constructor` hoặc bất kỳ nội dung bổ sung nào trong số đó.
 
-**Note:** `Object.create(null)` creates an object that has an empty (aka, `null`) `[[Prototype]]` linkage, and thus the object can't delegate anywhere. Since such an object has no prototype chain, the `instanceof` operator (explained earlier) has nothing to check, so it will always return `false`. These special empty-`[[Prototype]]` objects are often called "dictionaries" as they are typically used purely for storing data in properties, mostly because they have no possible surprise effects from any delegated properties/functions on the `[[Prototype]]` chain, and are thus purely flat data storage.
+**Lưu ý:** `Object.create(null)` tạo một đối tượng có liên kết trống (hay còn gọi là `null`) `[[Prototype]]` và do đó đối tượng không thể ủy quyền ở bất kỳ đâu. Vì một đối tượng như vậy không có chuỗi nguyên mẫu, nên toán tử `instanceof` (đã giải thích trước đó) không có gì để kiểm tra, do đó, nó sẽ luôn trả về `false`. Các đối tượng rỗng-`[[Prototype]]` đặc biệt này thường được gọi là "từ điển" vì chúng thường được sử dụng hoàn toàn để lưu trữ dữ liệu trong các thuộc tính, chủ yếu là do chúng không có tác động bất ngờ có thể có từ bất kỳ thuộc tính/chức năng được ủy quyền nào trên `[[Prototype ]]` và do đó hoàn toàn là bộ lưu trữ dữ liệu phẳng.
 
-We don't *need* classes to create meaningful relationships between two objects. The only thing we should **really care about** is objects linked together for delegation, and `Object.create(..)` gives us that linkage without all the class cruft.
+Chúng ta không *cần* các class để tạo mối quan hệ có ý nghĩa giữa hai đối tượng. Điều duy nhất chúng ta nên **thực sự quan tâm** là các đối tượng được liên kết với nhau để ủy quyền và `Object.create(..)` cung cấp cho chúng ta mối liên kết đó mà không cần các giả mạo class xấu xí.
 
 #### `Object.create()` Polyfilled
 
-`Object.create(..)` was added in ES5. You may need to support pre-ES5 environments (like older IE's), so let's take a look at a simple **partial** polyfill for `Object.create(..)` that gives us the capability that we need even in those older JS environments:
+`Object.create(..)` đã được thêm vào ES5. Bạn có thể cần hỗ trợ các môi trường trước ES5 (chẳng hạn như IE cũ hơn), vì vậy, hãy xem một **phần** polyfill đơn giản cho `Object.create(..)` cung cấp cho chúng ta khả năng mà chúng tôi cần ngay cả trong các môi trường đó. Môi trường JS cũ hơn:
 
 ```js
 if (!Object.create) {
@@ -628,9 +624,9 @@ if (!Object.create) {
 }
 ```
 
-This polyfill works by using a throw-away `F` function and overriding its `.prototype` property to point to the object we want to link to. Then we use `new F()` construction to make a new object that will be linked as we specified.
+Polyfill này hoạt động bằng cách sử dụng hàm `F` và ghi đè thuộc tính `.prototype` của nó để trỏ đến đối tượng mà chúng ta muốn liên kết tới. Sau đó, chúng tôi sử dụng cấu trúc `new F()` để tạo một đối tượng mới sẽ được liên kết như chúng tôi đã chỉ định.
 
-This usage of `Object.create(..)` is by far the most common usage, because it's the part that *can be* polyfilled. There's an additional set of functionality that the standard ES5 built-in `Object.create(..)` provides, which is **not polyfillable** for pre-ES5. As such, this capability is far-less commonly used. For completeness sake, let's look at that additional functionality:
+Cách sử dụng `Object.create(..)` này cho đến nay là cách sử dụng phổ biến nhất, bởi vì đó là phần *có thể được* polyfilled. Có một bộ chức năng bổ sung mà `Object.create(..)` tích hợp sẵn trong ES5 cung cấp, chức năng này **không thể polyfillable** cho pre-ES5. Như vậy, khả năng này ít được sử dụng phổ biến. Để hoàn thiện, hãy xem xét chức năng bổ sung đó:
 
 ```js
 var anotherObject = {
@@ -661,11 +657,11 @@ myObject.b; // 3
 myObject.c; // 4
 ```
 
-The second argument to `Object.create(..)` specifies property names to add to the newly created object, via declaring each new property's *property descriptor* (see Chapter 3). Because polyfilling property descriptors into pre-ES5 is not possible, this additional functionality on `Object.create(..)` also cannot be polyfilled.
+Đối số thứ hai cho `Object.create(..)` chỉ định các tên thuộc tính để thêm vào đối tượng mới được tạo, thông qua việc khai báo *property descriptor* của mỗi thuộc tính mới (xem Chương 3). Bởi vì không thể điền đầy đủ các bộ mô tả thuộc tính polyfill vào pre-ES5, chức năng bổ sung này trên `Object.create(..)` cũng không thể được polyfill.
 
-The vast majority of usage of `Object.create(..)` uses the polyfill-safe subset of functionality, so most developers are fine with using the **partial polyfill** in pre-ES5 environments.
+Phần lớn việc sử dụng `Object.create(..)` sử dụng tập hợp con chức năng an toàn cho polyfill, vì vậy hầu hết các nhà phát triển đều hài lòng với việc sử dụng **partial polyfill** trong môi trường pre-ES5.
 
-Some developers take a much stricter view, which is that no function should be polyfilled unless it can be *fully* polyfilled. Since `Object.create(..)` is one of those partial-polyfill'able utilities, this narrower perspective says that if you need to use any of the functionality of `Object.create(..)` in a pre-ES5 environment, instead of polyfilling, you should use a custom utility, and stay away from using the name `Object.create` entirely. You could instead define your own utility, like:
+Một số nhà phát triển có quan điểm chặt chẽ hơn nhiều, đó là không function nào nên polyfilled  trừ khi nó có thể được polyfilled *đầy đủ*. Vì `Object.create(..)` là một trong những tiện ích có thể điền đầy một phần đó, góc nhìn hẹp hơn này nói rằng nếu bạn cần sử dụng bất kỳ chức năng nào của `Object.create(..)` trong phiên bản pre-ES5 thay vì polyfilling, bạn nên sử dụng tiện ích tùy chỉnh và tránh sử dụng hoàn toàn tên `Object.create`. Thay vào đó, bạn có thể xác định tiện ích của riêng mình, như:
 
 ```js
 function createAndLinkObject(o) {
@@ -683,11 +679,11 @@ var myObject = createAndLinkObject( anotherObject );
 myObject.a; // 2
 ```
 
-I do not share this strict opinion. I fully endorse the common partial-polyfill of `Object.create(..)` as shown above, and using it in your code even in pre-ES5. I'll leave it to you to make your own decision.
+Tôi không chia sẻ quan điểm khắt khe này. Tôi hoàn toàn tán thành tính năng polyfill một phần phổ biến của `Object.create(..)` như được hiển thị ở trên và sử dụng nó trong mã của bạn ngay cả trong phiên bản tiền ES5. Tôi sẽ để nó cho bạn để đưa ra quyết định của riêng bạn.
 
 ### Links As Fallbacks?
 
-It may be tempting to think that these links between objects *primarily* provide a sort of fallback for "missing" properties or methods. While that may be an observed outcome, I don't think it represents the right way of thinking about `[[Prototype]]`.
+Có thể sẽ hấp dẫn khi nghĩ rằng các liên kết này giữa các đối tượng *chủ yếu* cung cấp một loại dự phòng cho các thuộc tính hoặc phương thức "bị thiếu". Mặc dù đó có thể là một kết quả quan sát được, nhưng tôi không nghĩ nó thể hiện cách suy nghĩ đúng đắn về `[[Prototype]]`.
 
 Consider:
 
@@ -703,17 +699,17 @@ var myObject = Object.create( anotherObject );
 myObject.cool(); // "cool!"
 ```
 
-That code will work by virtue of `[[Prototype]]`, but if you wrote it that way so that `anotherObject` was acting as a fallback **just in case** `myObject` couldn't handle some property/method that some developer may try to call, odds are that your software is going to be a bit more "magical" and harder to understand and maintain.
+Mã đó sẽ hoạt động nhờ `[[Prototype]]`, nhưng nếu bạn viết nó theo cách đó để `anotherObject` hoạt động như một dự phòng ** đề phòng** `myObject` không thể xử lý một số thuộc tính/phương thức mà một số nhà phát triển có thể cố gắng gọi, tỷ lệ cược là phần mềm của bạn sẽ trở nên "kỳ diệu" hơn một chút và khó hiểu và khó bảo trì hơn.
 
-That's not to say there aren't cases where fallbacks are an appropriate design pattern, but it's not very common or idiomatic in JS, so if you find yourself doing so, you might want to take a step back and reconsider if that's really appropriate and sensible design.
+Điều đó không có nghĩa là không có trường hợp dự phòng là một design pattern phù hợp, nhưng nó không phổ biến hoặc thành ngữ trong JS, vì vậy nếu bạn thấy mình đang làm như vậy, bạn có thể lùi lại một bước và xem xét lại nếu điều đó thực sự phù hợp và thiết kế hợp lý.
 
-**Note:** In ES6, an advanced functionality called `Proxy` is introduced which can provide something of a "method not found" type of behavior. `Proxy` is beyond the scope of this book, but will be covered in detail in a later book in the *"You Don't Know JS"* series.
+**Lưu ý:** Trong ES6, một chức năng nâng cao có tên là `Proxy` được giới thiệu có thể cung cấp một số loại hành vi "không tìm thấy phương thức". `Proxy` nằm ngoài phạm vi của cuốn sách này, nhưng sẽ được đề cập chi tiết trong một cuốn sách sau trong sê-ri *"You Don't Know JS"*.
 
-**Don't miss an important but nuanced point here.**
+**Đừng bỏ lỡ một điểm quan trọng nhưng sắc thái ở đây.**
 
-Designing software where you intend for a developer to, for instance, call `myObject.cool()` and have that work even though there is no `cool()` method on `myObject` introduces some "magic" into your API design that can be surprising for future developers who maintain your software.
+Ví dụ: thiết kế phần mềm mà bạn dự định cho nhà phát triển gọi `myObject.cool()` và để phần mềm đó hoạt động mặc dù không có phương thức `cool()` trên `myObject` giới thiệu một số "phép thuật" vào thiết kế API của bạn có thể gây ngạc nhiên cho các nhà phát triển tương lai, những người duy trì phần mềm của bạn.
 
-You can however design your API with less "magic" to it, but still take advantage of the power of `[[Prototype]]` linkage.
+Tuy nhiên, bạn có thể thiết kế API của mình với ít "phép thuật" hơn nhưng vẫn tận dụng được sức mạnh của liên kết `[[Prototype]]`.
 
 ```js
 var anotherObject = {
@@ -731,22 +727,22 @@ myObject.doCool = function() {
 myObject.doCool(); // "cool!"
 ```
 
-Here, we call `myObject.doCool()`, which is a method that *actually exists* on `myObject`, making our API design more explicit (less "magical"). *Internally*, our implementation follows the **delegation design pattern** (see Chapter 6), taking advantage of `[[Prototype]]` delegation to `anotherObject.cool()`.
+Ở đây, chúng ta gọi `myObject.doCool()`, là một phương thức *thực sự tồn tại* trên `myObject`, làm cho thiết kế API của chúng ta rõ ràng hơn (ít "kỳ diệu" hơn). *Trong nội bộ*, việc triển khai của chúng ta tuân theo **mẫu thiết kế ủy quyền** (xem Chương 6), tận dụng lợi thế của `[[Prototype]]` ủy quyền cho `anotherObject.cool()`.
 
-In other words, delegation will tend to be less surprising/confusing if it's an internal implementation detail rather than plainly exposed in your API design. We will expound on **delegation** in great detail in the next chapter.
+Nói cách khác, ủy quyền sẽ có xu hướng ít gây ngạc nhiên/khó hiểu hơn nếu đó là chi tiết triển khai nội bộ thay vì được hiển thị rõ ràng trong thiết kế API của bạn. Chúng tôi sẽ trình bày chi tiết về **delegation** trong chương tiếp theo.
 
 ## Review (TL;DR)
 
-When attempting a property access on an object that doesn't have that property, the object's internal `[[Prototype]]` linkage defines where the `[[Get]]` operation (see Chapter 3) should look next. This cascading linkage from object to object essentially defines a "prototype chain" (somewhat similar to a nested scope chain) of objects to traverse for property resolution.
+Khi thử truy cập thuộc tính trên một đối tượng không có thuộc tính đó, liên kết `[[Prototype]]` bên trong của đối tượng xác định vị trí tiếp theo của thao tác `[[Get]]` (xem Chương 3). Liên kết xếp tầng này từ đối tượng này sang đối tượng khác về cơ bản xác định một "prototype chain" (hơi giống với chuỗi phạm vi lồng nhau) của các đối tượng để duyệt qua để phân giải thuộc tính.
 
-All normal objects have the built-in `Object.prototype` as the top of the prototype chain (like the global scope in scope look-up), where property resolution will stop if not found anywhere prior in the chain. `toString()`, `valueOf()`, and several other common utilities exist on this `Object.prototype` object, explaining how all objects in the language are able to access them.
+Tất cả các đối tượng thông thường đều có `Object.prototype` được tích hợp sẵn làm phần trên cùng của chuỗi nguyên mẫu (như phạm vi toàn cầu trong tra cứu phạm vi), trong đó quá trình phân giải thuộc tính sẽ dừng lại nếu không tìm thấy ở bất kỳ đâu trước đó trong chuỗi. `toString()`, `valueOf()` và một số tiện ích phổ biến khác tồn tại trên đối tượng `Object.prototype` này, giải thích cách tất cả các đối tượng trong ngôn ngữ có thể truy cập chúng.
 
-The most common way to get two objects linked to each other is using the `new` keyword with a function call, which among its four steps (see Chapter 2), it creates a new object linked to another object.
+Cách phổ biến nhất để liên kết hai đối tượng với nhau là sử dụng từ khóa `new` với một lệnh gọi hàm, trong bốn bước của nó (xem Chương 2), nó tạo ra một đối tượng mới được liên kết với một đối tượng khác.
 
-The "another object" that the new object is linked to happens to be the object referenced by the arbitrarily named `.prototype` property of the function called with `new`. Functions called with `new` are often called "constructors", despite the fact that they are not actually instantiating a class as *constructors* do in traditional class-oriented languages.
+"Đối tượng khác" mà đối tượng mới được liên kết tình cờ lại là đối tượng được tham chiếu bởi thuộc tính `.prototype` được đặt tên tùy ý của hàm được gọi với `new`. Các hàm được gọi với `new` thường được gọi là "hàm tạo", mặc dù thực tế là chúng không thực sự khởi tạo một lớp như *hàm tạo* thực hiện trong các ngôn ngữ định hướng lớp truyền thống.
 
-While these JavaScript mechanisms can seem to resemble "class instantiation" and "class inheritance" from traditional class-oriented languages, the key distinction is that in JavaScript, no copies are made. Rather, objects end up linked to each other via an internal `[[Prototype]]` chain.
+Mặc dù các cơ chế JavaScript này có vẻ giống với "khởi tạo lớp" và "kế thừa lớp" từ các ngôn ngữ định hướng lớp truyền thống, điểm khác biệt chính là trong JavaScript, không có bản sao nào được tạo. Thay vào đó, các đối tượng cuối cùng được liên kết với nhau thông qua chuỗi `[[Prototype]]` bên trong.
 
-For a variety of reasons, not the least of which is terminology precedent, "inheritance" (and "prototypal inheritance") and all the other OO terms just do not make sense when considering how JavaScript *actually* works (not just applied to our forced mental models).
+Vì nhiều lý do, ít nhất trong số đó là tiền lệ thuật ngữ, "kế thừa" (và "kế thừa nguyên mẫu") và tất cả các thuật ngữ OO khác không có ý nghĩa gì khi xem xét cách JavaScript *thực sự* hoạt động (không chỉ áp dụng cho mô hình tinh thần cưỡng bức).
 
-Instead, "delegation" is a more appropriate term, because these relationships are not *copies* but delegation **links**.
+Thay vào đó, "delegation (ủy quyền)" là thuật ngữ phù hợp hơn, bởi vì các mối quan hệ này không phải là *bản sao* mà là **liên kết** ủy quyền.

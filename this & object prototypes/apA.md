@@ -1,19 +1,19 @@
 # You Don't Know JS: *this* & Object Prototypes
 # Appendix A: ES6 `class`
 
-If there's any take-away message from the second half of this book (Chapters 4-6), it's that classes are an optional design pattern for code (not a necessary given), and that furthermore they are often quite awkward to implement in a `[[Prototype]]` language like JavaScript.
+Nếu có bất kỳ thông điệp rút ra nào từ nửa sau của cuốn sách này (Chương 4-6), thì đó là các class là một design pattern tùy chọn cho code (không bắt buộc phải có), và hơn nữa chúng thường khá khó triển khai trong một Ngôn ngữ `[[Prototype]]` như JavaScript.
 
-This awkwardness is *not* just about syntax, although that's a big part of it. Chapters 4 and 5 examined quite a bit of syntactic ugliness, from verbosity of `.prototype` references cluttering the code, to *explicit pseudo-polymorphism* (see Chapter 4) when you give methods the same name at different levels of the chain and try to implement a polymorphic reference from a lower-level method to a higher-level method. `.constructor` being wrongly interpreted as "was constructed by" and yet being unreliable for that definition is yet another syntactic ugly.
+Sự lúng túng này *không* chỉ là về cú pháp, mặc dù đó là một phần quan trọng của nó. Chương 4 và 5 đã xem xét khá nhiều lỗi về cú pháp, từ mức độ dài dòng của các tham chiếu `.prototype` làm lộn xộn mã, đến *giả đa hình rõ ràng* (xem Chương 4) khi bạn đặt cho các phương thức cùng tên ở các cấp độ khác nhau của chuỗi và cố gắng triển khai tham chiếu đa hình từ phương thức cấp thấp hơn sang phương thức cấp cao hơn. `.constructor` bị hiểu sai thành "được xây dựng bởi" và không đáng tin cậy đối với định nghĩa đó lại là một lỗi cú pháp khác.
 
-But the problems with class design are much deeper. Chapter 4 points out that classes in traditional class-oriented languages actually produce a *copy* action from parent to child to instance, whereas in `[[Prototype]]`, the action is **not** a copy, but rather the opposite -- a delegation link.
+Nhưng các vấn đề với thiết kế class còn sâu sắc hơn nhiều. Chương 4 chỉ ra rằng các class trong các ngôn ngữ class-oriented truyền thống thực sự tạo ra một hành động *sao chép* từ cha đến con, trong khi trong `[[Prototype]]`, hành động đó **không** là một bản sao, mà là ngược lại -- một liên kết ủy quyền.
 
-When compared to the simplicity of OLOO-style code and behavior delegation (see Chapter 6), which embrace `[[Prototype]]` rather than hide from it, classes stand out as a sore thumb in JS.
+Khi so sánh với sự đơn giản của code kiểu OLOO và behavior delegation (xem Chương 6), bao gồm `[[Prototype]]` thay vì ẩn nó, các class nổi bật như một ngón tay cái đau nhức trong JS.
 
 ## `class`
 
-But we *don't* need to re-argue that case again. I re-mention those issues briefly only so that you keep them fresh in your mind now that we turn our attention to the ES6 `class` mechanism. We'll demonstrate here how it works, and look at whether or not `class` does anything substantial to address any of those "class" concerns.
+Nhưng chúng ta *không* cần phải tranh luận lại trường hợp đó. Tôi chỉ đề cập lại những vấn đề đó một cách ngắn gọn để bạn luôn ghi nhớ chúng khi bây giờ chúng ta chuyển sự chú ý sang cơ chế `class` của ES6. Ở đây, chúng tôi sẽ trình bày cách thức hoạt động của nó và xem liệu `class` có làm bất cứ điều gì đáng kể để giải quyết bất kỳ mối quan tâm nào về "class" đó hay không.
 
-Let's revisit the `Widget` / `Button` example from Chapter 6:
+Hãy xem lại ví dụ `Widget` / `Button` từ Chương 6:
 
 ```js
 class Widget {
@@ -48,23 +48,23 @@ class Button extends Widget {
 }
 ```
 
-Beyond this syntax *looking* nicer, what problems does ES6 solve?
+Ngoài việc cú pháp này *trông* đẹp hơn, ES6 giải quyết vấn đề gì?
 
-1. There's no more (well, sorta, see below!) references to `.prototype` cluttering the code.
-2. `Button` is declared directly to "inherit from" (aka `extends`) `Widget`, instead of needing to use `Object.create(..)` to replace a `.prototype` object that's linked, or having to set with `.__proto__` or `Object.setPrototypeOf(..)`.
-3. `super(..)` now gives us a very helpful **relative polymorphism** capability, so that any method at one level of the chain can refer relatively one level up the chain to a method of the same name. This includes a solution to the note from Chapter 4 about the weirdness of constructors not belonging to their class, and so being unrelated -- `super()` works inside constructors exactly as you'd expect.
-4. `class` literal syntax has no affordance for specifying properties (only methods). This might seem limiting to some, but it's expected that the vast majority of cases where a property (state) exists elsewhere but the end-chain "instances", this is usually a mistake and surprising (as it's state that's implicitly "shared" among all "instances"). So, one *could* say the `class` syntax is protecting you from mistakes.
-5. `extends` lets you extend even built-in object (sub)types, like `Array` or `RegExp`, in a very natural way. Doing so without `class .. extends` has long been an exceedingly complex and frustrating task, one that only the most adept of framework authors have ever been able to accurately tackle. Now, it will be rather trivial!
+1. Không còn tham chiếu nào (tốt, sắp xếp, xem bên dưới!) đến `.prototype` làm lộn xộn code.
+2. `Button` được khai báo trực tiếp để "kế thừa từ" (còn gọi là `extends`) `Widget`, thay vì cần sử dụng `Object.create(..)` để thay thế đối tượng `.prototype` được liên kết hoặc có để thiết lập với `.__proto__` hoặc `Object.setPrototypeOf(..)`.
+3. `super(..)` hiện cung cấp cho chúng ta khả năng **relative polymorphism** rất hữu ích, để bất kỳ phương thức nào ở một cấp độ của chuỗi có thể tham chiếu tương đối một cấp độ cao hơn của chuỗi tới một phương thức cùng tên. Điều này bao gồm một giải pháp cho lưu ý từ Chương 4 về sự kỳ lạ của các hàm tạo không thuộc class của chúng, và do đó không liên quan -- `super()` hoạt động bên trong các hàm tạo chính xác như bạn mong đợi.
+4. Cú pháp chữ `class` không có khả năng chỉ định các thuộc tính (chỉ các phương thức). Điều này có vẻ hạn chế đối với một số người, nhưng người ta cho rằng phần lớn các trường hợp trong đó một thuộc tính (state - trạng thái) tồn tại ở nơi khác ngoài "instance" chuỗi cuối, đây thường là một sai lầm và đáng ngạc nhiên (vì state đó được "chia sẻ" ngầm giữa tất cả các "instance"). Vì vậy, một người *có thể* nói rằng cú pháp `class` đang bảo vệ bạn khỏi những sai lầm.
+5. `extends` cho phép bạn mở rộng ngay cả các loại build-in object (sub)types, như `Array` hoặc `RegExp`, theo cách rất tự nhiên. Làm như vậy mà không có `class .. extends` từ lâu đã là một nhiệm vụ cực kỳ phức tạp và khó chịu, một nhiệm vụ mà chỉ những tác giả khuôn khổ lão luyện nhất mới có thể giải quyết chính xác. Bây giờ, nó sẽ khá tầm thường!
 
-In all fairness, those are some substantial solutions to many of the most obvious (syntactic) issues and surprises people have with classical prototype-style code.
+Công bằng mà nói, đó là một số giải pháp quan trọng cho nhiều vấn đề (cú pháp) rõ ràng nhất và khiến mọi người ngạc nhiên với mã kiểu nguyên mẫu cổ điển.
 
 ## `class` Gotchas
 
-It's not all bubblegum and roses, though. There are still some deep and profoundly troubling issues with using "classes" as a design pattern in JS.
+Tuy nhiên, đó không phải là tất cả kẹo cao su và hoa hồng. Vẫn còn một số vấn đề sâu sắc và rắc rối sâu sắc khi sử dụng "class" làm design pattern trong JS.
 
-Firstly, the `class` syntax may convince you a new "class" mechanism exists in JS as of ES6. **Not so.** `class` is, mostly, just syntactic sugar on top of the existing `[[Prototype]]` (delegation!) mechanism.
+Thứ nhất, cú pháp `class` có thể thuyết phục bạn rằng có một cơ chế "class" mới tồn tại trong JS kể từ ES6. **Không phải như vậy.** `class` chủ yếu chỉ là cú pháp nằm trên cơ chế `[[Prototype]]` (delegation - uỷ quyền!) hiện có.
 
-That means `class` is not actually copying definitions statically at declaration time the way it does in traditional class-oriented languages. If you change/replace a method (on purpose or by accident) on the parent "class", the child "class" and/or instances will still be "affected", in that they didn't get copies at declaration time, they are all still using the live-delegation model based on `[[Prototype]]`:
+Điều đó có nghĩa là `class` không thực sự sao chép các định nghĩa một cách tĩnh tại thời điểm khai báo giống như trong các ngôn ngữ class-oriented truyền thống. Nếu bạn thay đổi/thay thế một phương thức (có mục đích hoặc vô tình) trên "class" cha, thì "class" con và/hoặc các instance vẫn sẽ bị "ảnh hưởng", theo nghĩa là chúng không nhận được bản sao tại thời điểm khai báo, chúng tất cả vẫn đang sử dụng mô hình ủy quyền trực tiếp dựa trên `[[Prototype]]`:
 
 ```js
 class C {
@@ -89,11 +89,11 @@ c2.rand(); // "Random: 867"
 c1.rand(); // "Random: 432" -- oops!!!
 ```
 
-This only seems like reasonable behavior *if you already know* about the delegation nature of things, rather than expecting *copies* from "real classes". So the question to ask yourself is, why are you choosing `class` syntax for something fundamentally different from classes?
+Đây chỉ có vẻ là hành vi hợp lý *nếu bạn đã biết* về bản chất ủy quyền của mọi thứ, thay vì mong đợi *bản sao* từ "các lớp thực". Vì vậy, câu hỏi đặt ra cho chính bạn là, tại sao bạn lại chọn cú pháp `class` cho một cái gì đó về cơ bản khác với các class?
 
-Doesn't the ES6 `class` syntax **just make it harder** to see and understand the difference between traditional classes and delegated objects?
+Không phải cú pháp `class` của ES6 **chỉ làm cho việc nhìn và hiểu sự khác biệt giữa các lớp truyền thống và các đối tượng được ủy quyền trở nên khó khăn hơn** sao?
 
-`class` syntax *does not* provide a way to declare class member properties (only methods). So if you need to do that to track shared state among instances, then you end up going back to the ugly `.prototype` syntax, like this:
+Cú pháp `class` *không* cung cấp cách khai báo các thuộc tính của class (chỉ các phương thức). Vì vậy, nếu bạn cần làm điều đó để theo dõi trạng thái được chia sẻ giữa các instance, thì cuối cùng bạn sẽ quay lại cú pháp `.prototype` xấu xí, như thế này:
 
 ```js
 class C {
@@ -123,11 +123,11 @@ c1.count === 2; // true
 c1.count === c2.count; // true
 ```
 
-The biggest problem here is that it betrays the `class` syntax by exposing (leakage!) `.prototype` as an implementation detail.
+Vấn đề lớn nhất ở đây là nó phản bội cú pháp `class` bằng cách để lộ (rò rỉ!) `.prototype` như một chi tiết triển khai.
 
-But, we also still have the surprise gotcha that `this.count++` would implicitly create a separate shadowed `.count` property on both `c1` and `c2` objects, rather than updating the shared state. `class` offers us no consolation from that issue, except (presumably) to imply by lack of syntactic support that you shouldn't be doing that *at all*.
+Tuy nhiên, chúng ta vẫn có một điều bất ngờ là `this.count++` sẽ ngầm tạo một thuộc tính `.count` được shadowed riêng biệt trên cả hai object `c1` và `c2`, thay vì cập nhật state được chia sẻ. `class` không mang lại cho chúng ta sự an ủi nào từ vấn đề đó, ngoại trừ (có lẽ) để ám chỉ việc thiếu hỗ trợ cú pháp rằng bạn không nên làm điều đó *hoàn toàn*.
 
-Moreover, accidental shadowing is still a hazard:
+Hơn nữa, shadowing vô tình vẫn là một mối nguy hiểm:
 
 ```js
 class C {
@@ -145,17 +145,17 @@ var c1 = new C( "c1" );
 c1.id(); // TypeError -- `c1.id` is now the string "c1"
 ```
 
-There's also some very subtle nuanced issues with how `super` works. You might assume that `super` would be bound in an analogous way to how `this` gets bound (see Chapter 2), which is that `super` would always be bound to one level higher than whatever the current method's position in the `[[Prototype]]` chain is.
+Ngoài ra còn có một số vấn đề rất tế nhị về cách hoạt động của `super`. Bạn có thể cho rằng `super` sẽ bị ràng buộc theo cách tương tự như cách `this` bị ràng buộc (xem Chương 2), nghĩa là `super` sẽ luôn bị ràng buộc ở một cấp cao hơn bất kỳ vị trí nào của phương thức hiện tại trong chuỗi `[[Prototype]]`.
 
-However, for performance reasons (`this` binding is already expensive), `super` is not bound dynamically. It's bound sort of "statically", as declaration time. No big deal, right?
+Tuy nhiên, vì lý do hiệu suất (liên kết `this` thực sự nặng), `super` không được liên kết động. Đó là loại "tĩnh" bị ràng buộc, như thời gian khai báo. Không có vấn đề lớn, phải không?
 
-Ehh... maybe, maybe not. If you, like most JS devs, start assigning functions around to different objects (which came from `class` definitions), in various different ways, you probably won't be very aware that in all those cases, the `super` mechanism under the covers is having to be re-bound each time.
+Ehh... có thể, có thể không. Nếu bạn, giống như hầu hết các nhà phát triển JS, bắt đầu gán function xung quanh các object khác nhau (xuất phát từ định nghĩa `class`), theo nhiều cách khác nhau, thì có lẽ bạn sẽ không nhận thức được rằng trong tất cả các trường hợp đó, cơ chế `super` bên dưới phải được đóng lại mỗi lần.
 
-And depending on what sorts of syntactic approaches you take to these assignments, there may very well be cases where the `super` can't be properly bound (at least, not where you suspect), so you may (at time of writing, TC39 discussion is ongoing on the topic) have to manually bind `super` with `toMethod(..)` (kinda like you have to do `bind(..)` for `this` -- see Chapter 2).
+Và tùy thuộc vào loại cách tiếp cận cú pháp mà bạn thực hiện đối với các bài tập này, rất có thể có trường hợp `super` không thể được ràng buộc đúng cách (ít nhất, không phải nơi bạn nghi ngờ), vì vậy bạn có thể (tại thời điểm viết, Thảo luận TC39 đang diễn ra về chủ đề này) phải liên kết thủ công `super` với `toMethod(..)` (giống như bạn phải thực hiện `bind(..)` cho `this` -- xem Chương 2).
 
-You're used to being able to assign around methods to different objects to *automatically* take advantage of the dynamism of `this` via the *implicit binding* rule (see Chapter 2). But the same will likely not be true with methods that use `super`.
+Bạn đã quen với việc có thể gán xung quanh các method cho các object khác nhau để *tự động* tận dụng tính năng động của `this` thông qua quy tắc *ràng buộc ngầm* (xem Chương 2). Nhưng điều tương tự có thể sẽ không đúng với các method sử dụng `super`.
 
-Consider what `super` should do here (against `D` and `E`):
+Hãy xem `super` nên làm gì ở đây (đối với `D` và `E`):
 
 ```js
 class P {
@@ -185,56 +185,36 @@ Object.setPrototypeOf( E, D );
 E.foo(); // "P.foo"
 ```
 
-If you were thinking (quite reasonably!) that `super` would be bound dynamically at call-time, you might expect that `super()` would automatically recognize that `E` delegates to `D`, so `E.foo()` using `super()` should call to `D.foo()`.
+Nếu bạn đang nghĩ (khá hợp lý!) rằng `super` sẽ bị ràng buộc động tại thời điểm gọi, thì bạn có thể mong đợi rằng `super()` sẽ tự động nhận ra rằng `E` ủy quyền cho `D`, vì vậy `E.foo( )` sử dụng `super()` sẽ gọi tới `D.foo()`.
 
-**Not so.** For performance pragmatism reasons, `super` is not *late bound* (aka, dynamically bound) like `this` is. Instead it's derived at call-time from `[[HomeObject]].[[Prototype]]`, where `[[HomeObject]]` is statically bound at creation time.
+**Không phải vậy.** Vì lý do thực dụng về hiệu suất, `super` không *bị ràng buộc muộn* (hay còn gọi là bị ràng buộc động) như `this`. Thay vào đó, nó bắt nguồn từ `[[HomeObject]].[[Prototype]]`, trong đó `[[HomeObject]]` được liên kết tĩnh tại thời điểm tạo.
 
-In this particular case, `super()` is still resolving to `P.foo()`, since the method's `[[HomeObject]]` is still `C` and `C.[[Prototype]]` is `P`.
+Trong trường hợp cụ thể này, `super()` vẫn đang phân giải thành `P.foo()`, vì `[[HomeObject]]` của phương thức vẫn là `C` và `C.[[Prototype]]` là `P `.
 
-There will *probably* be ways to manually address such gotchas. Using `toMethod(..)` to bind/rebind a method's `[[HomeObject]]` (along with setting the `[[Prototype]]` of that object!) appears to work in this scenario:
-
-```js
-var D = {
-	foo: function() { console.log( "D.foo" ); }
-};
-
-// Link E to D for delegation
-var E = Object.create( D );
-
-// manually bind `foo`s `[[HomeObject]]` as
-// `E`, and `E.[[Prototype]]` is `D`, so thus
-// `super()` is `D.foo()`
-E.foo = C.prototype.foo.toMethod( E, "foo" );
-
-E.foo(); // "D.foo"
-```
-
-**Note:** `toMethod(..)` clones the method, and takes `homeObject` as its first parameter (which is why we pass `E`), and the second parameter (optionally) sets a `name` for the new method (which keep at "foo").
-
-It remains to be seen if there are other corner case gotchas that devs will run into beyond this scenario. Regardless, you will have to be diligent and stay aware of which places the engine automatically figures out `super` for you, and which places you have to manually take care of it. **Ugh!**
+Vẫn còn phải xem liệu có những vấn đề nan giải khác mà các nhà phát triển sẽ gặp phải ngoài kịch bản này hay không. Dù thế nào đi nữa, bạn sẽ phải siêng năng và lưu ý xem những chỗ nào engine tự động tìm ra `super` cho bạn và những chỗ nào bạn phải tự xử lý. **Ồ!**
 
 # Static > Dynamic?
 
-But the biggest problem of all about ES6 `class` is that all these various gotchas mean `class` sorta opts you into a syntax which seems to imply (like traditional classes) that once you declare a `class`, it's a static definition of a (future instantiated) thing. You completely lose sight of the fact that `C` is an object, a concrete thing, which you can directly interact with.
+Nhưng vấn đề lớn nhất về `class` của ES6 là tất cả các vấn đề khác nhau này có nghĩa là sắp xếp `class` sẽ đưa bạn vào một cú pháp dường như ngụ ý (giống như các class truyền thống) rằng một khi bạn khai báo một `class`, đó là một định nghĩa tĩnh của một điều (khởi tạo trong tương lai). Bạn hoàn toàn đánh mất sự thật rằng `C` là một đối tượng, một thứ cụ thể mà bạn có thể tương tác trực tiếp.
 
-In traditional class-oriented languages, you never adjust the definition of a class later, so the class design pattern doesn't suggest such capabilities. But **one of the most powerful parts** of JS is that it *is* dynamic, and the definition of any object is (unless you make it immutable) a fluid and mutable *thing*.
+Trong các ngôn ngữ class-oriented truyền thống, bạn không bao giờ điều chỉnh định nghĩa của một class sau này, vì vậy class design pattern không đề xuất các khả năng như vậy. Nhưng **một trong những phần mạnh mẽ nhất** của JS là nó *là* động và định nghĩa của bất kỳ đối tượng nào (trừ khi bạn làm cho nó bất biến) là một *thứ* linh hoạt và có thể thay đổi.
 
-`class` seems to imply you shouldn't do such things, by forcing you into the uglier `.prototype` syntax to do so, or forcing you to think about `super` gotchas, etc. It also offers *very little* support for any of the pitfalls that this dynamism can bring.
+`class` dường như ngụ ý rằng bạn không nên làm những việc như vậy, bằng cách buộc bạn sử dụng cú pháp `.prototype` xấu hơn để làm như vậy hoặc buộc bạn phải suy nghĩ về `super` gotchas, v.v. Nó cũng cung cấp hỗ trợ *rất ít* cho bất kỳ cạm bẫy nào mà sự năng động này có thể mang lại.
 
-In other words, it's as if `class` is telling you: "dynamic is too hard, so it's probably not a good idea. Here's a static-looking syntax, so code your stuff statically."
+Nói cách khác, như thể `class` đang nói với bạn: "động quá khó, vì vậy đây có thể không phải là ý kiến hay. Đây là một cú pháp có vẻ tĩnh, vì vậy hãy viết code tĩnh cho nội dung của bạn."
 
-What a sad commentary on JavaScript: **dynamic is too hard, let's pretend to be (but not actually be!) static**.
+Thật là một bình luận đáng buồn về JavaScript: **động quá khó, hãy giả vờ là (nhưng không thực sự là!) tĩnh**.
 
-These are the reasons why ES6 `class` is masquerading as a nice solution to syntactic headaches, but it's actually muddying the waters further and making things worse for JS and for clear and concise understanding.
+Đây là những lý do tại sao ES6 `class` đang giả vờ là một giải pháp tốt cho những cơn đau đầu về cú pháp, nhưng nó thực sự làm vấy bẩn nước hơn nữa và khiến mọi thứ trở nên tồi tệ hơn đối với JS cũng như để hiểu rõ ràng và ngắn gọn.
 
-**Note:** If you use the `.bind(..)` utility to make a hard-bound function (see Chapter 2), the function created is not subclassable with ES6 `extend` like normal functions are.
+**Lưu ý:** Nếu bạn sử dụng tiện ích `.bind(..)` để tạo một hàm liên kết cứng (xem Chương 2), hàm được tạo sẽ không thể phân lớp con với ES6 `extend` giống như các hàm thông thường.
 
 ## Review (TL;DR)
 
-`class` does a very good job of pretending to fix the problems with the class/inheritance design pattern in JS. But it actually does the opposite: **it hides many of the problems, and introduces other subtle but dangerous ones**.
+`class` thực hiện rất tốt việc giả vờ khắc phục sự cố với class/inheritance design pattern trong JS. Nhưng nó thực sự làm điều ngược lại: **nó che giấu nhiều vấn đề và đưa ra những vấn đề tế nhị nhưng nguy hiểm khác**.
 
-`class` contributes to the ongoing confusion of "class" in JavaScript which has plagued the language for nearly two decades. In some respects, it asks more questions than it answers, and it feels in totality like a very unnatural fit on top of the elegant simplicity of the `[[Prototype]]` mechanism.
+`class` góp phần vào sự nhầm lẫn đang diễn ra của "class" trong JavaScript, điều này đã cản trở ngôn ngữ này trong gần hai thập kỷ. Ở một số khía cạnh, nó đặt ra nhiều câu hỏi hơn là trả lời và về tổng thể, nó giống như một sự phù hợp rất không tự nhiên bên cạnh sự đơn giản tao nhã của cơ chế `[[Prototype]]`.
 
-Bottom line: if ES6 `class` makes it harder to robustly leverage `[[Prototype]]`, and hides the most important nature of the JS object mechanism -- **the live delegation links between objects** -- shouldn't we see `class` as creating more troubles than it solves, and just relegate it to an anti-pattern?
+Điểm mấu chốt: nếu ES6 `class` làm cho việc tận dụng mạnh mẽ `[[Prototype]]` trở nên khó khăn hơn và che giấu bản chất quan trọng nhất của cơ chế đối tượng JS -- **liên kết ủy quyền trực tiếp giữa các đối tượng** -- thì không nên chúng ta thấy `class` đang tạo ra nhiều rắc rối hơn là nó giải quyết được, và chỉ chuyển nó thành một mô hình chống đối?
 
-I can't really answer that question for you. But I hope this book has fully explored the issue at a deeper level than you've ever gone before, and has given you the information you need *to answer it yourself*.
+Tôi thực sự không thể trả lời câu hỏi đó cho bạn. Nhưng tôi hy vọng cuốn sách này đã khám phá đầy đủ vấn đề ở cấp độ sâu hơn so với những gì bạn từng xem trước đây và đã cung cấp cho bạn thông tin bạn cần *để tự trả lời*.

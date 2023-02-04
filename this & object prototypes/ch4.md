@@ -1,99 +1,99 @@
 # You Don't Know JS: *this* & Object Prototypes
 # Chapter 4: Mixing (Up) "Class" Objects
 
-Following our exploration of objects from the previous chapter, it's natural that we now turn our attention to "object oriented (OO) programming", with "classes". We'll first look at "class orientation" as a design pattern, before examining the mechanics of "classes": "instantiation", "inheritance" and "(relative) polymorphism".
+Sau khi chúng ta khám phá các object từ chương trước, tự nhiên bây giờ chúng ta chuyển sự chú ý sang "object oriented (OO) programming", với "các class". Trước tiên, chúng ta sẽ xem xét "class orientation" như một design pattern, trước khi xem xét cơ chế của "class": "instantiation (tức thời)", "inheritance (kế thừa)" và "(relative) polymorphism (đa hình (tương đối))".
 
-We'll see that these concepts don't really map very naturally to the object mechanism in JS, and the lengths (mixins, etc.) many JavaScript developers go to overcome such challenges.
+Chúng ta sẽ thấy rằng những khái niệm này không thực sự ánh xạ một cách tự nhiên đến cơ chế đối tượng trong JS và độ dài (mixin, v.v.) mà nhiều nhà phát triển JavaScript phải vượt qua những thách thức như vậy.
 
-**Note:** This chapter spends quite a bit of time (the first half!) on heavy "objected oriented programming" theory. We eventually relate these ideas to real concrete JavaScript code in the second half, when we talk about "Mixins". But there's a lot of concept and pseudo-code to wade through first, so don't get lost -- just stick with it!
+**Ghi Chú:** Chương này dành khá nhiều thời gian (nửa đầu!) Cho lý thuyết nặng về "lập trình hướng đối tượng". Cuối cùng, chúng tôi liên hệ những ý tưởng này với mã JavaScript cụ thể thực sự trong nửa sau, khi chúng tôi nói về "Mixin". Nhưng có rất nhiều khái niệm và mã giả để vượt qua trước tiên, vì vậy đừng để bị lạc - chỉ cần gắn bó với nó!
 
 ## Class Theory
 
-"Class/Inheritance" describes a certain form of code organization and architecture -- a way of modeling real world problem domains in our software.
+"Class/Inheritance" (lớp/kế thừa) mô tả một dạng tổ chức và kiến trúc code nhất định - một cách mô hình hóa các miền vấn đề trong thế giới thực trong phần mềm của chúng ta.
 
-OO or class oriented programming stresses that data intrinsically has associated behavior (of course, different depending on the type and nature of the data!) that operates on it, so proper design is to package up (aka, encapsulate) the data and the behavior together. This is sometimes called "data structures" in formal computer science.
+OO hay class oriented programming nhấn mạnh rằng dữ liệu về bản chất có hành vi liên kết (tất nhiên, khác nhau tùy thuộc vào loại và bản chất của dữ liệu!) hoạt động trên đó, vì vậy thiết kế phù hợp là đóng gói (hay còn gọi là đóng gói) dữ liệu và hành vi lại với nhau. Điều này đôi khi được gọi là "cấu trúc dữ liệu" trong khoa học máy tính chính thức.
 
-For example, a series of characters that represents a word or phrase is usually called a "string". The characters are the data. But you almost never just care about the data, you usually want to *do things* with the data, so the behaviors that can apply *to* that data (calculating its length, appending data, searching, etc.) are all designed as methods of a `String` class.
+Ví dụ, một chuỗi các ký tự đại diện cho một từ hoặc cụm từ thường được gọi là "string". Các ký tự là dữ liệu. Nhưng bạn hầu như không bao giờ chỉ quan tâm đến dữ liệu, bạn thường muốn *làm mọi việc* với dữ liệu, vì vậy các hành vi có thể áp dụng *cho* dữ liệu đó (tính toán độ dài của nó, thêm dữ liệu, tìm kiếm, v.v.) đều được thiết kế như các phương thức của một class `String`.
 
-Any given string is just an instance of this class, which means that it's a neatly collected packaging of both the character data and the functionality we can perform on it.
+Bất kỳ string nhất định nào cũng chỉ là một thể hiện của class này, có nghĩa là nó là một gói được thu thập gọn gàng của cả dữ liệu ký tự và function mà chúng ta có thể thực hiện trên nó.
 
-Classes also imply a way of *classifying* a certain data structure. The way we do this is to think about any given structure as a specific variation of a more general base definition.
+Các class cũng ngụ ý một cách *classifying (phân loại)* một cấu trúc dữ liệu nhất định. Cách chúng ta làm điều này là suy nghĩ về bất kỳ cấu trúc nhất định nào như một biến thể cụ thể của định nghĩa cơ sở tổng quát hơn.
 
-Let's explore this classification process by looking at a commonly cited example. A *car* can be described as a specific implementation of a more general "class" of thing, called a *vehicle*.
+Hãy cùng khám phá quy trình phân loại này bằng cách xem một ví dụ thường được trích dẫn. *Car* có thể được mô tả như một cách triển khai cụ thể của một "class" vật chung chung hơn, được gọi là *Vehicle*.
 
-We model this relationship in software with classes by defining a `Vehicle` class and a `Car` class.
+Chúng ta mô hình hóa mối quan hệ này trong software với các class bằng cách xác định class `Vehicle` và class `Car`.
 
-The definition of `Vehicle` might include things like propulsion (engines, etc.), the ability to carry people, etc., which would all be the behaviors. What we define in `Vehicle` is all the stuff that is common to all (or most of) the different types of vehicles (the "planes, trains, and automobiles").
+Định nghĩa về `Vehicle` có thể bao gồm những thứ như sức đẩy (động cơ, v.v.), khả năng chở người, v.v., tất cả đều sẽ là hành vi. Những gì chúng tôi định nghĩa trong `Vehicle` là tất cả những thứ chung cho tất cả (hoặc hầu hết) các loại phương tiện khác nhau (" máy bay, tàu hỏa và ô tô ").
 
-It might not make sense in our software to re-define the basic essence of "ability to carry people" over and over again for each different type of vehicle. Instead, we define that capability once in `Vehicle`, and then when we define `Car`, we simply indicate that it "inherits" (or "extends") the base definition from `Vehicle`. The definition of `Car` is said to specialize the general `Vehicle` definition.
+Phần mềm của chúng ta có thể không có ý nghĩa khi định nghĩa lại bản chất cơ bản của "khả năng chở người" đối với từng loại phương tiện khác nhau. Thay vào đó, chúng ta xác định khả năng đó một lần trong `Vehicle`, và sau đó khi chúng ta định nghĩa `Car`, chúng ta chỉ đơn giản chỉ ra rằng nó "inherit" (h oặc "extends") định nghĩa cơ sở từ `Vehicle`. Định nghĩa của `Car` được cho là chuyên biệt hóa định nghĩa chung về `Vehicle`.
 
-While `Vehicle` and `Car` collectively define the behavior by way of methods, the data in an instance would be things like the unique VIN of a specific car, etc.
+Mặc dù `Vehicle` và `Car` cùng nhau định nghĩa hành vi bằng cách dùng các phương thức, nhưng dữ liệu trong một phiên bản sẽ là những thứ như số VIN(Vehicle identification number) duy nhất của một chiếc xe cụ thể, v.v.
 
-**And thus, classes, inheritance, and instantiation emerge.**
+**Và do đó, các lớp, kế thừa và khởi tạo xuất hiện.**
 
-Another key concept with classes is "polymorphism", which describes the idea that a general behavior from a parent class can be overridden in a child class to give it more specifics. In fact, relative polymorphism lets us reference the base behavior from the overridden behavior.
+Một khái niệm quan trọng khác với các class là "đa hình(polymorphism)", mô tả ý tưởng rằng một hành vi chung từ lớp cha có thể được ghi đè trong lớp con để cung cấp cho nó chi tiết cụ thể hơn. Trên thực tế, tính đa hình tương đối cho phép chúng ta tham chiếu hành vi cơ sở từ hành vi bị ghi đè.
 
-Class theory strongly suggests that a parent class and a child class share the same method name for a certain behavior, so that the child overrides the parent (differentially). As we'll see later, doing so in your JavaScript code is opting into frustration and code brittleness.
+Lý thuyết Class đề xuất mạnh mẽ rằng một class cha và một class con chia sẻ cùng một tên phương thức cho một hành vi nhất định, để lớp con ghi đè lớp cha (một cách khác biệt). Như chúng ta sẽ thấy ở phần sau, làm như vậy trong mã JavaScript của bạn sẽ dẫn đến sự thất vọng và tính dễ gãy của mã.
 
 ### "Class" Design Pattern
 
-You may never have thought about classes as a "design pattern", since it's most common to see discussion of popular "OO Design Patterns", like "Iterator", "Observer", "Factory", "Singleton", etc. As presented this way, it's almost an assumption that OO classes are the lower-level mechanics by which we implement all (higher level) design patterns, as if OO is a given foundation for *all* (proper) code.
+Bạn có thể chưa bao giờ nghĩ về các class như là một "design pattern", vì nó phổ biến nhất khi thấy thảo luận về các "OO Design Patterns" phổ biến, như "Iterator", "Observer", "Factory", "Singleton", v.v. Như đã trình bày theo cách này, gần như giả định rằng các class OO là cơ chế cấp thấp hơn mà chúng tôi triển khai tất cả các mẫu thiết kế (cấp cao hơn), như thể OO là nền tảng nhất định cho *tất cả* (thích hợp) code.
 
-Depending on your level of formal education in programming, you may have heard of "procedural programming" as a way of describing code which only consists of procedures (aka, functions) calling other functions, without any higher abstractions. You may have been taught that classes were the *proper* way to transform procedural-style "spaghetti code" into well-formed, well-organized code.
+Tùy thuộc vào trình độ học vấn chính thức của bạn về lập trình, bạn có thể đã nghe nói về "procedural programming" như một cách mô tả mã chỉ bao gồm các thủ tục (hay còn gọi là hàm) gọi các hàm khác mà không có bất kỳ sự trừu tượng nào cao hơn. Bạn có thể đã được dạy rằng các lớp là cách *thích hợp* để chuyển đổi "mã spaghetti" theo kiểu thủ tục thành mã được tổ chức tốt và được định dạng tốt.
 
-Of course, if you have experience with "functional programming" (Monads, etc.), you know very well that classes are just one of several common design patterns. But for others, this may be the first time you've asked yourself if classes really are a fundamental foundation for code, or if they are an optional abstraction on top of code.
+Tất nhiên, nếu bạn có kinh nghiệm với "functional programming" (Monads, v.v.), bạn sẽ biết rất rõ rằng các class chỉ là một trong số các design pattern phổ biến. Nhưng đối với những người khác, đây có thể là lần đầu tiên bạn tự hỏi liệu các class có thực sự là nền tảng cơ bản cho code hay chúng là một sự trừu tượng tùy chọn hàng đầu của code.
 
-Some languages (like Java) don't give you the choice, so it's not very *optional* at all -- everything's a class. Other languages like C/C++ or PHP give you both procedural and class-oriented syntaxes, and it's left more to the developer's choice which style or mixture of styles is appropriate.
+Một số ngôn ngữ (như Java) không cung cấp cho bạn lựa chọn, vì vậy nó không *tùy chọn* chút nào -- mọi thứ đều là một class. Các ngôn ngữ khác như C/C++ hoặc PHP cung cấp cho bạn cả cú pháp thủ tục và hướng lớp, và tùy thuộc vào sự lựa chọn của nhà phát triển xem phong cách hoặc hỗn hợp các phong cách phù hợp hơn.
 
 ### JavaScript "Classes"
 
-Where does JavaScript fall in this regard? JS has had *some* class-like syntactic elements (like `new` and `instanceof`) for quite awhile, and more recently in ES6, some additions, like the `class` keyword (see Appendix A).
+JavaScript rơi vào đâu trong vấn đề này? JS đã có *một số* thành phần cú pháp giống như lớp (như `new` và `instanceof`) trong một thời gian khá dài và gần đây hơn trong ES6, một số bổ sung, như từ khóa `class` (xem Phụ lục A).
 
-But does that mean JavaScript actually *has* classes? Plain and simple: **No.**
+Nhưng điều đó có nghĩa là JavaScript thực sự *có* các class? Rõ ràng và đơn giản: **Không.**
 
-Since classes are a design pattern, you *can*, with quite a bit of effort (as we'll see throughout the rest of this chapter), implement approximations for much of classical class functionality. JS tries to satisfy the extremely pervasive *desire* to design with classes by providing seemingly class-like syntax.
+Vì các class là một design pattern, nên bạn *có thể*, với khá nhiều nỗ lực (như chúng ta sẽ thấy trong suốt phần còn lại của chương này), triển khai các phép tính gần đúng cho nhiều chức năng của class cổ điển. JS cố gắng thỏa mãn *mong muốn* cực kỳ phổ biến để thiết kế với các class bằng cách cung cấp cú pháp có vẻ giống như class.
 
-While we may have a syntax that looks like classes, it's as if JavaScript mechanics are fighting against you using the *class design pattern*, because behind the curtain, the mechanisms that you build on are operating quite differently. Syntactic sugar and (extremely widely used) JS "Class" libraries go a long way toward hiding this reality from you, but sooner or later you will face the fact that the *classes* you have in other languages are not like the "classes" you're faking in JS.
+Mặc dù chúng ta có thể có một syntax trông giống như các class, nhưng như thể các cơ chế JavaScript đang chống lại bạn bằng cách sử dụng *class design pattern*, bởi vì đằng sau bức màn, các cơ chế mà bạn xây dựng đang hoạt động hoàn toàn khác. Đường cú pháp và các thư viện JS "Class" (được sử dụng cực kỳ rộng rãi) giúp bạn che giấu thực tế này một cách lâu dài, nhưng sớm hay muộn bạn sẽ phải đối mặt với thực tế là *class* bạn có trong các ngôn ngữ khác không giống như "class" bạn đang giả mạo trong JS.
 
-What this boils down to is that classes are an optional pattern in software design, and you have the choice to use them in JavaScript or not. Since many developers have a strong affinity to class oriented software design, we'll spend the rest of this chapter exploring what it takes to maintain the illusion of classes with what JS provides, and the pain points we experience.
+Điều này tóm lại là các lớp là một pattern tùy chọn trong thiết kế phần mềm và bạn có quyền lựa chọn sử dụng chúng trong JavaScript hay không. Vì nhiều nhà phát triển có mối quan hệ mật thiết với thiết kế phần mềm class oriented, nên chúng ta sẽ dành phần còn lại của chương này để khám phá những điều cần thiết để duy trì ảo tưởng về class với những gì JS cung cấp và những điểm khó khăn mà chúng ta gặp phải.
 
 ## Class Mechanics
 
-In many class-oriented languages, the "standard library" provides a "stack" data structure (push, pop, etc.) as a `Stack` class. This class would have an internal set of variables that stores the data, and it would have a set of publicly accessible behaviors ("methods") provided by the class, which gives your code the ability to interact with the (hidden) data (adding & removing data, etc.).
+Trong nhiều ngôn ngữ class-oriented, "standard library" cung cấp một "stack" data structure (push, pop, etc.) dưới dạng một class `Stack`. Class này sẽ có một tập hợp các biến nội bộ lưu trữ dữ liệu và nó sẽ có một tập hợp các hành vi ("phương thức") có thể truy cập công khai do class cung cấp, giúp code của bạn có khả năng tương tác với dữ liệu (ẩn) (thêm & xóa dữ liệu, v.v.).
 
-But in such languages, you don't really operate directly on `Stack` (unless making a **Static** class member reference, which is outside the scope of our discussion). The `Stack` class is merely an abstract explanation of what *any* "stack" should do, but it's not itself *a* "stack". You must **instantiate** the `Stack` class before you have a concrete data structure *thing* to operate against.
+Nhưng trong các ngôn ngữ như vậy, bạn không thực sự thao tác trực tiếp trên `Stack` (trừ khi tạo tham chiếu thành viên class **Static**, nằm ngoài phạm vi thảo luận của chúng ta). Class `Stack` chỉ là một giải thích trừu tượng về những gì mà *bất kỳ* "stack" nào nên làm, nhưng bản thân nó không phải là *một* "stack". Bạn phải **khởi tạo** class `Stack` trước khi bạn có cấu trúc dữ liệu cụ thể *thứ* để hoạt động chống lại.
 
 ### Building
 
-The traditional metaphor for "class" and "instance" based thinking comes from a building construction.
+Phép ẩn dụ truyền thống cho tư duy dựa trên "class" và "instance" xuất phát từ việc xây dựng một công trình.
 
-An architect plans out all the characteristics of a building: how wide, how tall, how many windows and in what locations, even what type of material to use for the walls and roof. She doesn't necessarily care, at this point, *where* the building will be built, nor does she care *how many* copies of that building will be built.
+Một kiến trúc sư lên kế hoạch cho tất cả các đặc điểm của một tòa nhà: rộng bao nhiêu, cao bao nhiêu, có bao nhiêu cửa sổ và ở những vị trí nào, thậm chí loại vật liệu nào sẽ sử dụng cho tường và mái. Tại thời điểm này, cô ấy không nhất thiết phải quan tâm, *ở đâu (where)* tòa nhà sẽ được xây dựng, cô ấy cũng không quan tâm *có bao nhiêu (how many)* bản sao của tòa nhà đó sẽ được xây dựng.
 
-She also doesn't care very much about the contents of the building -- the furniture, wall paper, ceiling fans, etc. -- only what type of structure they will be contained by.
+Cô ấy cũng không quan tâm lắm đến chi tiết của tòa nhà -- đồ nội thất, giấy dán tường, quạt trần, v.v. -- chỉ quan tâm đến loại cấu trúc mà chúng sẽ được chứa trong đó..
 
-The architectural blue-prints she produces are only *plans* for a building. They don't actually constitute a building we can walk into and sit down. We need a builder for that task. A builder will take those plans and follow them, exactly, as he *builds* the building. In a very real sense, he is *copying* the intended characteristics from the plans to the physical building.
+Bản thiết kế kiến trúc mà cô ấy tạo ra chỉ là *kế hoạch* cho một tòa nhà. Chúng không thực sự tạo thành một tòa nhà mà chúng ta có thể bước vào và ngồi xuống. Chúng ta cần một người xây dựng cho nhiệm vụ đó. Một người xây dựng sẽ lấy những kế hoạch đó và làm theo chúng một cách chính xác, khi anh ta *xây dựng* tòa nhà. Theo một nghĩa rất thực tế, anh ấy đang *sao chép* các đặc điểm dự kiến từ các kế hoạch sang tòa nhà vật lý.
 
-Once complete, the building is a physical instantiation of the blue-print plans, hopefully an essentially perfect *copy*. And then the builder can move to the open lot next door and do it all over again, creating yet another *copy*.
+Sau khi hoàn thành, tòa nhà là sự khởi tạo vật lý của các kế hoạch thiết kế, hy vọng là một *bản sao* hoàn hảo về cơ bản. Và sau đó người xây dựng có thể di chuyển đến lô đất trống bên cạnh và làm lại từ đầu, tạo ra một *bản sao* khác.
 
-The relationship between building and blue-print is indirect. You can examine a blue-print to understand how the building was structured, for any parts where direct inspection of the building itself was insufficient. But if you want to open a door, you have to go to the building itself -- the blue-print merely has lines drawn on a page that *represent* where the door should be.
+Mối quan hệ giữa tòa nhà và bản thiết kế là gián tiếp. Bạn có thể kiểm tra bản thiết kế để hiểu tòa nhà được cấu trúc như thế nào, đối với bất kỳ bộ phận nào mà việc kiểm tra trực tiếp tòa nhà là không đủ. Nhưng nếu bạn muốn mở một cánh cửa, bạn phải đến chính tòa nhà -- bản thiết kế chỉ có các đường được vẽ trên một trang *đại diện* vị trí của cánh cửa đó.
 
-A class is a blue-print. To actually *get* an object we can interact with, we must build (aka, "instantiate") something from the class. The end result of such "construction" is an object, typically called an "instance", which we can directly call methods on and access any public data properties from, as necessary.
+Một class là một bản thiết kế(blue-print). Để thực sự *lấy* một object mà chúng ta có thể tương tác, chúng ta phải xây dựng (hay còn gọi là "khởi tạo (instantiate)") một thứ gì đó từ class. Kết quả cuối cùng của việc "xây dựng" như vậy là một object, thường được gọi là "instance (thể hiện)", mà chúng ta có thể gọi trực tiếp các phương thức và truy cập bất kỳ thuộc tính dữ liệu công khai nào từ đó, nếu cần.
 
-**This object is a *copy*** of all the characteristics described by the class.
+**Object này là một *bản sao*** của tất cả các đặc điểm được mô tả bởi class.
 
-You likely wouldn't expect to walk into a building and find, framed and hanging on the wall, a copy of the blue-prints used to plan the building, though the blue-prints are probably on file with a public records office. Similarly, you don't generally use an object instance to directly access and manipulate its class, but it is usually possible to at least determine *which class* an object instance comes from.
+Bạn có thể sẽ không mong đợi bước vào một tòa nhà và tìm thấy, được đóng khung và treo trên tường, một bản sao của các bản thiết kế được sử dụng để lên kế hoạch cho tòa nhà, mặc dù các bản thiết kế này có thể được lưu trữ tại một văn phòng hồ sơ công cộng. Tương tự, bạn thường không sử dụng một object instance để truy cập trực tiếp và thao tác với class của nó, nhưng thường thì ít nhất bạn cũng có thể xác định một object instance thuộc *lớp nào*.
 
-It's more useful to consider the direct relationship of a class to an object instance, rather than any indirect relationship between an object instance and the class it came from. **A class is instantiated into object form by a copy operation.**
+Sẽ hữu ích hơn khi xem xét mối quan hệ trực tiếp của một class với một object instance, hơn là bất kỳ mối quan hệ gián tiếp nào giữa một object instance và class mà nó xuất phát. **Một class được khởi tạo thành dạng object bằng thao tác sao chép.**
 
 <img src="fig1.png">
 
-As you can see, the arrows move from left to right, and from top to bottom, which indicates the copy operations that occur, both conceptually and physically.
+Như bạn có thể thấy, các mũi tên di chuyển từ trái sang phải và từ trên xuống dưới, biểu thị các thao tác sao chép diễn ra, cả về mặt khái niệm và vật lý.
 
 ### Constructor
 
-Instances of classes are constructed by a special method of the class, usually of the same name as the class, called a *constructor*. This method's explicit job is to initialize any information (state) the instance will need.
+Các instance của các class được xây dựng bằng một phương thức đặc biệt của class, thường có cùng tên với class, được gọi là *constructor*. Công việc rõ ràng của phương thức này là khởi tạo bất kỳ thông tin (trạng thái) nào mà instance sẽ cần.
 
-For example, consider this loose pseudo-code (invented syntax) for classes:
+Cho minh hoạ, xem xét đoạn pseudo-code (cú pháp tự sáng chế) cho class:
 
 ```js
 class CoolGuy {
@@ -109,7 +109,7 @@ class CoolGuy {
 }
 ```
 
-To *make* a `CoolGuy` instance, we would call the class constructor:
+Để *tạo* một `CoolGuy` instance, chúng ta sẽ gọi constructor của class:
 
 ```js
 Joe = new CoolGuy( "jumping rope" )
@@ -117,29 +117,29 @@ Joe = new CoolGuy( "jumping rope" )
 Joe.showOff() // Here's my trick: jumping rope
 ```
 
-Notice that the `CoolGuy` class has a constructor `CoolGuy()`, which is actually what we call when we say `new CoolGuy(..)`. We get an object back (an instance of our class) from the constructor, and we can call the method `showOff()`, which prints out that particular `CoolGuy`s special trick.
+Để ý rằng `CoolGuy` class có một constructor `CoolGuy()`, thứ mà thực sự được gọi khi chúng ta gọi `new CoolGuy(..)`. Chúng ta nhận về một object (một instance của class của chúng ta) từ constructor, và chúng ta có thể gọi method `showOff()`, thứ mà in ra special trick của `CoolGuy` đó.
 
-*Obviously, jumping rope makes Joe a pretty cool guy.*
+*Rõ ràng, nhảy dây khiến Joe trở thành một chàng trai khá ngầu.*
 
-The constructor of a class *belongs* to the class, almost universally with the same name as the class. Also, constructors pretty much always need to be called with `new` to let the language engine know you want to construct a *new* class instance.
+Constructor của một class *thuộc về* class, hầu như phổ biến có cùng tên với class. Đồng thời, constructor hầu như luôn cần được gọi với từ khoá `new` để cho ngôn ngữ biết bạn muốn tạo một instance *mới* của class.
 
 ## Class Inheritance
 
-In class-oriented languages, not only can you define a class which can be instantiated itself, but you can define another class that **inherits** from the first class.
+Trong các ngôn ngữ class-oriented, bạn không chỉ có thể định nghĩa một class có thể tự khởi tạo mà còn có thể định nghĩa một class khác **kế thừa** từ class đầu tiên.
 
-The second class is often said to be a "child class" whereas the first is the "parent class". These terms obviously come from the metaphor of parents and children, though the metaphors here are a bit stretched, as you'll see shortly.
+Class thứ hai thường được gọi là "child class" trong khi class thứ nhất là "parent class". Những thuật ngữ này rõ ràng xuất phát từ phép ẩn dụ của cha mẹ và con cái, mặc dù các phép ẩn dụ ở đây hơi kéo dài, như bạn sẽ thấy ngay sau đây.
 
-When a parent has a biological child, the genetic characteristics of the parent are copied into the child. Obviously, in most biological reproduction systems, there are two parents who co-equally contribute genes to the mix. But for the purposes of the metaphor, we'll assume just one parent.
+Khi cha mẹ có con ruột, các đặc điểm di truyền của cha mẹ được sao chép vào đứa trẻ. Rõ ràng, trong hầu hết các hệ thống sinh sản sinh học, có hai bố mẹ cùng đóng góp các gen vào hỗn hợp. Nhưng với mục đích của phép ẩn dụ, chúng ta sẽ giả sử chỉ có một phụ huynh.
 
-Once the child exists, he or she is separate from the parent. The child was heavily influenced by the inheritance from his or her parent, but is unique and distinct. If a child ends up with red hair, that doesn't mean the parent's hair *was* or automatically *becomes* red.
+Một khi đứa trẻ được sinh ra, nó tách biệt khỏi cha mẹ. Đứa trẻ chịu ảnh hưởng sâu sắc bởi sự di truyền từ cha mẹ của mình, nhưng là duy nhất và khác biệt. Nếu một đứa trẻ có mái tóc đỏ, điều đó không có nghĩa là tóc của cha mẹ *từng* hoặc tự động *trở thành* đỏ.
 
-In a similar way, once a child class is defined, it's separate and distinct from the parent class. The child class contains an initial copy of the behavior from the parent, but can then override any inherited behavior and even define new behavior.
+Theo cách tương tự, một khi child class được định nghĩa, nó sẽ tách biệt và khác biệt với parent class. Child class chứa một bản sao ban đầu của behavior từ parent class, nhưng sau đó có thể ghi đè bất kỳ hành vi kế thừa nào và thậm chí định nghĩa hành vi mới.
 
-It's important to remember that we're talking about parent and child **classes**, which aren't physical things. This is where the metaphor of parent and child gets a little confusing, because we actually should say that a parent class is like a parent's DNA and a child class is like a child's DNA. We have to make (aka "instantiate") a person out of each set of DNA to actually have a physical person to have a conversation with.
+Điều quan trọng cần nhớ là chúng ta đang nói về **các class** về parent và child, đây không phải là những thứ vật chất. Đây là chỗ mà ẩn dụ cha và con hơi khó hiểu, bởi vì chúng ta thực sự nên nói rằng parent class giống như DNA của cha và child class giống như DNA của con. Chúng ta phải tạo ra (hay còn gọi là "khởi tạo") một người trong mỗi bộ DNA để thực sự có một người thực sự để trò chuyện cùng.
 
-Let's set aside biological parents and children, and look at inheritance through a slightly different lens: different types of vehicles. That's one of the most canonical (and often groan-worthy) metaphors to understand inheritance.
+Hãy tạm gác cha mẹ ruột và con cái sang một bên và nhìn vào sự thừa kế qua một lăng kính hơi khác: các loại phương tiện khác nhau. Đó là một trong những phép ẩn dụ kinh điển nhất (và thường đáng phàn nàn) để hiểu về sự kế thừa.
 
-Let's revisit the `Vehicle` and `Car` discussion from earlier in this chapter. Consider this loose pseudo-code (invented syntax) for inherited classes:
+Cùng xem lại cuộc thảo luận `Vehicle` và `Car` ở đầu chương này. Xem xét pseudo-code này cho các class kế thừa:
 
 ```js
 class Vehicle {
@@ -178,73 +178,73 @@ class SpeedBoat inherits Vehicle {
 }
 ```
 
-**Note:** For clarity and brevity, constructors for these classes have been omitted.
+**Ghi chú:** Để rõ ràng và ngắn gọn, các hàm constructor cho các lớp này đã được lược bỏ.
 
-We define the `Vehicle` class to assume an engine, a way to turn on the ignition, and a way to drive around. But you wouldn't ever manufacture just a generic "vehicle", so it's really just an abstract concept at this point.
+Chúng ta định nghĩa class `Vehicle` giả định một động cơ, một cách để bật hệ thống đánh lửa và một cách để lái xe xung quanh. Nhưng bạn sẽ không bao giờ chỉ sản xuất một "phương tiện" chung chung, vì vậy nó thực sự chỉ là một khái niệm trừu tượng vào thời điểm này.
 
-So then we define two specific kinds of vehicle: `Car` and `SpeedBoat`. They each inherit the general characteristics of `Vehicle`, but then they specialize the characteristics appropriately for each kind. A car needs 4 wheels, and a speed boat needs 2 engines, which means it needs extra attention to turn on the ignition of both engines.
+Vì vậy, sau đó chúng ta định nghĩa hai loại phương tiện cụ thể: `Car` và `SpeedBoat`. Mỗi loại đều kế thừa các đặc điểm chung của `Vehicle`, nhưng sau đó chúng chuyên biệt hóa các đặc điểm thích hợp cho từng loại. Một chiếc ô tô cần 4 bánh và một chiếc thuyền cao tốc cần 2 động cơ, điều đó có nghĩa là nó cần được chú ý nhiều hơn để bật đánh lửa của cả hai động cơ.
 
 ### Polymorphism
 
-`Car` defines its own `drive()` method, which overrides the method of the same name it inherited from `Vehicle`. But then, `Car`s `drive()` method calls `inherited:drive()`, which indicates that `Car` can reference the original pre-overridden `drive()` it inherited. `SpeedBoat`s `pilot()` method also makes a reference to its inherited copy of `drive()`.
+`Car` định nghĩa phương thức `drive()` của nó, thứ mà ghi đè lên phương thức cùng tên thuộc `Vehicle`. Nhưng sau đó, phương thức `drive()` của `Car` gọi `inherited:drive()`, cho biết rằng `Car` có thể tham chiếu `drive()` ban đầu trước khi ghi đè mà nó kế thừa. Phương thức `pilot()` của `SpeedBoat` cũng tạo một tham chiếu đến bản sao kế thừa của `drive()`.
 
-This technique is called "polymorphism", or "virtual polymorphism". More specifically to our current point, we'll call it "relative polymorphism".
+Kỹ thuật này được gọi là "polymorphism", hay "virtual polymorphism". Cụ thể hơn cho điểm hiện tại của chúng tôi, chúng tôi sẽ gọi nó là "relative polymorphism".
 
-Polymorphism is a much broader topic than we will exhaust here, but our current "relative" semantics refers to one particular aspect: the idea that any method can reference another method (of the same or different name) at a higher level of the inheritance hierarchy. We say "relative" because we don't absolutely define which inheritance level (aka, class) we want to access, but rather relatively reference it by essentially saying "look one level up".
+Đa hình là một chủ đề rộng hơn nhiều so với những gì chúng ta sẽ nói hết ở đây, nhưng ngữ nghĩa "tương đối" hiện tại của chúng ta đề cập đến một khía cạnh cụ thể: ý tưởng rằng bất kỳ phương thức nào cũng có thể tham chiếu đến một phương thức khác (cùng tên hoặc khác tên) ở cấp độ cao hơn của hệ thống phân cấp kế thừa. Chúng tôi nói "tương đối" bởi vì chúng tôi không xác định hoàn toàn cấp độ kế thừa (hay còn gọi là class) mà chúng tôi muốn truy cập, mà tương đối tham chiếu nó bằng cách nói "tìm kiếm một cấp độ".
 
-In many languages, the keyword `super` is used, in place of this example's `inherited:`, which leans on the idea that a "super class" is the parent/ancestor of the current class.
+Trong nhiều ngôn ngữ, từ khóa `super` được sử dụng, thay cho từ `inherited:` trong ví dụ này, dựa trên ý tưởng rằng một "super class" là cha/tổ tiên của lớp hiện tại.
 
-Another aspect of polymorphism is that a method name can have multiple definitions at different levels of the inheritance chain, and these definitions are automatically selected as appropriate when resolving which methods are being called.
+Một khía cạnh khác của polymorphism là một tên phương thức có thể có nhiều định nghĩa ở các cấp độ khác nhau của chuỗi thừa kế và các định nghĩa này được tự động chọn khi thích hợp khi giải quyết phương thức nào đang được gọi.
 
-We see two occurrences of that behavior in our example above: `drive()` is defined in both `Vehicle` and `Car`, and `ignition()` is defined in both `Vehicle` and `SpeedBoat`.
+Chúng ta thấy hai lần xuất hiện của hành vi đó trong ví dụ của chúng ta ở trên: `drive()` được định nghĩa bởi cả `Vehicle` và `Car`, và `ignition()` được định nghĩa bởi cả `Vehicle` và `SpeedBoat`.
 
-**Note:** Another thing that traditional class-oriented languages give you via `super` is a direct way for the constructor of a child class to reference the constructor of its parent class. This is largely true because with real classes, the constructor belongs to the class. However, in JS, it's the reverse -- it's actually more appropriate to think of the "class" belonging to the constructor (the `Foo.prototype...` type references). Since in JS the relationship between child and parent exists only between the two `.prototype` objects of the respective constructors, the constructors themselves are not directly related, and thus there's no simple way to relatively reference one from the other (see Appendix A for ES6 `class` which "solves" this with `super`).
+**Ghi chú:** Một điều khác mà các ngôn ngữ class-oriented truyền thống cung cấp cho bạn thông qua `super` là một cách trực tiếp để constructor của class con tham chiếu constructor của lớp cha của nó. Điều này phần lớn đúng bởi vì với các class thực tế, constructor thuộc về class. Tuy nhiên, trong JS thì ngược lại -- thực sự thích hợp hơn khi nghĩ về "class" thuộc về constructor (các tham chiếu kiểu `Foo.prototype...`). Vì trong JS, mối quan hệ giữa con và cha chỉ tồn tại giữa hai đối tượng `.prototype` của các constructor tương ứng, bản thân các constructor không liên quan trực tiếp và do đó không có cách đơn giản nào để tham chiếu tương đối cái này với cái kia (xem Phụ lục A để biết ES6 `class` sẽ "giải quyết" vấn đề này bằng `super`).
 
-An interesting implication of polymorphism can be seen specifically with `ignition()`. Inside `pilot()`, a relative-polymorphic reference is made to (the inherited) `Vehicle`s version of `drive()`. But that `drive()` references an `ignition()` method just by name (no relative reference).
+Có thể thấy cụ thể một ý nghĩa thú vị của polymorphism với `ignition()`. Bên trong `pilot()`, một relative-polymorphic reference được tạo cho phiên bản `Vehicle` của `drive()` (kế thừa). Nhưng `drive()` đó chỉ tham chiếu một phương thức `ignition()` theo tên (không có tham chiếu tương đối).
 
-Which version of `ignition()` will the language engine use, the one from `Vehicle` or the one from `SpeedBoat`? **It uses the `SpeedBoat` version of `ignition()`.** If you *were* to instantiate `Vehicle` class itself, and then call its `drive()`, the language engine would instead just use `Vehicle`s `ignition()` method definition.
+Language engine sẽ sử dụng phiên bản nào của `ignition()`, phiên bản từ `Vehicle` hay phiên bản từ `SpeedBoat`? **Nó sử dụng phiên bản `SpeedBoat` của `ignition()`.** Nếu bạn *đã* khởi tạo chính lớp `Vehicle`, sau đó gọi `drive()` của nó, thì language engine sẽ chỉ sử dụng định nghĩa phương thức `ignition()` của  `Vehicle`.
 
-Put another way, the definition for the method `ignition()` *polymorphs* (changes) depending on which class (level of inheritance) you are referencing an instance of.
+Nói cách khác, định nghĩa cho phương thức `ignition()` *đa hình* (thay đổi) tùy thuộc vào lớp (mức độ kế thừa) mà bạn đang tham chiếu đến một thể hiện của.
 
-This may seem like overly deep academic detail. But understanding these details is necessary to properly contrast similar (but distinct) behaviors in JavaScript's `[[Prototype]]` mechanism.
+Điều này có vẻ giống như chi tiết học thuật quá sâu. Nhưng việc hiểu những chi tiết này là cần thiết để đối chiếu chính xác các hành vi tương tự (nhưng khác biệt) trong cơ chế `[[Prototype]]` của JavaScript.
 
-When classes are inherited, there is a way **for the classes themselves** (not the object instances created from them!) to *relatively* reference the class inherited from, and this relative reference is usually called `super`.
+Khi các lớp được kế thừa, có một cách **cho chính các lớp** (không phải các thể hiện đối tượng được tạo từ chúng!) để tham chiếu *tương đối* lớp được kế thừa từ đó và tham chiếu tương đối này thường được gọi là `super`.
 
-Remember this figure from earlier:
+Nhớ sơ đồ này từ trước đó:
 
 <img src="fig1.png">
 
-Notice how for both instantiation (`a1`, `a2`, `b1`, and `b2`) *and* inheritance (`Bar`), the arrows indicate a copy operation.
+Lưu ý cách khởi tạo (`a1`, `a2`, `b1`, và `b2`) *và* kế thừa (`Bar`), các mũi tên biểu thị thao tác sao chép.
 
-Conceptually, it would seem a child class `Bar` can access  behavior in its parent class `Foo` using a relative polymorphic reference (aka, `super`). However, in reality, the child class is merely given a copy of the inherited behavior from its parent class. If the child "overrides" a method it inherits, both the original and overridden versions of the method are actually maintained, so that they are both accessible.
+Về mặt khái niệm, có vẻ như một class con `Bar` có thể truy cập hành vi trong class cha của nó `Foo` bằng cách sử dụng một relative-polymorphic reference(tham chiếu đa hình tương đối) (hay còn gọi là `super`). Tuy nhiên, trong thực tế, class con chỉ đơn thuần được cung cấp một bản sao của hành vi được kế thừa từ class cha của nó. Nếu phần tử con "ghi đè" một phương thức mà nó kế thừa, thì cả phiên bản gốc và phiên bản được ghi đè của phương thức đó đều thực sự được duy trì để cả hai đều có thể truy cập được.
 
-Don't let polymorphism confuse you into thinking a child class is linked to its parent class. A child class instead gets a copy of what it needs from the parent class. **Class inheritance implies copies.**
+Đừng để tính đa hình khiến bạn nhầm lẫn khi nghĩ rằng một class con được liên kết với class cha của nó. Thay vào đó, một class con nhận được một bản sao của những gì nó cần từ lớp cha. **Kế thừa class ngụ ý các bản sao.**
 
 ### Multiple Inheritance
 
-Recall our earlier discussion of parent(s) and children and DNA? We said that the metaphor was a bit weird because biologically most offspring come from two parents. If a class could inherit from two other classes, it would more closely fit the parent/child metaphor.
+Nhớ lại cuộc thảo luận trước đây của chúng ta về cha mẹ và con cái và DNA? Chúng tôi đã nói rằng phép ẩn dụ hơi kỳ lạ vì về mặt sinh học, hầu hết con cái đều có cha và mẹ. Nếu một class có thể kế thừa từ hai class khác, nó sẽ phù hợp hơn với phép ẩn dụ cha/con.
 
-Some class-oriented languages allow you to specify more than one "parent" class to "inherit" from. Multiple-inheritance means that each parent class definition is copied into the child class.
+Một số ngôn ngữ class-oriented cho phép bạn chỉ định nhiều hơn một class "cha" để "kế thừa" từ đó. Đa kế thừa có nghĩa là mỗi định nghĩa của class cha được sao chép vào class con.
 
-On the surface, this seems like a powerful addition to class-orientation, giving us the ability to compose more functionality together. However, there are certainly some complicating questions that arise. If both parent classes provide a method called `drive()`, which version would a `drive()` reference in the child resolve to? Would you always have to manually specify which parent's `drive()` you meant, thus losing some of the gracefulness of polymorphic inheritance?
+Nhìn bề ngoài, đây có vẻ như là một bổ sung mạnh mẽ cho định hướng class, cho chúng ta khả năng kết hợp nhiều function hơn với nhau. Tuy nhiên, chắc chắn có một số câu hỏi phức tạp phát sinh. Nếu cả hai class cha cung cấp một phương thức có tên là `drive()`, thì tham chiếu `drive()` trong class con sẽ chuyển thành phiên bản nào? Bạn có luôn phải chỉ định thủ công `drive()` của class cha nào không, do đó làm mất đi một số nét duyên dáng của tính kế thừa đa hình?
 
-There's another variation, the so called "Diamond Problem", which refers to the scenario where a child class "D" inherits from two parent classes ("B" and "C"), and each of those in turn inherits from a common "A" parent. If "A" provides a method `drive()`, and both "B" and "C" override (polymorph) that method, when `D` references `drive()`, which version should it use (`B:drive()` or `C:drive()`)?
+Có một biến thể khác, cái gọi là "Diamond problem", đề cập đến kịch bản trong đó một class con "D" kế thừa từ hai class cha ("B" và "C") và mỗi class này lần lượt kế thừa từ class cha chung là A. Nếu "A" cung cấp một phương thức `drive()`, và cả "B" và "C" đều ghi đè (đa hình) phương thức đó, thì khi `D` tham chiếu `drive()`, nó sẽ sử dụng phiên bản nào (`B:drive ()` hay `C:drive()`)?
 
 <img src="fig2.png">
 
-These complications go even much deeper than this quick glance. We address them here only so we can contrast to how JavaScript's mechanisms work.
+Những phức tạp này thậm chí còn đi sâu hơn nhiều so với cái nhìn nhanh chóng này. Chúng ta giải quyết chúng ở đây chỉ để chúng tôi có thể đối chiếu với cách thức hoạt động của các cơ chế của JavaScript.
 
-JavaScript is simpler: it does not provide a native mechanism for "multiple inheritance". Many see this as a good thing, because the complexity savings more than make up for the "reduced" functionality. But this doesn't stop developers from trying to fake it in various ways, as we'll see next.
+JavaScript đơn giản hơn: nó không cung cấp cơ chế riêng cho "đa kế thừa". Nhiều người coi đây là một điều tốt, bởi vì sự phức tạp giúp tiết kiệm nhiều hơn là bù đắp cho chức năng "giảm bớt". Nhưng điều này không ngăn được các nhà phát triển cố gắng giả mạo nó theo nhiều cách khác nhau, như chúng ta sẽ thấy tiếp theo.
 
 ## Mixins
 
-JavaScript's object mechanism does not *automatically* perform copy behavior when you "inherit" or "instantiate". Plainly, there are no "classes" in JavaScript to instantiate, only objects. And objects don't get copied to other objects, they get *linked together* (more on that in Chapter 5).
+Cơ chế object của JavaScript không *tự động* thực hiện hành vi sao chép khi bạn "kế thừa" hoặc "khởi tạo". Rõ ràng, không có "class" nào trong JavaScript để khởi tạo, chỉ có các object. Và các đối tượng không được sao chép sang các object khác, chúng được *liên kết với nhau* (thêm về điều đó trong Chương 5).
 
-Since observed class behaviors in other languages imply copies, let's examine how JS developers **fake** the *missing* copy behavior of classes in JavaScript: mixins. We'll look at two types of "mixin": **explicit** and **implicit**.
+Vì các hành vi của class được quan sát trong các ngôn ngữ khác ngụ ý các bản sao, hãy kiểm tra cách các nhà phát triển JS **giả mạo** hành vi sao chép *bị thiếu* của các class trong JavaScript: mixins. Chúng ta sẽ xem xét hai loại "mixin": **rõ ràng** và **ngầm định**.
 
 ### Explicit Mixins
 
-Let's again revisit our `Vehicle` and `Car` example from before. Since JavaScript will not automatically copy behavior from `Vehicle` to `Car`, we can instead create a utility that manually copies. Such a utility is often called `extend(..)` by many libraries/frameworks, but we will call it `mixin(..)` here for illustrative purposes.
+Hãy xem lại ví dụ `Vehicle` và `Car` của chúng ta trước đó. Vì JavaScript sẽ không tự động sao chép hành vi từ `Vehicle` sang `Car`, thay vào đó, chúng ta có thể tạo một utinity (tiện ích) sao chép thủ công. Một tiện ích như vậy thường được nhiều thư viện/framework gọi là `extend(..)`, nhưng chúng ta sẽ gọi nó là `mixin(..)` ở đây cho mục đích minh họa.
 
 ```js
 // vastly simplified `mixin(..)` example:
@@ -282,31 +282,31 @@ var Car = mixin( Vehicle, {
 } );
 ```
 
-**Note:** Subtly but importantly, we're not dealing with classes anymore, because there are no classes in JavaScript. `Vehicle` and `Car` are just objects that we make copies from and to, respectively.
+**Ghi Chú:** Một cách tế nhị nhưng quan trọng, chúng ta không xử lý các class nữa, vì không có class nào trong JavaScript. `Vehicle` và `Car` chỉ là các object mà chúng ta tạo bản sao tương ứng từ và sang.
 
-`Car` now has a copy of the properties and functions from `Vehicle`. Technically, functions are not actually duplicated, but rather *references* to the functions are copied. So, `Car` now has a property called `ignition`, which is a copied reference to the `ignition()` function, as well as a property called `engines` with the copied value of `1` from `Vehicle`.
+`Car` hiện có bản sao các property và function từ `Xe`. Về mặt kỹ thuật, các chức năng không thực sự được sao chép mà thay vào đó, các *tham chiếu* đến các chức năng được sao chép. Vì vậy, `Car` hiện có một thuộc tính được gọi là `ignition`, là một tham chiếu được sao chép cho hàm `ignition()`, cũng như một thuộc tính có tên là `engines` với giá trị được sao chép là `1` từ `Vehicle`.
 
-`Car` *already* had a `drive` property (function), so that property reference was not overridden (see the `if` statement in `mixin(..)` above).
+`Car` *thực sự* có một thuộc tính `drive` (function), để tham chiếu thuộc tính không bị ghi đè (xem câu lệnh `if` trong `mixin(..)` ở trên).
 
 #### "Polymorphism" Revisited
 
-Let's examine this statement: `Vehicle.drive.call( this )`. This is what I call "explicit pseudo-polymorphism". Recall in our previous pseudo-code this line was `inherited:drive()`, which we called "relative polymorphism".
+Hãy xem xét câu lệnh này: `Vehicle.drive.call(this )`. Đây là cái mà tôi gọi là "explicit pseudo-polymorphism (đa hình giả rõ ràng)". Nhớ lại trong pseudo-code trước đây của chúng ta, dòng này là `inherited:drive()`, mà chúng ta gọi là "relative polymorphism (đa hình tương đối)".
 
-JavaScript does not have (prior to ES6; see Appendix A) a facility for relative polymorphism. So, **because both `Car` and `Vehicle` had a function of the same name: `drive()`**, to distinguish a call to one or the other, we must make an absolute (not relative) reference. We explicitly specify the `Vehicle` object by name, and call the `drive()` function on it.
+JavaScript không có (trước ES6; xem Phụ lục A) cơ sở cho relative polymorphism. Vì vậy, **vì cả `Car` và `Vehicle` đều có function giống nhau: `drive()`**, nên để phân biệt lệnh gọi này hay lệnh kia, chúng ta phải tạo một tham chiếu tuyệt đối (không tương đối). Chúng ta chỉ định rõ ràng object `Vehicle` theo tên và gọi hàm `drive()` trên đó.
 
-But if we said `Vehicle.drive()`, the `this` binding for that function call would be the `Vehicle` object instead of the `Car` object (see Chapter 2), which is not what we want. So, instead we use `.call( this )` (Chapter 2) to ensure that `drive()` is executed in the context of the `Car` object.
+Nhưng nếu chúng ta nói `Vehicle.drive()`, ràng buộc `this` cho lệnh gọi hàm đó sẽ là đối tượng `Vehicle` thay vì đối tượng `Car` (xem Chương 2), đây không phải là điều chúng ta muốn. Vì vậy, thay vào đó, chúng tôi sử dụng `.call( this )` (Chương 2) để đảm bảo rằng `drive()` được thực thi trong ngữ cảnh của đối tượng `Car`.
 
-**Note:** If the function name identifier for `Car.drive()` hadn't overlapped with (aka, "shadowed"; see Chapter 5) `Vehicle.drive()`, we wouldn't have been exercising "method polymorphism". So, a reference to `Vehicle.drive()` would have been copied over by the `mixin(..)` call, and we could have accessed directly with `this.drive()`. The chosen identifier overlap **shadowing** is *why* we have to use the more complex *explicit pseudo-polymorphism* approach.
+**Ghi Chú:** Nếu định danh tên hàm cho `Car.drive()` không trùng lặp với (hay còn gọi là "shadowed"; xem Chương 5) `Vehicle.drive()`, thì chúng ta đã không thực hiện "method polymorphism". Vì vậy, tham chiếu đến `Vehicle.drive()` sẽ được sao chép bởi lệnh gọi `mixin(..)` và chúng ta có thể truy cập trực tiếp bằng `this.drive()`. Sự trùng lặp định danh được chọn **shadowing** là *lý do* chúng ta phải sử dụng phương pháp tiếp cận *explicit pseudo-polymorphism* phức tạp hơn.
 
-In class-oriented languages, which have relative polymorphism, the linkage between `Car` and `Vehicle` is established once, at the top of the class definition, which makes for only one place to maintain such relationships.
+Trong các ngôn ngữ class-oriented, có tính relative polymorphism, liên kết giữa `Car` và `Vehicle` được thiết lập một lần, ở đầu định nghĩa class, điều này tạo ra chỉ một nơi duy nhất để duy trì các mối quan hệ đó.
 
-But because of JavaScript's peculiarities, explicit pseudo-polymorphism (because of shadowing!) creates brittle manual/explicit linkage **in every single function where you need such a (pseudo-)polymorphic reference**. This can significantly increase the maintenance cost. Moreover, while explicit pseudo-polymorphism can emulate the behavior of "multiple inheritance", it only increases the complexity and brittleness.
+Nhưng do các đặc thù của JavaScript, explicit pseudo-polymorphism (vì shadowing!) tạo ra liên kết thủ công/rõ ràng mong manh **trong mọi function đơn lẻ mà bạn cần một tham chiếu đa hình (giả)** như vậy. Điều này có thể làm tăng đáng kể chi phí bảo trì. Hơn nữa, mặc dù giả đa hình rõ ràng có thể mô phỏng hành vi của "đa kế thừa", nhưng nó chỉ làm tăng độ phức tạp và độ mong manh.
 
-The result of such approaches is usually more complex, harder-to-read, *and* harder-to-maintain code. **Explicit pseudo-polymorphism should be avoided wherever possible**, because the cost outweighs the benefit in most respects.
+Kết quả của những cách tiếp cận như vậy thường là code phức tạp hơn, khó đọc hơn, *và* khó bảo trì hơn. **Nên tránh giả đa hình rõ ràng bất cứ khi nào có thể**, bởi vì chi phí lớn hơn lợi ích trong hầu hết các khía cạnh.
 
 #### Mixing Copies
 
-Recall the `mixin(..)` utility from above:
+Nhớ lại utility `mixin(..)` ở trên:
 
 ```js
 // vastly simplified `mixin()` example:
@@ -322,9 +322,9 @@ function mixin( sourceObj, targetObj ) {
 }
 ```
 
-Now, let's examine how `mixin(..)` works. It iterates over the properties of `sourceObj` (`Vehicle` in our example) and if there's no matching property of that name in `targetObj` (`Car` in our example), it makes a copy. Since we're making the copy after the initial object exists, we are careful to not copy over a target property.
+Bây giờ, hãy xem cách thức hoạt động của `mixin(..)`. Nó lặp lại các thuộc tính của `sourceObj` (`Vehicle` trong ví dụ của chúng ta) và nếu không có thuộc tính phù hợp với tên đó trong `targetObj` (`Car` trong ví dụ của chúng tôi), nó sẽ tạo một bản sao. Vì chúng ta đang tạo bản sao sau khi object ban đầu tồn tại, chúng ta cẩn thận không ghi đè thuộc tính đích.
 
-If we made the copies first, before specifying the `Car` specific contents, we could omit this check against `targetObj`, but that's a little more clunky and less efficient, so it's generally less preferred:
+Nếu chúng ta tạo các bản sao trước, trước khi chỉ định nội dung cụ thể của `Car`, chúng ta có thể bỏ qua bước kiểm tra này đối với `targetObj`, nhưng điều đó phức tạp hơn một chút và kém hiệu quả hơn, vì vậy nó thường ít được ưu tiên hơn:
 
 ```js
 // alternate mixin, less "safe" to overwrites
@@ -354,29 +354,29 @@ mixin( {
 }, Car );
 ```
 
-Either approach, we have explicitly copied the non-overlapping contents of `Vehicle` into `Car`. The name "mixin" comes from an alternate way of explaining the task: `Car` has `Vehicle`s contents **mixed-in**, just like you mix in chocolate chips into your favorite cookie dough.
+Dù là cách tiếp cận nào, chúng ta cũng đã sao chép rõ ràng các nội dung không chồng chéo của `Vehicle` vào `Car`. Cái tên "mixin" bắt nguồn từ một cách khác để giải thích nhiệm vụ: `Car` có nội dung của `Vehicle` **được trộn lẫn**, giống như bạn trộn vụn sô cô la vào bột bánh quy yêu thích của mình.
 
-As a result of the copy operation, `Car` will operate somewhat separately from `Vehicle`. If you add a property onto `Car`, it will not affect `Vehicle`, and vice versa.
+Do thao tác sao chép, `Car` sẽ hoạt động hơi tách biệt với `Vehicle`. Nếu bạn thêm một thuộc tính vào `Car`, nó sẽ không ảnh hưởng đến `Vehicle` và ngược lại.
 
-**Note:** A few minor details have been skimmed over here. There are still some subtle ways the two objects can "affect" each other even after copying, such as if they both share a reference to a common object (such as an array).
+**Lưu ý:** Một vài chi tiết nhỏ đã được lướt qua ở đây. Vẫn còn một số cách tinh tế mà hai object có thể "ảnh hưởng" lẫn nhau ngay cả sau khi sao chép, chẳng hạn như nếu cả hai đều chia sẻ tham chiếu đến một object chung (chẳng hạn như một mảng).
 
-Since the two objects also share references to their common functions, that means that **even manual copying of functions (aka, mixins) from one object to another doesn't *actually emulate* the real duplication from class to instance that occurs in class-oriented languages**.
+Vì hai object cũng chia sẻ các tham chiếu đến các function chung của chúng, điều đó có nghĩa là **ngay cả việc sao chép thủ công các function (hay còn gọi là mixin) từ object này sang object khác không *thực sự mô phỏng* sự sao chép thực sự từ class tới instance điều mà xảy ra trong các ngôn ngữ class-oriented**.
 
-JavaScript functions can't really be duplicated (in a standard, reliable way), so what you end up with instead is a **duplicated reference** to the same shared function object (functions are objects; see Chapter 3). If you modified one of the shared **function objects** (like `ignition()`) by adding properties on top of it, for instance, both `Vehicle` and `Car` would be "affected" via the shared reference.
+Các function của JavaScript thực sự không thể được sao chép (theo cách tiêu chuẩn, đáng tin cậy), vì vậy, thay vào đó, bạn nhận được một **tham chiếu trùng lặp** cho cùng một function object được chia sẻ (các function là các object; xem Chương 3). Ví dụ: nếu bạn đã sửa đổi một trong các đối tượng **chức năng** được chia sẻ (như `ignition()`) bằng cách thêm các thuộc tính lên trên nó, thì cả `Vehicle` và `Car` sẽ bị "ảnh hưởng" thông qua tham chiếu được chia sẻ.
 
-Explicit mixins are a fine mechanism in JavaScript. But they appear more powerful than they really are. Not much benefit is *actually* derived from copying a property from one object to another, **as opposed to just defining the properties twice**, once on each object. And that's especially true given the function-object reference nuance we just mentioned.
+Mixins rõ ràng là một cơ chế tốt trong JavaScript. Nhưng chúng có vẻ mạnh mẽ hơn thực tế. Không có nhiều lợi ích *thực sự* thu được từ việc sao chép thuộc tính từ object này sang object khác, **trái ngược với việc chỉ xác định thuộc tính hai lần**, một lần trên mỗi đối tượng. Và điều đó đặc biệt đúng với sắc thái tham chiếu đối tượng hàm mà chúng ta vừa đề cập.
 
-If you explicitly mix-in two or more objects into your target object, you can **partially emulate** the behavior of "multiple inheritance", but there's no direct way to handle collisions if the same method or property is being copied from more than one source. Some developers/libraries have come up with "late binding" techniques and other exotic work-arounds, but fundamentally these "tricks" are *usually* more effort (and lesser performance!) than the pay-off.
+Nếu bạn kết hợp rõ ràng hai hoặc nhiều object vào object đích của mình, bạn có thể **mô phỏng một phần** hành vi của "đa thừa kế", nhưng không có cách trực tiếp nào để xử lý xung đột nếu cùng một phương thức hoặc thuộc tính được sao chép từ nhiều object khác hơn một nguồn. Một số nhà phát triển/thư viện đã đưa ra các kỹ thuật "late binding" và các cách giải quyết kỳ lạ khác, nhưng về cơ bản, những "thủ thuật" này *thường* tốn nhiều công sức hơn (và hiệu suất thấp hơn!) so với kết quả thu được.
 
-Take care only to use explicit mixins where it actually helps make more readable code, and avoid the pattern if you find it making code that's harder to trace, or if you find it creates unnecessary or unwieldy dependencies between objects.
+Cẩn thận chỉ sử dụng mixin khi nó thực sự giúp code dễ đọc hơn và tránh pattern nếu bạn thấy nó khiến code khó theo dõi hơn hoặc nếu bạn thấy nó tạo ra các phụ thuộc không cần thiết hoặc khó sử dụng giữa các object.
 
-**If it starts to get *harder* to properly use mixins than before you used them**, you should probably stop using mixins. In fact, if you have to use a complex library/utility to work out all these details, it might be a sign that you're going about it the harder way, perhaps unnecessarily. In Chapter 6, we'll try to distill a simpler way that accomplishes the desired outcomes without all the fuss.
+**Nếu việc sử dụng mixin đúng cách bắt đầu trở nên *khó hơn* so với trước khi bạn sử dụng chúng**, thì có lẽ bạn nên ngừng sử dụng mixin. Trên thực tế, nếu bạn phải sử dụng một thư viện/utility phức tạp để tìm ra tất cả các chi tiết này, đó có thể là dấu hiệu cho thấy bạn đang thực hiện nó theo cách khó hơn, có lẽ là không cần thiết. Trong Chương 6, chúng ta sẽ cố gắng chắt lọc một cách đơn giản hơn để đạt được kết quả mong muốn mà không cần quá nhiều phiền phức.
 
-#### Parasitic Inheritance
+#### Parasitic Inheritance (Kế Thừa Kí Sinh)
 
-A variation on this explicit mixin pattern, which is both in some ways explicit and in other ways implicit, is called "parasitic inheritance", popularized mainly by Douglas Crockford.
+Một biến thể của mẫu mixin rõ ràng này, theo cả hai cách rõ ràng và theo những cách khác, được gọi là "parasitic inheritance (di truyền ký sinh)", được phổ biến chủ yếu bởi Douglas Crockford.
 
-Here's how it can work:
+Đây là cách nó có thể hoạt động:
 
 ```js
 // "Traditional JS Class" `Vehicle`
@@ -419,15 +419,14 @@ myCar.drive();
 // Rolling on all 4 wheels!
 ```
 
-As you can see, we initially make a copy of the definition from the `Vehicle` "parent class" (object), then mixin our "child class" (object) definition (preserving privileged parent-class references as needed), and pass off this composed object `car` as our child instance.
+Như bạn có thể thấy, ban đầu chúng ta tạo một bản sao của định nghĩa từ "class cha" (object) `Vehicle`, sau đó mixin vào định nghĩa "class con" (object) của chúng ta (giữ nguyên các tham chiếu class cha đặc quyền nếu cần) và chuyển object `car` này làm instance con của chúng ta.
 
-**Note:** when we call `new Car()`, a new object is created and referenced by `Car`s `this` reference (see Chapter 2). But since we don't use that object, and instead return our own `car` object, the initially created object is just discarded. So, `Car()` could be called without the `new` keyword, and the functionality above would be identical, but without the wasted object creation/garbage-collection.
+**Lưu Ý:** khi chúng ta gọi `new Car()`, một object được tạo và được tham chiếu bởi tham chiếu `this` của các `Car` (xem Chương 2). Nhưng vì chúng ta không sử dụng đối tượng đó mà thay vào đó trả về đối tượng `car` của riêng mình, nên đối tượng được tạo ban đầu sẽ bị loại bỏ. Vì vậy, `Car()` có thể được gọi mà không cần từ khóa `new` và function ở trên sẽ giống hệt nhau, nhưng không có việc tạo đối tượng/thu gom rác lãng phí.
 
 ### Implicit Mixins
 
-Implicit mixins are closely related to *explicit pseudo-polymorphism* as explained previously. As such, they come with the same caveats and warnings.
-
-Consider this code:
+Các implicit mixin có liên quan chặt chẽ với *explicit pseudo-polymorphism* như đã giải thích trước đây. Như vậy, chúng đi kèm với những cản trở và cảnh báo giống nhau.
+Xem xét đoạn code này:
 
 ```js
 var Something = {
@@ -453,26 +452,26 @@ Another.greeting; // "Hello World"
 Another.count; // 1 (not shared state with `Something`)
 ```
 
-With `Something.cool.call( this )`, which can happen either in a "constructor" call (most common) or in a method call (shown here), we essentially "borrow" the function `Something.cool()` and call it in the context of `Another` (via its `this` binding; see Chapter 2) instead of `Something`. The end result is that the assignments that `Something.cool()` makes are applied against the `Another` object rather than the `Something` object.
+Với `Something.cool.call( this )`, có thể xảy ra trong lệnh gọi "constructor" (phổ biến nhất) hoặc trong lệnh gọi phương thức (hiển thị ở đây), về cơ bản, chúng ta "mượn" hàm `Something.cool()` và gọi nó trong ngữ cảnh của `Another` (thông qua ràng buộc `this` của nó; xem Chương 2) thay vì `Something`. Kết quả cuối cùng là các phép gán mà `Something.cool()` thực hiện được áp dụng cho đối tượng `Another` thay vì đối tượng `Something`.
 
-So, it is said that we "mixed in" `Something`s behavior with (or into) `Another`.
+Vì vậy, nó nói rằng chúng ta đã "trộn lẫn" hành vi của `Something` với (hoặc vào) `Another`.
 
-While this sort of technique seems to take useful advantage of `this` rebinding functionality, it is the brittle `Something.cool.call( this )` call, which cannot be made into a relative (and thus more flexible) reference, that you should **heed with caution**. Generally, **avoid such constructs where possible** to keep cleaner and more maintainable code.
+Mặc dù loại kỹ thuật này dường như tận dụng lợi thế hữu ích của chức năng rebinding `this`, nhưng lệnh gọi `Something.cool.call(this )` dễ gãy, không thể được tạo thành tham chiếu tương đối (và do đó linh hoạt hơn), mà bạn nên **chú ý thận trọng**. Nói chung, **tránh các cấu trúc như vậy nếu có thể** để giữ mã sạch hơn và dễ bảo trì hơn.
 
 ## Review (TL;DR)
 
-Classes are a design pattern. Many languages provide syntax which enables natural class-oriented software design. JS also has a similar syntax, but it behaves **very differently** from what you're used to with classes in those other languages.
+Các Class là một design pattern (mẫu thiết kế). Nhiều ngôn ngữ cung cấp cú pháp cho phép thiết kế phần mềm class-oriented tự nhiên. JS cũng có một cú pháp tương tự, nhưng nó hoạt động **rất khác** so với những gì bạn đã quen với các class trong các ngôn ngữ khác đó.
 
-**Classes mean copies.**
+**Classes có nghĩa là bản sao.**
 
-When traditional classes are instantiated, a copy of behavior from class to instance occurs. When classes are inherited, a copy of behavior from parent to child also occurs.
+Khi các class truyền thống được khởi tạo, một bản sao của hành vi từ class sang instance xảy ra. Khi các class được kế thừa, một bản sao hành vi từ class cha sang class con cũng xảy ra.
 
-Polymorphism (having different functions at multiple levels of an inheritance chain with the same name) may seem like it implies a referential relative link from child back to parent, but it's still just a result of copy behavior.
+Polymorphism (tính đa hình) (có các function khác nhau ở nhiều cấp độ của chuỗi thừa kế có cùng tên) có vẻ như ngụ ý một liên kết tương đối tham chiếu từ con trở lại cha, nhưng nó vẫn chỉ là kết quả của hành vi sao chép.
 
-JavaScript **does not automatically** create copies (as classes imply) between objects.
+JavaScript **không tự động** tạo các bản sao (như các class ngụ ý) giữa các object.
 
-The mixin pattern (both explicit and implicit) is often used to *sort of* emulate class copy behavior, but this usually leads to ugly and brittle syntax like explicit pseudo-polymorphism (`OtherObj.methodName.call(this, ...)`), which often results in harder to understand and maintain code.
+Mixin pattern (bao gồm cả explicit và implicit) thường được sử dụng để *sắp xếp* mô phỏng hành vi sao chép của class, nhưng điều này thường dẫn đến cú pháp xấu và khó hiểu như explicit pseudo-polymorphism (`OtherObj.methodName.call(this, ...)`), thường dẫn đến khó khăn hơn để hiểu và bảo trì code.
 
-Explicit mixins are also not exactly the same as class *copy*, since objects (and functions!) only have shared references duplicated, not the objects/functions duplicated themselves. Not paying attention to such nuance is the source of a variety of gotchas.
+Explicit mixins rõ ràng cũng không hoàn toàn giống với class *sao chép*, vì các object (và các function!) Chỉ có các tham chiếu dùng chung được sao chép, chứ không phải các object/function được sao chép chính chúng. Không chú ý đến sắc thái như vậy là nguồn gốc của nhiều vấn đề.
 
-In general, faking classes in JS often sets more landmines for future coding than solving present *real* problems.
+Nói chung, việc giả mạo các class trong JS thường đặt ra nhiều bom mìn cho code trong tương lai hơn là giải quyết các vấn đề *thực* hiện tại.
