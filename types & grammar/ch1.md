@@ -1,41 +1,41 @@
 # You Don't Know JS: Types & Grammar
 # Chapter 1: Types
 
-Most developers would say that a dynamic language (like JS) does not have *types*. Let's see what the ES5.1 specification (http://www.ecma-international.org/ecma-262/5.1/) has to say on the topic:
+Hầu hết các nhà phát triển sẽ nói rằng một ngôn ngữ động (như JS) không có *type*. Hãy xem thông số kỹ thuật ES5.1 (http://www.ecma-international.org/ecma-262/5.1/) nói gì về chủ đề này:
 
-> Algorithms within this specification manipulate values each of which has an associated type. The possible value types are exactly those defined in this clause. Types are further sub classified into ECMAScript language types and specification types.
+> Các thuật toán trong đặc tả này thao tác các giá trị mà mỗi thuật toán có một loại liên quan. Các loại giá trị có thể chính xác là những loại được định nghĩa trong điều khoản này. Các loại được phân loại phụ thành các loại ngôn ngữ ECMAScript và các loại đặc tả.
 >
-> An ECMAScript language type corresponds to values that are directly manipulated by an ECMAScript programmer using the ECMAScript language. The ECMAScript language types are Undefined, Null, Boolean, String, Number, and Object.
+> Loại ngôn ngữ ECMAScript tương ứng với các giá trị được lập trình viên ECMAScript thao tác trực tiếp bằng ngôn ngữ ECMAScript. Các loại ngôn ngữ ECMAScript là Undefined, Null, Boolean, String, Number và Object.
 
-Now, if you're a fan of strongly typed (statically typed) languages, you may object to this usage of the word "type." In those languages, "type" means a whole lot *more* than it does here in JS.
+Bây giờ, nếu bạn là người yêu thích các ngôn ngữ có type chặt chẽ (được gõ tĩnh), bạn có thể phản đối việc sử dụng từ "type". Trong các ngôn ngữ đó, "type" có ý nghĩa *nhiều hơn* so với ở đây trong JS.
 
-Some people say JS shouldn't claim to have "types," and they should instead be called "tags" or perhaps "subtypes".
+Một số người nói rằng JS không nên tuyên bố có "type" và thay vào đó, chúng nên được gọi là "tag" hoặc có lẽ là "subtype".
 
-Bah! We're going to use this rough definition (the same one that seems to drive the wording of the spec): a *type* is an intrinsic, built-in set of characteristics that uniquely identifies the behavior of a particular value and distinguishes it from other values, both to the engine **and to the developer**.
+Bah! Chúng ta sẽ sử dụng định nghĩa sơ bộ này (cùng một định nghĩa dường như định hướng cách diễn đạt của thông số kỹ thuật): *type* là một tập hợp các đặc điểm nội tại, tích hợp sẵn giúp xác định duy nhất hành vi của một giá trị cụ thể và phân biệt nó từ các giá trị khác, cho cả engine **và nhà phát triển**.
 
-In other words, if both the engine and the developer treat value `42` (the number) differently than they treat value `"42"` (the string), then those two values have different *types* -- `number` and `string`, respectively. When you use `42`, you are *intending* to do something numeric, like math. But when you use `"42"`, you are *intending* to do something string'ish, like outputting to the page, etc. **These two values have different types.**
+Nói cách khác, nếu cả engine và nhà phát triển xử lý giá trị `42` (number) khác với giá trị `"42"` (string), thì hai giá trị đó có *type* -- `number` và `string`, tương ứng. Khi bạn sử dụng `42`, bạn *có ý định* làm điều gì đó thuộc số, chẳng hạn như toán học. Nhưng khi bạn sử dụng `"42"`, bạn *có ý định* làm điều gì đó giống như chuỗi, chẳng hạn như xuất ra trang, v.v. **Hai giá trị này có các loại khác nhau.**
 
-That's by no means a perfect definition. But it's good enough for this discussion. And it's consistent with how JS describes itself.
+Đó không phải là một định nghĩa hoàn hảo. Nhưng nó đủ tốt cho cuộc thảo luận này. Và nó phù hợp với cách JS mô tả chính nó.
 
 # A Type By Any Other Name...
 
-Beyond academic definition disagreements, why does it matter if JavaScript has *types* or not?
+Ngoài những bất đồng về định nghĩa học thuật, tại sao JavaScript có *type* hay không lại quan trọng?
 
-Having a proper understanding of each *type* and its intrinsic behavior is absolutely essential to understanding how to properly and accurately convert values to different types (see Coercion, Chapter 4). Nearly every JS program ever written will need to handle value coercion in some shape or form, so it's important you do so responsibly and with confidence.
+Hiểu đúng về từng *type* và hành vi nội tại của nó là vô cùng cần thiết để hiểu cách chuyển đổi đúng và chính xác các giá trị thành các loại khác nhau (xem Coercion - ép kiểu, Chương 4). Gần như mọi chương trình JS từng được viết sẽ cần xử lý việc ép kiểu giá trị ở một dạng hoặc hình thức nào đó, vì vậy điều quan trọng là bạn phải làm như vậy một cách có trách nhiệm và tự tin.
 
-If you have the `number` value `42`, but you want to treat it like a `string`, such as pulling out the `"2"` as a character in position `1`, you obviously must first convert (coerce) the value from `number` to `string`.
+Nếu bạn có giá trị `number` `42`, nhưng bạn muốn xử lý nó như một `string`, chẳng hạn như kéo ra `"2"` làm ký tự ở vị trí `1`, rõ ràng trước tiên bạn phải chuyển đổi (coerce ) giá trị từ `number` đến `string`.
 
-That seems simple enough.
+Điều đó có vẻ đủ đơn giản.
 
-But there are many different ways that such coercion can happen. Some of these ways are explicit, easy to reason about, and reliable. But if you're not careful, coercion can happen in very strange and surprising ways.
+Nhưng có nhiều cách khác nhau mà sự ép kiểu như vậy có thể xảy ra. Một số cách này là rõ ràng, dễ suy luận và đáng tin cậy. Nhưng nếu bạn không cẩn thận, sự ép kiểu có thể xảy ra theo những cách rất kỳ lạ và đáng ngạc nhiên.
 
-Coercion confusion is perhaps one of the most profound frustrations for JavaScript developers. It has often been criticized as being so *dangerous* as to be considered a flaw in the design of the language, to be shunned and avoided.
+Sự nhầm lẫn ép kiểu có lẽ là một trong những nỗi thất vọng sâu sắc nhất đối với các nhà phát triển JavaScript. Nó thường bị chỉ trích là *nguy hiểm* đến mức bị coi là một lỗ hổng trong thiết kế của ngôn ngữ, cần phải xa lánh và tránh xa.
 
-Armed with a full understanding of JavaScript types, we're aiming to illustrate why coercion's *bad reputation* is largely overhyped and somewhat undeserved -- to flip your perspective, to seeing coercion's power and usefulness. But first, we have to get a much better grip on values and types.
+Được trang bị kiến thức đầy đủ về các loại(type) JavaScript, chúng tôi muốn minh họa lý do tại sao *tiếng xấu* của tính cưỡng chế phần lớn bị thổi phồng quá mức và phần nào không được coi trọng -- để thay đổi quan điểm của bạn, để thấy được sức mạnh và tính hữu ích của tính năng ép kiểu. Nhưng trước tiên, chúng ta phải hiểu rõ hơn về các giá trị và loại.
 
 ## Built-in Types
 
-JavaScript defines seven built-in types:
+JavaScript định nghĩa bảy loại build-in:
 
 * `null`
 * `undefined`
@@ -43,11 +43,11 @@ JavaScript defines seven built-in types:
 * `number`
 * `string`
 * `object`
-* `symbol` -- added in ES6!
+* `symbol` -- được thêm trong ES6!
 
-**Note:** All of these types except `object` are called "primitives".
+**Note:** Tất cả các loại này ngoại trừ `object` được gọi là "primitives (nguyên thuỷ)".
 
-The `typeof` operator inspects the type of the given value, and always returns one of seven string values -- surprisingly, there's not an exact 1-to-1 match with the seven built-in types we just listed.
+Toán tử `typeof` kiểm tra type của giá trị đã cho và luôn trả về một trong bảy giá trị chuỗi -- đáng ngạc nhiên là không có kết quả khớp chính xác 1 đối 1 với bảy loại dựng sẵn mà chúng tôi vừa liệt kê.
 
 ```js
 typeof undefined     === "undefined"; // true
@@ -60,17 +60,17 @@ typeof { life: 42 }  === "object";    // true
 typeof Symbol()      === "symbol";    // true
 ```
 
-These six listed types have values of the corresponding type and return a string value of the same name, as shown. `Symbol` is a new data type as of ES6, and will be covered in Chapter 3.
+Sáu loại được liệt kê này có các giá trị của loại tương ứng và trả về một giá trị chuỗi cùng tên, như được hiển thị. `Symbol` là một loại dữ liệu mới kể từ ES6 và sẽ được đề cập trong Chương 3.
 
-As you may have noticed, I excluded `null` from the above listing. It's *special* -- special in the sense that it's buggy when combined with the `typeof` operator:
+Như bạn có thể nhận thấy, tôi đã loại trừ `null` khỏi danh sách trên. Đó là *đặc biệt* -- đặc biệt theo nghĩa nó có lỗi khi kết hợp với toán tử `typeof`:
 
 ```js
 typeof null === "object"; // true
 ```
 
-It would have been nice (and correct!) if it returned `"null"`, but this original bug in JS has persisted for nearly two decades, and will likely never be fixed because there's too much existing web content that relies on its buggy behavior that "fixing" the bug would *create* more "bugs" and break a lot of web software.
+Sẽ thật tuyệt (và chính xác!) nếu nó trả về `"null"`, nhưng lỗi ban đầu này trong JS đã tồn tại gần hai thập kỷ và có thể sẽ không bao giờ được sửa vì có quá nhiều nội dung web hiện có phụ thuộc vào lỗi của nó hành vi "sửa" lỗi sẽ *tạo ra* nhiều "lỗi" hơn và làm hỏng nhiều phần mềm web.
 
-If you want to test for a `null` value using its type, you need a compound condition:
+Nếu bạn muốn kiểm tra giá trị `null` bằng cách sử dụng loại của nó, thì bạn cần một điều kiện phức hợp:
 
 ```js
 var a = null;
@@ -78,17 +78,17 @@ var a = null;
 (!a && typeof a === "object"); // true
 ```
 
-`null` is the only primitive value that is "falsy" (aka false-like; see Chapter 4) but that also returns `"object"` from the `typeof` check.
+`null` là giá trị primitive duy nhất "falsy" (hay còn gọi là false-like; xem Chương 4) nhưng giá trị đó cũng trả về `"object"` từ kiểm tra `typeof`.
 
-So what's the seventh string value that `typeof` can return?
+Vậy giá trị chuỗi thứ bảy mà `typeof` có thể trả về là gì?
 
 ```js
 typeof function a(){ /* .. */ } === "function"; // true
 ```
 
-It's easy to think that `function` would be a top-level built-in type in JS, especially given this behavior of the `typeof` operator. However, if you read the spec, you'll see it's actually a "subtype" of object. Specifically, a function is referred to as a "callable object" -- an object that has an internal `[[Call]]` property that allows it to be invoked.
+Thật dễ dàng để nghĩ rằng `function` sẽ là một loại tích hợp cấp cao nhất trong JS, đặc biệt là với hành vi này của toán tử `typeof`. Tuy nhiên, nếu bạn đọc thông số kỹ thuật, bạn sẽ thấy nó thực sự là một "subtype (kiểu phụ)" của object. Cụ thể, một function được gọi là "callable object" -- một object có thuộc tính `[[Call]]` bên trong cho phép nó được gọi.
 
-The fact that functions are actually objects is quite useful. Most importantly, they can have properties. For example:
+Thực tế là các function thực sự là các object khá hữu ích. Quan trọng nhất, nó có thể có properties. Ví dụ:
 
 ```js
 function a(b,c) {
@@ -96,31 +96,31 @@ function a(b,c) {
 }
 ```
 
-The function object has a `length` property set to the number of formal parameters it is declared with.
+Function object có thuộc tính `length` được đặt thành số tham số hình thức được khai báo với nó.
 
 ```js
 a.length; // 2
 ```
 
-Since you declared the function with two formal named parameters (`b` and `c`), the "length of the function" is `2`.
+Vì bạn đã khai báo function với hai tham số được đặt tên chính thức (`b` và `c`), nên "độ dài của function" là `2`.
 
-What about arrays? They're native to JS, so are they a special type?
+Còn mảng thì sao? Chúng có nguồn gốc từ JS, vậy chúng có phải là special type không?
 
 ```js
 typeof [1,2,3] === "object"; // true
 ```
 
-Nope, just objects. It's most appropriate to think of them also as a "subtype" of object (see Chapter 3), in this case with the additional characteristics of being numerically indexed (as opposed to just being string-keyed like plain objects) and maintaining an automatically updated `.length` property.
+Không, chỉ là object. Điều thích hợp nhất là coi chúng như một "subtype" của object (xem Chương 3), trong trường hợp này với các đặc điểm bổ sung là được lập chỉ mục bằng số (ngược lại với việc chỉ được khóa chuỗi như các object đơn giản) và duy trì cập nhật tự động. Thuộc tính `.length`.
 
 ## Values as Types
 
-In JavaScript, variables don't have types -- **values have types**. Variables can hold any value, at any time.
+Trong JavaScript, các biến không có type -- **giá trị có type**. Các biến có thể giữ bất kỳ giá trị nào, tại bất kỳ thời điểm nào.
 
-Another way to think about JS types is that JS doesn't have "type enforcement," in that the engine doesn't insist that a *variable* always holds values of the *same initial type* that it starts out with. A variable can, in one assignment statement, hold a `string`, and in the next hold a `number`, and so on.
+Một cách khác để nghĩ về các type JS là JS không có "type enforcement (thực thi kiểu)", trong đó công cụ không nhấn mạnh rằng một *biến* luôn giữ các giá trị của *cùng loại ban đầu* mà nó bắt đầu. Một biến có thể, trong một câu lệnh gán, giữ một `chuỗi`, và trong lần tiếp theo giữ một `số`, v.v.
 
-The *value* `42` has an intrinsic type of `number`, and its *type* cannot be changed. Another value, like `"42"` with the `string` type, can be created *from* the `number` value `42` through a process called **coercion** (see Chapter 4).
+*giá trị* `42` có loại nội tại là `number` và không thể thay đổi *loại* của nó. Một giá trị khác, chẳng hạn như `"42"` với loại `string`, có thể được tạo *từ* giá trị `number` `42` thông qua một quá trình gọi là **coercion (ép kiểu)** (xem Chương 4).
 
-If you use `typeof` against a variable, it's not asking "what's the type of the variable?" as it may seem, since JS variables have no types. Instead, it's asking "what's the type of the value *in* the variable?"
+Nếu bạn sử dụng `typeof` đối với một biến, nó sẽ không hỏi "loại biến là gì?" có vẻ như, vì các biến JS không có kiểu. Thay vào đó, nó hỏi "loại giá trị *trong* biến là gì?"
 
 ```js
 var a = 42;
@@ -130,17 +130,17 @@ a = true;
 typeof a; // "boolean"
 ```
 
-The `typeof` operator always returns a string. So:
+Toán tử `typeof` luôn trả về một chuỗi. Vì thế:
 
 ```js
 typeof typeof 42; // "string"
 ```
 
-The first `typeof 42` returns `"number"`, and `typeof "number"` is `"string"`.
+`typeof 42` đầu tiên trả về `"number"` và `typeof "number"` là `"string"`.
 
 ### `undefined` vs "undeclared"
 
-Variables that have no value *currently*, actually have the `undefined` value. Calling `typeof` against such variables will return `"undefined"`:
+Các biến không có giá trị *hiện tại*, thực sự có giá trị `undefined`. Gọi `typeof` đối với các biến như vậy sẽ trả về `"undefined"`:
 
 ```js
 var a;
@@ -157,9 +157,9 @@ typeof b; // "undefined"
 typeof c; // "undefined"
 ```
 
-It's tempting for most developers to think of the word "undefined" and think of it as a synonym for "undeclared." However, in JS, these two concepts are quite different.
+Hầu hết các nhà phát triển đều nghĩ đến từ "undefined (không xác định)" và coi nó như một từ đồng nghĩa với "undeclared (không được khai báo)". Tuy nhiên, trong JS, hai khái niệm này khá khác nhau.
 
-An "undefined" variable is one that has been declared in the accessible scope, but *at the moment* has no other value in it. By contrast, an "undeclared" variable is one that has not been formally declared in the accessible scope.
+Biến "undefined" là biến đã được khai báo trong phạm vi có thể truy cập, nhưng *tại thời điểm này* không có giá trị nào khác trong đó. Ngược lại, biến "undeclared (không được khai báo)" là biến chưa được khai báo chính thức trong phạm vi có thể truy cập.
 
 Consider:
 
@@ -170,9 +170,9 @@ a; // undefined
 b; // ReferenceError: b is not defined
 ```
 
-An annoying confusion is the error message that browsers assign to this condition. As you can see, the message is "b is not defined," which is of course very easy and reasonable to confuse with "b is undefined." Yet again, "undefined" and "is not defined" are very different things. It'd be nice if the browsers said something like "b is not found" or "b is not declared," to reduce the confusion!
+Một sự nhầm lẫn khó chịu là thông báo lỗi mà các trình duyệt gán cho tình trạng này. Như bạn có thể thấy, thông báo là "b is not defined", tất nhiên là rất dễ nhầm lẫn với "b is undefined". Một lần nữa, "undefined" và "is not defined" là những thứ rất khác nhau. Sẽ thật tuyệt nếu các trình duyệt nói điều gì đó như "b is not found" hoặc "b is not declared" để giảm bớt sự nhầm lẫn!
 
-There's also a special behavior associated with `typeof` as it relates to undeclared variables that even further reinforces the confusion. Consider:
+Ngoài ra còn có một hành vi đặc biệt liên quan đến `typeof` vì nó liên quan đến các biến không được khai báo thậm chí còn làm tăng thêm sự nhầm lẫn. Coi như:
 
 ```js
 var a;
@@ -182,19 +182,19 @@ typeof a; // "undefined"
 typeof b; // "undefined"
 ```
 
-The `typeof` operator returns `"undefined"` even for "undeclared" (or "not defined") variables. Notice that there was no error thrown when we executed `typeof b`, even though `b` is an undeclared variable. This is a special safety guard in the behavior of `typeof`.
+Toán tử `typeof` trả về `"undefined"` ngay cả đối với các biến "undeclared" (hoặc "not defined"). Lưu ý rằng không có lỗi nào xảy ra khi chúng tôi thực thi `typeof b`, mặc dù `b` là một biến không được khai báo. Đây là biện pháp bảo vệ an toàn đặc biệt trong hành vi của `typeof`.
 
-Similar to above, it would have been nice if `typeof` used with an undeclared variable returned "undeclared" instead of conflating the result value with the different "undefined" case.
+Tương tự như trên, sẽ rất tuyệt nếu `typeof` được sử dụng với biến không khai báo trả về "undeclared" thay vì kết hợp giá trị kết quả với trường hợp "undefined" khác.
 
 ### `typeof` Undeclared
 
-Nevertheless, this safety guard is a useful feature when dealing with JavaScript in the browser, where multiple script files can load variables into the shared global namespace.
+Tuy nhiên, biện pháp bảo vệ an toàn này là một tính năng hữu ích khi xử lý JavaScript trong trình duyệt, nơi nhiều tệp tập lệnh có thể tải các biến vào không gian tên chung được chia sẻ.
 
-**Note:** Many developers believe there should never be any variables in the global namespace, and that everything should be contained in modules and private/separate namespaces. This is great in theory but nearly impossible in practicality; still it's a good goal to strive toward! Fortunately, ES6 added first-class support for modules, which will eventually make that much more practical.
+**Lưu ý:** Nhiều nhà phát triển tin rằng không bao giờ nên có bất kỳ biến nào trong không gian tên chung và mọi thứ phải được chứa trong các mô-đun và không gian tên riêng tư/riêng biệt. Điều này là tuyệt vời về mặt lý thuyết nhưng gần như không thể trong thực tế; nó vẫn là một mục tiêu tốt để phấn đấu hướng tới! May mắn thay, ES6 đã thêm hỗ trợ first-class cho các mô-đun, điều này cuối cùng sẽ làm cho điều đó trở nên thiết thực hơn nhiều.
 
-As a simple example, imagine having a "debug mode" in your program that is controlled by a global variable (flag) called `DEBUG`. You'd want to check if that variable was declared before performing a debug task like logging a message to the console. A top-level global `var DEBUG = true` declaration would only be included in a "debug.js" file, which you only load into the browser when you're in development/testing, but not in production.
+Lấy một ví dụ đơn giản, hãy tưởng tượng có một "debug mode (chế độ gỡ lỗi)" trong chương trình của bạn được kiểm soát bởi một global variable (biến toàn cục) (flag - cờ) có tên là `DEBUG`. Bạn muốn kiểm tra xem biến đó đã được khai báo chưa trước khi thực hiện tác vụ debug (gỡ lỗi) như ghi thông báo vào console. Khai báo toàn cục cấp cao nhất `var DEBUG = true` sẽ chỉ được bao gồm trong tệp "debug.js", mà bạn chỉ tải vào trình duyệt khi bạn đang development/testing chứ không phải trong production.
 
-However, you have to take care in how you check for the global `DEBUG` variable in the rest of your application code, so that you don't throw a `ReferenceError`. The safety guard on `typeof` is our friend in this case.
+Tuy nhiên, bạn phải quan tâm đến cách bạn kiểm tra biến `DEBUG` chung trong phần còn lại của mã ứng dụng của mình, để bạn không ném ra `ReferenceError`. Bộ bảo vệ an toàn trên `typeof` là bạn của chúng ta trong trường hợp này.
 
 ```js
 // oops, this would throw an error!
@@ -208,7 +208,7 @@ if (typeof DEBUG !== "undefined") {
 }
 ```
 
-This sort of check is useful even if you're not dealing with user-defined variables (like `DEBUG`). If you are doing a feature check for a built-in API, you may also find it helpful to check without throwing an error:
+Kiểu kiểm tra này hữu ích ngay cả khi bạn không xử lý các biến do người dùng định nghĩa (như `DEBUG`). Nếu bạn đang thực hiện kiểm tra tính năng cho build-in API, bạn cũng có thể thấy hữu ích khi kiểm tra mà không gây ra lỗi:
 
 ```js
 if (typeof atob === "undefined") {
@@ -216,9 +216,9 @@ if (typeof atob === "undefined") {
 }
 ```
 
-**Note:** If you're defining a "polyfill" for a feature if it doesn't already exist, you probably want to avoid using `var` to make the `atob` declaration. If you declare `var atob` inside the `if` statement, this declaration is hoisted (see the *Scope & Closures* title of this series) to the top of the scope, even if the `if` condition doesn't pass (because the global `atob` already exists!). In some browsers and for some special types of global built-in variables (often called "host objects"), this duplicate declaration may throw an error. Omitting the `var` prevents this hoisted declaration.
+**Lưu ý:** Nếu bạn đang xác định "polyfill" cho một feature chưa tồn tại, bạn có thể muốn tránh sử dụng `var` để thực hiện khai báo `atob`. Nếu bạn khai báo `var atob` bên trong câu lệnh `if`, thì khai báo này sẽ được hoisted (xem cuốn *Scope & Closure* của loạt bài này) lên đầu của scope, ngay cả khi điều kiện `if` không vượt qua ( bởi vì `atob` toàn cục đã tồn tại!). Trong một số trình duyệt và đối với một số loại biến tích hợp toàn cục đặc biệt (thường được gọi là "host object"), khai báo trùng lặp này có thể gây ra lỗi. Việc bỏ qua `var` sẽ ngăn hoisted khai báo này.
 
-Another way of doing these checks against global variables but without the safety guard feature of `typeof` is to observe that all global variables are also properties of the global object, which in the browser is basically the `window` object. So, the above checks could have been done (quite safely) as:
+Một cách khác để thực hiện các kiểm tra này đối với các biến toàn cục nhưng không có tính năng bảo vệ an toàn của `typeof` là quan sát xem tất cả các biến toàn cục cũng là thuộc tính của global object, mà trong trình duyệt về cơ bản là object `window`. Vì vậy, các kiểm tra trên có thể đã được thực hiện (khá an toàn) như:
 
 ```js
 if (window.DEBUG) {
@@ -230,11 +230,11 @@ if (!window.atob) {
 }
 ```
 
-Unlike referencing undeclared variables, there is no `ReferenceError` thrown if you try to access an object property (even on the global `window` object) that doesn't exist.
+Không giống như tham chiếu đến các biến không được khai báo, sẽ không có `ReferenceError` được ném ra nếu bạn cố gắng truy cập một object property (ngay cả trên đối tượng `window` chung) không tồn tại.
 
-On the other hand, manually referencing the global variable with a `window` reference is something some developers prefer to avoid, especially if your code needs to run in multiple JS environments (not just browsers, but server-side node.js, for instance), where the global object may not always be called `window`.
+Mặt khác, việc tham chiếu biến toàn cục theo cách thủ công bằng tham chiếu `window` là điều mà một số nhà phát triển muốn tránh, đặc biệt nếu code của bạn cần chạy trong nhiều môi trường JS (chẳng hạn như không chỉ trình duyệt mà cả node.js phía máy chủ ), khi đó global object có thể không phải lúc nào cũng được gọi là `window`.
 
-Technically, this safety guard on `typeof` is useful even if you're not using global variables, though these circumstances are less common, and some developers may find this design approach less desirable. Imagine a utility function that you want others to copy-and-paste into their programs or modules, in which you want to check to see if the including program has defined a certain variable (so that you can use it) or not:
+Về mặt kỹ thuật, biện pháp bảo vệ an toàn này trên `typeof` hữu ích ngay cả khi bạn không sử dụng các biến toàn cục, mặc dù những trường hợp này ít phổ biến hơn và một số nhà phát triển có thể thấy phương pháp thiết kế này ít được ưa chuộng hơn. Hãy tưởng tượng một chức năng tiện ích mà bạn muốn người khác sao chép và dán vào chương trình hoặc mô-đun của họ, trong đó bạn muốn kiểm tra xem chương trình bao gồm đã xác định một biến nhất định (để bạn có thể sử dụng nó) hay chưa:
 
 ```js
 function doSomethingCool() {
@@ -248,7 +248,7 @@ function doSomethingCool() {
 }
 ```
 
-`doSomethingCool()` tests for a variable called `FeatureXYZ`, and if found, uses it, but if not, uses its own. Now, if someone includes this utility in their module/program, it safely checks if they've defined `FeatureXYZ` or not:
+`doSomethingCool()` kiểm tra một biến có tên là `FeatureXYZ` và nếu tìm thấy, hãy sử dụng nó, còn nếu không, hãy sử dụng biến đó. Bây giờ, nếu ai đó đưa utility(tiện ích) này vào module/chương trình của họ, nó sẽ kiểm tra một cách an toàn xem họ đã xác định `FeatureXYZ` hay chưa:
 
 ```js
 // an IIFE (see "Immediately Invoked Function Expressions"
@@ -271,9 +271,9 @@ function doSomethingCool() {
 })();
 ```
 
-Here, `FeatureXYZ` is not at all a global variable, but we're still using the safety guard of `typeof` to make it safe to check for. And importantly, here there is *no* object we can use (like we did for global variables with `window.___`) to make the check, so `typeof` is quite helpful.
+Ở đây, `FeatureXYZ` hoàn toàn không phải là một biến toàn cục, nhưng chúng tôi vẫn đang sử dụng biện pháp bảo vệ an toàn của `typeof` để đảm bảo an toàn khi kiểm tra. Và quan trọng là, ở đây *không có* object mà chúng ta có thể sử dụng (giống như chúng ta đã làm với các biến toàn cục với `window.___`) để kiểm tra, vì vậy `typeof` khá hữu ích.
 
-Other developers would prefer a design pattern called "dependency injection," where instead of `doSomethingCool()` inspecting implicitly for `FeatureXYZ` to be defined outside/around it, it would need to have the dependency explicitly passed in, like:
+Các nhà phát triển khác sẽ thích một mẫu thiết kế có tên là "dependency injection", trong đó thay vì `doSomethingCool()` kiểm tra hoàn toàn để `FeatureXYZ` được xác định bên ngoài/xung quanh nó, nó sẽ cần phải đưa thông tin phụ thuộc vào một cách rõ ràng, chẳng hạn như:
 
 ```js
 function doSomethingCool(FeatureXYZ) {
@@ -285,16 +285,16 @@ function doSomethingCool(FeatureXYZ) {
 }
 ```
 
-There are lots of options when designing such functionality. No one pattern here is "correct" or "wrong" -- there are various tradeoffs to each approach. But overall, it's nice that the `typeof` undeclared safety guard gives us more options.
+Có rất nhiều lựa chọn khi thiết kế chức năng như vậy. Không có mô hình nào ở đây là "đúng" hay "sai" -- mỗi cách tiếp cận đều có sự đánh đổi khác nhau. Nhưng nhìn chung, thật tuyệt khi bộ phận bảo vệ an toàn không được khai báo `typeof` mang lại cho chúng tôi nhiều lựa chọn hơn.
 
 ## Review
 
-JavaScript has seven built-in *types*: `null`, `undefined`,  `boolean`, `number`, `string`, `object`, `symbol`. They can be identified by the `typeof` operator.
+JavaScript có bảy *kiểu* tích hợp sẵn: `null`, `undefined`, `boolean`, `number`, `string`, `object`, `symbol`. Chúng có thể được xác định bởi toán tử `typeof`.
 
-Variables don't have types, but the values in them do. These types define intrinsic behavior of the values.
+Các biến không có kiểu, nhưng các giá trị trong chúng thì có. Các loại này xác định hành vi nội tại của các giá trị.
 
-Many developers will assume "undefined" and "undeclared" are roughly the same thing, but in JavaScript, they're quite different. `undefined` is a value that a declared variable can hold. "Undeclared" means a variable has never been declared.
+Nhiều nhà phát triển sẽ cho rằng "undefined" và "undeclared" gần như giống nhau, nhưng trong JavaScript, chúng hoàn toàn khác nhau. `undefined` là một giá trị mà một biến đã khai báo có thể nắm giữ. "undeclared" có nghĩa là một biến chưa bao giờ được khai báo.
 
-JavaScript unfortunately kind of conflates these two terms, not only in its error messages ("ReferenceError: a is not defined") but also in the return values of `typeof`, which is `"undefined"` for both cases.
+Thật không may, JavaScript lại kết hợp hai thuật ngữ này, không chỉ trong các thông báo lỗi của nó ("ReferenceError: a is not defined") mà còn trong các giá trị trả về của `typeof`, là `"undefined"` cho cả hai trường hợp.
 
-However, the safety guard (preventing an error) on `typeof` when used against an undeclared variable can be helpful in certain cases.
+Tuy nhiên, biện pháp bảo vệ an toàn (ngăn lỗi) trên `typeof` khi được sử dụng đối với một biến không được khai báo có thể hữu ích trong một số trường hợp nhất định.
