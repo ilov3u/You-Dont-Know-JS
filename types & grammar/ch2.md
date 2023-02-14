@@ -1,13 +1,13 @@
 # You Don't Know JS: Types & Grammar
 # Chapter 2: Values
 
-`array`s, `string`s, and `number`s are the most basic building-blocks of any program, but JavaScript has some unique characteristics with these types that may either delight or confound you.
+`array`, `string` và `number` là các khối xây dựng cơ bản nhất của bất kỳ chương trình nào, nhưng JavaScript có một số đặc điểm riêng với các loại này có thể khiến bạn thích thú hoặc bối rối.
 
-Let's look at several of the built-in value types in JS, and explore how we can more fully understand and correctly leverage their behaviors.
+Hãy xem xét một số loại giá trị tích hợp sẵn trong JS và khám phá cách chúng ta có thể hiểu đầy đủ hơn và tận dụng chính xác các hành vi của chúng.
 
 ## Arrays
 
-As compared to other type-enforced languages, JavaScript `array`s are just containers for any type of value, from `string` to `number` to `object` to even another `array` (which is how you get multidimensional `array`s).
+So với các ngôn ngữ type-enforced (thực thi kiểu khác), `array` của JavaScript chỉ là vùng chứa cho bất kỳ loại giá trị nào, từ `string` đến `number` đến `object` thậm chí đến cả `array` khác (đó là cách bạn có được `array` đa chiều).
 
 ```js
 var a = [ 1, "2", [3] ];
@@ -17,7 +17,7 @@ a[0] === 1;		// true
 a[2][0] === 3;	// true
 ```
 
-You don't need to presize your `array`s (see "Arrays" in Chapter 3), you can just declare them and add values as you see fit:
+Bạn không cần định cỡ trước cho `array` của mình (xem "Array" trong Chương 3), bạn chỉ cần khai báo chúng và thêm giá trị khi thấy phù hợp:
 
 ```js
 var a = [ ];
@@ -31,9 +31,9 @@ a[2] = [ 3 ];
 a.length;	// 3
 ```
 
-**Warning:** Using `delete` on an `array` value will remove that slot from the `array`, but even if you remove the final element, it does **not** update the `length` property, so be careful! We'll cover the `delete` operator itself in more detail in Chapter 5.
+**Cảnh báo:** Sử dụng `delete` trên giá trị `array` sẽ xóa vị trí đó khỏi `array`, nhưng ngay cả khi bạn xóa phần tử cuối cùng, nó **không** cập nhật thuộc tính `length`, vì vậy hãy cẩn thận! Chúng ta sẽ đề cập chi tiết hơn về toán tử `delete` trong Chương 5.
 
-Be careful about creating "sparse" `array`s (leaving or creating empty/missing slots):
+Hãy cẩn thận về việc tạo các `array` "thưa thớt" (để trống hoặc tạo các vị trí trống/thiếu):
 
 ```js
 var a = [ ];
@@ -47,9 +47,9 @@ a[1];		// undefined
 a.length;	// 3
 ```
 
-While that works, it can lead to some confusing behavior with the "empty slots" you leave in between. While the slot appears to have the `undefined` value in it, it will not behave the same as if the slot is explicitly set (`a[1] = undefined`). See "Arrays" in Chapter 3 for more information.
+Trong khi điều đó hoạt động, nó có thể dẫn đến một số hành vi khó hiểu với "các vị trí trống" mà bạn để lại ở giữa. Mặc dù vị trí dường như có giá trị `undefined` trong đó, nhưng nó sẽ không hoạt động giống như nếu vị trí được đặt rõ ràng (`a[1] = undefined`). Xem "Array" trong Chương 3 để biết thêm thông tin.
 
-`array`s are numerically indexed (as you'd expect), but the tricky thing is that they also are objects that can have `string` keys/properties added to them (but which don't count toward the `length` of the `array`):
+`array` được lập chỉ mục bằng số (như bạn mong đợi), nhưng điều khó khăn là chúng cũng là các object có thể có các keys/properties `string` được thêm vào chúng (nhưng không được tính vào `length` của `array`):
 
 ```js
 var a = [ ];
@@ -62,7 +62,7 @@ a["foobar"];	// 2
 a.foobar;		// 2
 ```
 
-However, a gotcha to be aware of is that if a `string` value intended as a key can be coerced to a standard base-10 `number`, then it is assumed that you wanted to use it as a `number` index rather than as a `string` key!
+Tuy nhiên, một vấn đề cần lưu ý là nếu một giá trị `string` được dùng làm khóa có thể bị ép buộc thành một `number` cơ sở 10 tiêu chuẩn, thì giả định rằng bạn muốn sử dụng nó làm chỉ mục `number` chứ không phải hơn là một phím `string`!
 
 ```js
 var a = [ ];
@@ -72,15 +72,15 @@ a["13"] = 42;
 a.length; // 14
 ```
 
-Generally, it's not a great idea to add `string` keys/properties to `array`s. Use `object`s for holding values in keys/properties, and save `array`s for strictly numerically indexed values.
+Nói chung, không nên thêm các keys/properties `string` vào `array`. Sử dụng `object` để giữ các giá trị trong keys/properties và lưu `array` cho các giá trị được lập chỉ mục bằng số nghiêm ngặt.
 
 ### Array-Likes
 
-There will be occasions where you need to convert an `array`-like value (a numerically indexed collection of values) into a true `array`, usually so you can call array utilities (like `indexOf(..)`, `concat(..)`, `forEach(..)`, etc.) against the collection of values.
+Sẽ có những lúc bạn cần chuyển đổi một giá trị `array`-like (một tập hợp các giá trị được lập chỉ mục bằng số) thành một `array` thực, thường thì bạn có thể gọi các tiện ích array (như `indexOf(..)`, `concat (..)`, `forEach(..)`, v.v.) đối với collection của các value.
 
-For example, various DOM query operations return lists of DOM elements that are not true `array`s but are `array`-like enough for our conversion purposes. Another common example is when functions expose the `arguments` (`array`-like) object (as of ES6, deprecated) to access the arguments as a list.
+Ví dụ: các hoạt động truy vấn DOM khác nhau trả về danh sách các phần tử DOM không đúng với `array` nhưng đủ giống `array` cho mục đích chuyển đổi của chúng ta. Một ví dụ phổ biến khác là khi các hàm hiển thị object `arguments` (`array`-like) (kể từ ES6, không được dùng nữa) để truy cập các đối số dưới dạng danh sách.
 
-One very common way to make such a conversion is to borrow the `slice(..)` utility against the value:
+Một cách rất phổ biến để thực hiện chuyển đổi như vậy là mượn tiện ích `slice(..)` đối với giá trị:
 
 ```js
 function foo() {
@@ -92,9 +92,9 @@ function foo() {
 foo( "bar", "baz" ); // ["bar","baz","bam"]
 ```
 
-If `slice()` is called without any other parameters, as it effectively is in the above snippet, the default values for its parameters have the effect of duplicating the `array` (or, in this case, `array`-like).
+Nếu `slice()` được gọi mà không có bất kỳ tham số nào khác, vì nó thực sự nằm trong đoạn mã trên, thì các giá trị mặc định cho các tham số của nó có tác dụng sao chép `array` (hoặc, trong trường hợp này, `array`-like) .
 
-As of ES6, there's also a built-in utility called `Array.from(..)` that can do the same task:
+Kể từ ES6, cũng có một tiện ích tích hợp có tên `Array.from(..)` có thể thực hiện tác vụ tương tự:
 
 ```js
 ...
@@ -102,20 +102,20 @@ var arr = Array.from( arguments );
 ...
 ```
 
-**Note:** `Array.from(..)` has several powerful capabilities, and will be covered in detail in the *ES6 & Beyond* title of this series.
+**Lưu ý:** `Array.from(..)` có một số khả năng mạnh mẽ và sẽ được đề cập chi tiết trong cuốn *ES6 & Beyond* của bộ sách này.
 
 ## Strings
 
-It's a very common belief that `string`s are essentially just `array`s of characters. While the implementation under the covers may or may not use `array`s, it's important to realize that JavaScript `string`s are really not the same as `array`s of characters. The similarity is mostly just skin-deep.
+Có một niềm tin rất phổ biến rằng `string` về cơ bản chỉ là `array` ký tự. Mặc dù việc triển khai dưới vỏ bọc có thể sử dụng hoặc không sử dụng `array`, nhưng điều quan trọng là phải nhận ra rằng `string` trong JavaScript thực sự không giống với `array` ký tự. Sự giống nhau chủ yếu chỉ là bề ngoài.
 
-For example, let's consider these two values:
+Ví dụ: hãy xem xét hai giá trị sau:
 
 ```js
 var a = "foo";
 var b = ["f","o","o"];
 ```
 
-Strings do have a shallow resemblance to `array`s -- `array`-likes, as above -- for instance, both of them having a `length` property, an `indexOf(..)` method (`array` version only as of ES5), and a `concat(..)` method:
+Các string thực sự tương đồng với `array` -- `array` giống như trên -- chẳng hạn, cả hai đều có thuộc tính `length`, phương thức `indexOf(..)` (phiên bản `array` chỉ kể từ ES5) và phương thức `concat(..)`:
 
 ```js
 a.length;							// 3
@@ -134,7 +134,7 @@ a;									// "foo"
 b;									// ["f","o","o"]
 ```
 
-So, they're both basically just "arrays of characters", right? **Not exactly**:
+Vì vậy, về cơ bản cả hai đều chỉ là "mảng ký tự", phải không? **Không chính xác**:
 
 ```js
 a[1] = "O";
@@ -144,9 +144,9 @@ a; // "foo"
 b; // ["f","O","o"]
 ```
 
-JavaScript `string`s are immutable, while `array`s are quite mutable. Moreover, the `a[1]` character position access form was not always widely valid JavaScript. Older versions of IE did not allow that syntax (but now they do). Instead, the *correct* approach has been `a.charAt(1)`.
+`string` trong JavaScript là immutable (bất biến), trong khi `array` hoàn toàn mutable (có thể thay đổi). Ngoài ra, biểu mẫu truy cập vị trí ký tự `a[1]` không phải lúc nào cũng là JavaScript hợp lệ rộng rãi. Các phiên bản IE cũ hơn không cho phép cú pháp đó (nhưng bây giờ thì có). Thay vào đó, cách tiếp cận *đúng* là `a.charAt(1)`.
 
-A further consequence of immutable `string`s is that none of the `string` methods that alter its contents can modify in-place, but rather must create and return new `string`s. By contrast, many of the methods that change `array` contents actually *do* modify in-place.
+Một ảnh hưởng khác của immutable `string` là không phương thức nào của `string` làm thay đổi nội dung của nó có thể sửa đổi tại chỗ, mà phải tạo và trả về `string` mới. Ngược lại, nhiều phương thức thay đổi nội dung `array` thực sự *làm* sửa đổi tại chỗ.
 
 ```js
 c = a.toUpperCase();
@@ -158,7 +158,7 @@ b.push( "!" );
 b;			// ["f","O","o","!"]
 ```
 
-Also, many of the `array` methods that could be helpful when dealing with `string`s are not actually available for them, but we can "borrow" non-mutation `array` methods against our `string`:
+Ngoài ra, nhiều phương thức `array` có thể hữu ích khi xử lý `string` không thực sự có sẵn cho chúng, nhưng chúng ta có thể "mượn" các phương thức `array` non-mutation với `string` của mình:
 
 ```js
 a.join;			// undefined
@@ -173,7 +173,7 @@ c;				// "f-o-o"
 d;				// "F.O.O."
 ```
 
-Let's take another example: reversing a `string` (incidentally, a common JavaScript interview trivia question!). `array`s have a `reverse()` in-place mutator method, but `string`s do not:
+Hãy lấy một ví dụ khác: đảo ngược một `string` (nhân tiện, đây là một câu hỏi đố phỏng vấn JavaScript phổ biến!). `array` có phương thức biến đổi tại chỗ `reverse()`, nhưng `string` thì không:
 
 ```js
 a.reverse;		// undefined
@@ -182,7 +182,7 @@ b.reverse();	// ["!","o","O","f"]
 b;				// ["!","o","O","f"]
 ```
 
-Unfortunately, this "borrowing" doesn't work with `array` mutators, because `string`s are immutable and thus can't be modified in place:
+Thật không may, việc "mượn" này không hoạt động với các trình biến đổi `array`, bởi vì `string` là immutable và do đó không thể sửa đổi tại chỗ:
 
 ```js
 Array.prototype.reverse.call( a );
@@ -190,7 +190,7 @@ Array.prototype.reverse.call( a );
 // for "foo" :(
 ```
 
-Another workaround (aka hack) is to convert the `string` into an `array`, perform the desired operation, then convert it back to a `string`.
+Một cách giải quyết khác (còn gọi là hack) là chuyển đổi `string` thành `array`, thực hiện thao tác mong muốn, sau đó chuyển đổi lại thành `string`.
 
 ```js
 var c = a
@@ -204,48 +204,48 @@ var c = a
 c; // "oof"
 ```
 
-If that feels ugly, it is. Nevertheless, *it works* for simple `string`s, so if you need something quick-n-dirty, often such an approach gets the job done.
+Nếu điều đó cảm thấy xấu xí, nó là. Tuy nhiên, *nó hoạt động* đối với `string` đơn giản, vì vậy nếu bạn cần thứ gì đó nhanh-và-xấu-xí, thường thì cách tiếp cận như vậy sẽ hoàn thành công việc.
 
-**Warning:** Be careful! This approach **doesn't work** for `string`s with complex (unicode) characters in them (astral symbols, multibyte characters, etc.). You need more sophisticated library utilities that are unicode-aware for such operations to be handled accurately. Consult Mathias Bynens' work on the subject: *Esrever* (https://github.com/mathiasbynens/esrever).
+**Cảnh báo:** Hãy cẩn thận! Cách tiếp cận này **không hoạt động** đối với `string` có các ký tự phức tạp (unicode) trong đó (ký hiệu astral, ký tự nhiều byte, v.v.). Bạn cần các tiện ích thư viện phức tạp hơn, nhận biết unicode để các thao tác như vậy được xử lý chính xác. Tham khảo công trình của Mathias Bynens về chủ đề này: *Esrever* (https://github.com/mathiasbynens/esrever).
 
-The other way to look at this is: if you are more commonly doing tasks on your "strings" that treat them as basically *arrays of characters*, perhaps it's better to just actually store them as `array`s rather than as `string`s. You'll probably save yourself a lot of hassle of converting from `string` to `array` each time. You can always call `join("")` on the `array` *of characters* whenever you actually need the `string` representation.
+Một cách khác để xem xét vấn đề này là: nếu bạn thường thực hiện các tác vụ trên "string" của mình mà về cơ bản coi chúng là *mảng ký tự*, thì có lẽ tốt hơn là lưu trữ chúng dưới dạng `array` thay vì `string`. Bạn có thể sẽ tiết kiệm cho mình rất nhiều rắc rối khi chuyển đổi từ `string` sang `array` mỗi lần. Bạn luôn có thể gọi `join("")` trên `array` *ký tự* bất cứ khi nào bạn thực sự cần biểu diễn `string`.
 
 ## Numbers
 
-JavaScript has just one numeric type: `number`. This type includes both "integer" values and fractional decimal numbers. I say "integer" in quotes because it's long been a criticism of JS that there are not true integers, as there are in other languages. That may change at some point in the future, but for now, we just have `number`s for everything.
+JavaScript chỉ có một loại số: `number`. Loại này bao gồm cả giá trị "số nguyên" và số thập phân phân số. Tôi nói "số nguyên" trong dấu ngoặc kép bởi vì từ lâu người ta đã chỉ trích JS rằng không có số nguyên thực, như trong các ngôn ngữ khác. Điều đó có thể thay đổi vào một thời điểm nào đó trong tương lai, nhưng hiện tại, chúng tôi chỉ có `number` cho mọi thứ.
 
-So, in JS, an "integer" is just a value that has no fractional decimal value. That is, `42.0` is as much an "integer" as `42`.
+Vì vậy, trong JS, một "số nguyên" chỉ là một giá trị không có giá trị thập phân phân số. Nghĩa là, `42.0` cũng là một "số nguyên" như `42`.
 
-Like most modern languages, including practically all scripting languages, the implementation of JavaScript's `number`s is based on the "IEEE 754" standard, often called "floating-point." JavaScript specifically uses the "double precision" format (aka "64-bit binary") of the standard.
+Giống như hầu hết các ngôn ngữ hiện đại, thực tế bao gồm tất cả các ngôn ngữ tập lệnh, việc triển khai `number` của JavaScript dựa trên tiêu chuẩn "IEEE 754", thường được gọi là "floating-point (dấu chấm động)". JavaScript đặc biệt sử dụng định dạng "double precision (độ chính xác kép)" (còn gọi là "64-bit binary") của tiêu chuẩn.
 
-There are many great write-ups on the Web about the nitty-gritty details of how binary floating-point numbers are stored in memory, and the implications of those choices. Because understanding bit patterns in memory is not strictly necessary to understand how to correctly use `number`s in JS, we'll leave it as an exercise for the interested reader if you'd like to dig further into IEEE 754 details.
+Có rất nhiều bài viết tuyệt vời trên Web về các chi tiết cơ bản về cách các số dấu phẩy động nhị phân được lưu trữ trong bộ nhớ và ý nghĩa của những lựa chọn đó. Bởi vì việc hiểu các mẫu bit trong bộ nhớ là không cần thiết để hiểu cách sử dụng chính xác `number` trong JS, chúng tôi sẽ để nó như một bài tập cho người đọc quan tâm nếu bạn muốn tìm hiểu sâu hơn về các chi tiết của IEEE 754.
 
 ### Numeric Syntax
 
-Number literals are expressed in JavaScript generally as base-10 decimal literals. For example:
+Chữ số được thể hiện trong JavaScript thường là chữ số thập phân cơ số 10. Ví dụ:
 
 ```js
 var a = 42;
 var b = 42.3;
 ```
 
-The leading portion of a decimal value, if `0`, is optional:
+Phần đầu của giá trị thập phân, nếu `0`, là tùy chọn:
 
 ```js
 var a = 0.42;
 var b = .42;
 ```
 
-Similarly, the trailing portion (the fractional) of a decimal value after the `.`, if `0`, is optional:
+Tương tự, phần ở cuối (phân số) của một giá trị thập phân sau `.`, nếu `0`, là tùy chọn:
 
 ```js
 var a = 42.0;
 var b = 42.;
 ```
 
-**Warning:** `42.` is pretty uncommon, and probably not a great idea if you're trying to avoid confusion when other people read your code. But it is, nevertheless, valid.
+**Cảnh báo:** `42.` khá hiếm gặp và có lẽ không phải là ý hay nếu bạn đang cố tránh nhầm lẫn khi người khác đọc mã của bạn. Nhưng nó vẫn hợp lệ.
 
-By default, most `number`s will be outputted as base-10 decimals, with trailing fractional `0`s removed. So:
+Theo mặc định, hầu hết `số` sẽ được xuất ra dưới dạng số thập phân cơ số 10, với phân số `0` ở cuối bị loại bỏ. Vì thế:
 
 ```js
 var a = 42.300;
@@ -255,7 +255,7 @@ a; // 42.3
 b; // 42
 ```
 
-Very large or very small `number`s will by default be outputted in exponent form, the same as the output of the `toExponential()` method, like:
+Theo mặc định, `số` rất lớn hoặc rất nhỏ sẽ được xuất ra ở dạng số mũ, giống như kết quả của phương thức `toExponential()`, như:
 
 ```js
 var a = 5E10;
@@ -269,7 +269,7 @@ var c = 1 / a;
 c;					// 2e-11
 ```
 
-Because `number` values can be boxed with the `Number` object wrapper (see Chapter 3), `number` values can access methods that are built into the `Number.prototype` (see Chapter 3). For example, the `toFixed(..)` method allows you to specify how many fractional decimal places you'd like the value to be represented with:
+Vì các giá trị `number` có thể được đóng hộp bằng trình bao bọc đối tượng `Number` (xem Chương 3), các giá trị `number` có thể truy cập các phương thức được tích hợp trong `Number.prototype` (xem Chương 3). Ví dụ: phương thức `toFixed(..)` cho phép bạn chỉ định có bao nhiêu vị trí thập phân phân số mà bạn muốn giá trị được biểu thị bằng:
 
 ```js
 var a = 42.59;
@@ -281,9 +281,9 @@ a.toFixed( 3 ); // "42.590"
 a.toFixed( 4 ); // "42.5900"
 ```
 
-Notice that the output is actually a `string` representation of the `number`, and that the value is `0`-padded on the right-hand side if you ask for more decimals than the value holds.
+Lưu ý rằng đầu ra thực sự là một biểu diễn `string` của `number` và giá trị được đệm `0` ở phía bên tay phải nếu bạn yêu cầu nhiều số thập phân hơn giá trị nắm giữ.
 
-`toPrecision(..)` is similar, but specifies how many *significant digits* should be used to represent the value:
+`toPrecision(..)` tương tự, nhưng chỉ định số lượng *chữ số có nghĩa* nên được sử dụng để biểu thị giá trị:
 
 ```js
 var a = 42.59;
@@ -296,7 +296,7 @@ a.toPrecision( 5 ); // "42.590"
 a.toPrecision( 6 ); // "42.5900"
 ```
 
-You don't have to use a variable with the value in it to access these methods; you can access these methods directly on `number` literals. But you have to be careful with the `.` operator. Since `.` is a valid numeric character, it will first be interpreted as part of the `number` literal, if possible, instead of being interpreted as a property accessor.
+Bạn không cần phải sử dụng một biến có giá trị trong đó để truy cập các phương thức này; bạn có thể truy cập trực tiếp các phương thức này trên các chữ `number`. Nhưng bạn phải cẩn thận với toán tử `.`. Vì `.` là một ký tự số hợp lệ, nên trước tiên, ký tự này sẽ được hiểu là một phần của chữ `số`, nếu có thể, thay vì được hiểu là một trình truy cập thuộc tính.
 
 ```js
 // invalid syntax:
@@ -308,30 +308,30 @@ You don't have to use a variable with the value in it to access these methods; y
 42..toFixed( 3 );	// "42.000"
 ```
 
-`42.toFixed(3)` is invalid syntax, because the `.` is swallowed up as part of the `42.` literal (which is valid -- see above!), and so then there's no `.` property operator present to make the `.toFixed` access.
+`42.toFixed(3)` là cú pháp không hợp lệ, bởi vì `.` bị nuốt chửng như một phần của chữ `42.` (hợp lệ -- xem ở trên!), và do đó, không có toán tử thuộc tính `.` có mặt để tạo quyền truy cập `.toFixed`.
 
-`42..toFixed(3)` works because the first `.` is part of the `number` and the second `.` is the property operator. But it probably looks strange, and indeed it's very rare to see something like that in actual JavaScript code. In fact, it's pretty uncommon to access methods directly on any of the primitive values. Uncommon doesn't mean *bad* or *wrong*.
+`42..toFixed(3)` hoạt động vì `.` đầu tiên là một phần của `number` và `.` thứ hai là toán tử thuộc tính. Nhưng nó có thể trông kỳ lạ và thực sự rất hiếm khi thấy thứ gì đó giống như vậy trong mã JavaScript thực tế. Trên thực tế, việc truy cập các phương thức trực tiếp trên bất kỳ giá trị nguyên thủy nào là khá hiếm. Không phổ biến không có nghĩa là *xấu* hoặc *sai*.
 
-**Note:** There are libraries that extend the built-in `Number.prototype` (see Chapter 3) to provide extra operations on/with `number`s, and so in those cases, it's perfectly valid to use something like `10..makeItRain()` to set off a 10-second money raining animation, or something else silly like that.
+**Lưu ý:** Có những thư viện mở rộng `Number.prototype` tích hợp sẵn (xem Chương 3) để cung cấp các thao tác bổ sung trên/với `number`, và vì vậy, trong những trường hợp đó, việc sử dụng thứ gì đó như `10..makeItRain()` để bắt đầu hoạt ảnh cơn mưa tiền dài 10 giây hoặc thứ gì đó ngớ ngẩn khác tương tự.
 
-This is also technically valid (notice the space):
+Điều này cũng hợp lệ về mặt kỹ thuật (chú ý khoảng trắng):
 
 ```js
 42 .toFixed(3); // "42.000"
 ```
 
-However, with the `number` literal specifically, **this is particularly confusing coding style** and will serve no other purpose but to confuse other developers (and your future self). Avoid it.
+Tuy nhiên, với chữ `number` cụ thể, **đây là kiểu viết code đặc biệt khó hiểu** và sẽ không phục vụ mục đích nào khác ngoài việc gây nhầm lẫn cho các nhà phát triển khác (và chính bạn trong tương lai). Tránh nó.
 
-`number`s can also be specified in exponent form, which is common when representing larger `number`s, such as:
+`number` cũng có thể được chỉ định ở dạng số mũ, điều này phổ biến khi biểu thị các `number` lớn hơn, chẳng hạn như:
 
 ```js
 var onethousand = 1E3;						// means 1 * 10^3
 var onemilliononehundredthousand = 1.1E6;	// means 1.1 * 10^6
 ```
 
-`number` literals can also be expressed in other bases, like binary, octal, and hexadecimal.
+Chữ `số` cũng có thể được biểu thị bằng các cơ số khác, như nhị phân, bát phân và thập lục phân.
 
-These formats work in current versions of JavaScript:
+Các định dạng này hoạt động trong các phiên bản JavaScript hiện tại:
 
 ```js
 0xf3; // hexadecimal for: 243
@@ -340,9 +340,9 @@ These formats work in current versions of JavaScript:
 0363; // octal for: 243
 ```
 
-**Note:** Starting with ES6 + `strict` mode, the `0363` form of octal literals is no longer allowed (see below for the new form). The `0363` form is still allowed in non-`strict` mode, but you should stop using it anyway, to be future-friendly (and because you should be using `strict` mode by now!).
+**Lưu ý:** Bắt đầu với chế độ ES6 + `strict`, dạng `0363` của các ký tự bát phân không còn được phép nữa (xem bên dưới để biết dạng mới). Biểu mẫu `0363` vẫn được cho phép ở non-`strict` (chế độ không `nghiêm ngặt`), nhưng bạn vẫn nên ngừng sử dụng biểu mẫu này để phù hợp với tương lai (và vì bạn nên sử dụng `strict` mode - chế độ `nghiêm ngặt` - ngay bây giờ!).
 
-As of ES6, the following new forms are also valid:
+Kể từ ES6, các biểu mẫu mới sau đây cũng hợp lệ:
 
 ```js
 0o363;		// octal for: 243
@@ -352,31 +352,31 @@ As of ES6, the following new forms are also valid:
 0B11110011; // ditto
 ```
 
-Please do your fellow developers a favor: never use the `0O363` form. `0` next to capital `O` is just asking for confusion. Always use the lowercase predicates `0x`, `0b`, and `0o`.
+Vui lòng giúp đỡ các nhà phát triển đồng nghiệp của bạn: không bao giờ sử dụng biểu mẫu `0O363`. `0` bên cạnh chữ hoa `O` chỉ là yêu cầu nhầm lẫn. Luôn sử dụng các vị từ viết thường `0x`, `0b` và `0o`.
 
 ### Small Decimal Values
 
-The most (in)famous side effect of using binary floating-point numbers (which, remember, is true of **all** languages that use IEEE 754 -- not *just* JavaScript as many assume/pretend) is:
+Tác dụng phụ - side effect - (trong) nổi tiếng nhất của việc sử dụng các số dấu phẩy động nhị phân (hãy nhớ rằng điều này đúng với **tất cả** các ngôn ngữ sử dụng IEEE 754 -- chứ không phải *chỉ* JavaScript như nhiều người giả định/giả vờ) là:
 
 ```js
 0.1 + 0.2 === 0.3; // false
 ```
 
-Mathematically, we know that statement should be `true`. Why is it `false`?
+Về mặt toán học, chúng tôi biết tuyên bố đó phải là `true`. Tại sao nó là `sai`?
 
-Simply put, the representations for `0.1` and `0.2` in binary floating-point are not exact, so when they are added, the result is not exactly `0.3`. It's **really** close: `0.30000000000000004`, but if your comparison fails, "close" is irrelevant.
+Nói một cách đơn giản, các biểu diễn cho `0,1` và `0,2` trong dấu phẩy động nhị phân không chính xác, vì vậy khi chúng được thêm vào, kết quả sẽ không chính xác là `0,3`. Đó là **thực sự** gần: `0,30000000000000004`, nhưng nếu phép so sánh của bạn không thành công, thì "gần" là không liên quan.
 
-**Note:** Should JavaScript switch to a different `number` implementation that has exact representations for all values? Some think so. There have been many alternatives presented over the years. None of them have been accepted yet, and perhaps never will. As easy as it may seem to just wave a hand and say, "fix that bug already!", it's not nearly that easy. If it were, it most definitely would have been changed a long time ago.
+**Lưu ý:** JavaScript có nên chuyển sang triển khai `số` khác có biểu diễn chính xác cho tất cả các giá trị không? Một số nghĩ như vậy. Đã có nhiều lựa chọn thay thế được trình bày trong những năm qua. Không ai trong số họ đã được chấp nhận, và có lẽ sẽ không bao giờ. Có vẻ dễ dàng như vẫy tay và nói, "đã sửa lỗi đó rồi!", nhưng gần như không dễ dàng như vậy. Nếu có, chắc chắn nó đã bị thay đổi từ lâu rồi.
 
-Now, the question is, if some `number`s can't be *trusted* to be exact, does that mean we can't use `number`s at all? **Of course not.**
+Bây giờ, câu hỏi là, nếu một số `number` không thể *đáng tin cậy* chính xác, điều đó có nghĩa là chúng ta hoàn toàn không thể sử dụng `number`? **Dĩ nhiên là không.**
 
-There are some applications where you need to be more careful, especially when dealing with fractional decimal values. There are also plenty of (maybe most?) applications that only deal with whole numbers ("integers"), and moreover, only deal with numbers in the millions or trillions at maximum. These applications have been, and always will be, **perfectly safe** to use numeric operations in JS.
+Có một số ứng dụng mà bạn cần phải cẩn thận hơn, đặc biệt là khi xử lý các giá trị thập phân phân số. Ngoài ra còn có rất nhiều ứng dụng (có thể là hầu hết?) Chỉ xử lý các số nguyên ("số nguyên") và hơn nữa, tối đa chỉ xử lý các số trong hàng triệu hoặc hàng nghìn tỷ. Các ứng dụng này đã và sẽ luôn luôn, **hoàn toàn an toàn** để sử dụng các phép toán số trong JS.
 
-What if we *did* need to compare two `number`s, like `0.1 + 0.2` to `0.3`, knowing that the simple equality test fails?
+Điều gì sẽ xảy ra nếu chúng ta *đã* cần so sánh hai `số`, chẳng hạn như `0,1 + 0,2` với `0,3`, biết rằng phép thử đẳng thức đơn giản không thành công?
 
-The most commonly accepted practice is to use a tiny "rounding error" value as the *tolerance* for comparison. This tiny value is often called "machine epsilon," which is commonly `2^-52` (`2.220446049250313e-16`) for the kind of `number`s in JavaScript.
+Phương pháp được chấp nhận phổ biến nhất là sử dụng một giá trị "lỗi làm tròn" nhỏ làm *dung sai* để so sánh. Giá trị nhỏ này thường được gọi là "epsilon máy", thường là `2^-52` (`2.220446049250313e-16`) cho loại `số` trong JavaScript.
 
-As of ES6, `Number.EPSILON` is predefined with this tolerance value, so you'd want to use it, but you can safely polyfill the definition for pre-ES6:
+Kể từ ES6, `Number.EPSILON` được xác định trước với giá trị dung sai này, vì vậy bạn muốn sử dụng nó, nhưng bạn có thể điền vào định nghĩa một cách an toàn cho ES6 trước:
 
 ```js
 if (!Number.EPSILON) {
@@ -384,7 +384,7 @@ if (!Number.EPSILON) {
 }
 ```
 
-We can use this `Number.EPSILON` to compare two `number`s for "equality" (within the rounding error tolerance):
+Chúng ta có thể sử dụng `Number.EPSILON` này để so sánh hai `số` cho "so sánh bằng" (trong phạm vi sai số làm tròn):
 
 ```js
 function numbersCloseEnoughToEqual(n1,n2) {
@@ -398,23 +398,23 @@ numbersCloseEnoughToEqual( a, b );					// true
 numbersCloseEnoughToEqual( 0.0000001, 0.0000002 );	// false
 ```
 
-The maximum floating-point value that can be represented is roughly `1.798e+308` (which is really, really, really huge!), predefined for you as `Number.MAX_VALUE`. On the small end, `Number.MIN_VALUE` is roughly `5e-324`, which isn't negative but is really close to zero!
+Giá trị dấu phẩy động tối đa có thể được biểu thị là khoảng `1.798e+308` (thực sự, thực sự, rất lớn!), được xác định trước cho bạn là `Number.MAX_VALUE`. Về mặt nhỏ, `Number.MIN_VALUE` gần bằng `5e-324`, không âm nhưng thực sự gần bằng 0!
 
 ### Safe Integer Ranges
 
-Because of how `number`s are represented, there is a range of "safe" values for the whole `number` "integers", and it's significantly less than `Number.MAX_VALUE`.
+Do cách biểu diễn của `number`, có một phạm vi giá trị "an toàn" cho toàn bộ "số nguyên" của `number` và nó nhỏ hơn đáng kể so với `Number.MAX_VALUE`.
 
-The maximum integer that can "safely" be represented (that is, there's a guarantee that the requested value is actually representable unambiguously) is `2^53 - 1`, which is `9007199254740991`. If you insert your commas, you'll see that this is just over 9 quadrillion. So that's pretty darn big for `number`s to range up to.
+Số nguyên tối đa có thể được biểu diễn "một cách an toàn" (nghĩa là có sự đảm bảo rằng giá trị được yêu cầu thực sự có thể biểu thị rõ ràng) là `2^53 - 1`, tức là `9007199254740991`. Nếu bạn thêm dấu phẩy vào, bạn sẽ thấy rằng con số này chỉ hơn 9 triệu tỷ. Vì vậy, đó là một con số khá lớn để `số` có phạm vi lên tới.
 
-This value is actually automatically predefined in ES6, as `Number.MAX_SAFE_INTEGER`. Unsurprisingly, there's a minimum value, `-9007199254740991`, and it's defined in ES6 as `Number.MIN_SAFE_INTEGER`.
+Giá trị này thực sự được xác định trước tự động trong ES6, dưới dạng `Number.MAX_SAFE_INTEGER`. Không có gì ngạc nhiên khi có một giá trị tối thiểu, `-9007199254740991`, và nó được định nghĩa trong ES6 là `Number.MIN_SAFE_INTEGER`.
 
-The main way that JS programs are confronted with dealing with such large numbers is when dealing with 64-bit IDs from databases, etc. 64-bit numbers cannot be represented accurately with the `number` type, so must be stored in (and transmitted to/from) JavaScript using `string` representation.
+Cách chính mà các chương trình JS phải đối mặt với việc xử lý các số lượng lớn như vậy là khi xử lý các ID 64-bit từ cơ sở dữ liệu, v.v. Các số 64-bit không thể được biểu diễn chính xác bằng loại `number`, do đó phải được lưu trữ trong (và truyền đến/từ) JavaScript sử dụng biểu diễn `string`.
 
-Numeric operations on such large ID `number` values (besides comparison, which will be fine with `string`s) aren't all that common, thankfully. But if you *do* need to perform math on these very large values, for now you'll need to use a *big number* utility. Big numbers may get official support in a future version of JavaScript.
+Rất may, các phép toán số trên các giá trị `number` ID lớn như vậy (ngoài việc so sánh, sẽ ổn với `string`) không phải là tất cả phổ biến. Nhưng nếu bạn *làm* cần thực hiện phép toán trên những giá trị rất lớn này, thì bây giờ bạn sẽ cần sử dụng tiện ích *big number*. Số lượng lớn có thể nhận được hỗ trợ chính thức trong phiên bản JavaScript trong tương lai.
 
 ### Testing for Integers
 
-To test if a value is an integer, you can use the ES6-specified `Number.isInteger(..)`:
+Để kiểm tra xem một giá trị có phải là số nguyên hay không, bạn có thể sử dụng `Number.isInteger(..)` do ES6 chỉ định:
 
 ```js
 Number.isInteger( 42 );		// true
@@ -422,7 +422,7 @@ Number.isInteger( 42.000 );	// true
 Number.isInteger( 42.3 );	// false
 ```
 
-To polyfill `Number.isInteger(..)` for pre-ES6:
+Để polyfill `Number.isInteger(..)` cho pre-ES6:
 
 ```js
 if (!Number.isInteger) {
@@ -432,7 +432,7 @@ if (!Number.isInteger) {
 }
 ```
 
-To test if a value is a *safe integer*, use the ES6-specified `Number.isSafeInteger(..)`:
+Để kiểm tra xem một giá trị có phải là *số nguyên an toàn* hay không, hãy sử dụng `Number.isSafeInteger(..)` do ES6 chỉ định:
 
 ```js
 Number.isSafeInteger( Number.MAX_SAFE_INTEGER );	// true
@@ -440,7 +440,7 @@ Number.isSafeInteger( Math.pow( 2, 53 ) );			// false
 Number.isSafeInteger( Math.pow( 2, 53 ) - 1 );		// true
 ```
 
-To polyfill `Number.isSafeInteger(..)` in pre-ES6 browsers:
+Để polyfill `Number.isSafeInteger(..)` trong các trình duyệt pre-ES6:
 
 ```js
 if (!Number.isSafeInteger) {
@@ -453,37 +453,37 @@ if (!Number.isSafeInteger) {
 
 ### 32-bit (Signed) Integers
 
-While integers can range up to roughly 9 quadrillion safely (53 bits), there are some numeric operations (like the bitwise operators) that are only defined for 32-bit `number`s, so the "safe range" for `number`s used in that way must be much smaller.
+Mặc dù các số nguyên có thể có phạm vi lên tới khoảng 9 triệu triệu tỷ một cách an toàn (53 bit), nhưng có một số phép toán số (như toán tử theo chiều bit) chỉ được xác định cho `number` 32 bit, do đó, "phạm vi an toàn" cho `number` được sử dụng theo cách đó phải nhỏ hơn nhiều.
 
-The range then is `Math.pow(-2,31)` (`-2147483648`, about -2.1 billion) up to `Math.pow(2,31)-1` (`2147483647`, about +2.1 billion).
+Sau đó, phạm vi là `Math.pow(-2,31)` (`-2147483648`, khoảng -2,1 tỷ) cho đến `Math.pow(2,31)-1` (`2147483647`, khoảng +2,1 tỷ) .
 
-To force a `number` value in `a` to a 32-bit signed integer value, use `a | 0`. This works because the `|` bitwise operator only works for 32-bit integer values (meaning it can only pay attention to 32 bits and any other bits will be lost). Then, "or'ing" with zero is essentially a no-op bitwise speaking.
+Để buộc giá trị `number` trong `a` thành giá trị số nguyên có dấu 32 bit, hãy sử dụng `a | 0`. Điều này hoạt động vì toán tử `|` bitwise chỉ hoạt động đối với các giá trị số nguyên 32 bit (có nghĩa là nó chỉ có thể chú ý đến 32 bit và bất kỳ bit nào khác sẽ bị mất). Sau đó, "hoặc" với số 0 về cơ bản là cách nói không hợp tác.
 
-**Note:** Certain special values (which we will cover in the next section) such as `NaN` and `Infinity` are not "32-bit safe," in that those values when passed to a bitwise operator will pass through the abstract operation `ToInt32` (see Chapter 4) and become simply the `+0` value for the purpose of that bitwise operation.
+**Lưu ý:** Một số giá trị đặc biệt (mà chúng tôi sẽ đề cập trong phần tiếp theo) chẳng hạn như `NaN` và `Infinity` không phải là "an toàn 32 bit", trong đó các giá trị đó khi được chuyển đến toán tử bitwise sẽ chuyển qua thao tác trừu tượng `ToInt32` (xem Chương 4) và đơn giản trở thành giá trị `+0` cho mục đích của thao tác bitwise đó.
 
 ## Special Values
 
-There are several special values spread across the various types that the *alert* JS developer needs to be aware of, and use properly.
+Có một số giá trị đặc biệt trải rộng trên nhiều loại khác nhau mà *cảnh báo* các nhà phát triển JS cần biết và sử dụng đúng cách.
 
 ### The Non-value Values
 
-For the `undefined` type, there is one and only one value: `undefined`. For the `null` type, there is one and only one value: `null`. So for both of them, the label is both its type and its value.
+Đối với loại `undefined`, có một và chỉ một giá trị: `undefined`. Đối với loại `null`, có một và chỉ một giá trị: `null`. Vì vậy, đối với cả hai, nhãn vừa là loại vừa là giá trị của nó.
 
-Both `undefined` and `null` are often taken to be interchangeable as either "empty" values or "non" values. Other developers prefer to distinguish between them with nuance. For example:
+Cả `undefined` và `null` thường được coi là có thể hoán đổi cho nhau dưới dạng giá trị "trống" hoặc giá trị "không". Các nhà phát triển khác thích phân biệt chúng bằng sắc thái. Ví dụ:
 
-* `null` is an empty value
-* `undefined` is a missing value
+* `null` là một giá trị rỗng
+* `undefined` là một giá trị còn thiếu
 
-Or:
+Hoặc:
 
-* `undefined` hasn't had a value yet
-* `null` had a value and doesn't anymore
+* `undefined` vẫn chưa có giá trị
+* `null` có một giá trị và không có gì nữa
 
-Regardless of how you choose to "define" and use these two values, `null` is a special keyword, not an identifier, and thus you cannot treat it as a variable to assign to (why would you!?). However, `undefined` *is* (unfortunately) an identifier. Uh oh.
+Bất kể bạn chọn "xác định" và sử dụng hai giá trị này như thế nào, `null` là một từ khóa đặc biệt, không phải là một mã định danh và do đó bạn không thể coi nó như một biến để gán (tại sao bạn lại như vậy!?). Tuy nhiên, `undefined` *là* (không may) một mã định danh. Ờ ồ.
 
 ### Undefined
 
-In non-`strict` mode, it's actually possible (though incredibly ill-advised!) to assign a value to the globally provided `undefined` identifier:
+Ở non-`strict` mode, thực sự có thể (mặc dù cực kỳ không nên!) để gán một giá trị cho mã định danh `undefined` được cung cấp trên toàn cục:
 
 ```js
 function foo() {
@@ -502,7 +502,7 @@ function foo() {
 foo();
 ```
 
-In both non-`strict` mode and `strict` mode, however, you can create a local variable of the name `undefined`. But again, this is a terrible idea!
+Tuy nhiên, ở cả non-`strict` mode và `strict` mode, bạn có thể tạo một biến cục bộ có tên `không xác định`. Nhưng một lần nữa, đây là một ý tưởng khủng khiếp!
 
 ```js
 function foo() {
@@ -518,9 +518,9 @@ foo();
 
 #### `void` Operator
 
-While `undefined` is a built-in identifier that holds (unless modified -- see above!) the built-in `undefined` value, another way to get this value is the `void` operator.
+Mặc dù `undefined` là một mã định danh tích hợp giữ (trừ khi được sửa đổi -- xem ở trên!) giá trị `undefined` tích hợp, một cách khác để lấy giá trị này là toán tử `void`.
 
-The expression `void ___` "voids" out any value, so that the result of the expression is always the `undefined` value. It doesn't modify the existing value; it just ensures that no value comes back from the operator expression.
+Biểu thức `void ___` "bỏ trống" bất kỳ giá trị nào để kết quả của biểu thức luôn là giá trị `undefined`. Nó không sửa đổi giá trị hiện có; nó chỉ đảm bảo rằng không có giá trị nào quay lại từ biểu thức toán tử.
 
 ```js
 var a = 42;
@@ -528,11 +528,11 @@ var a = 42;
 console.log( void a, a ); // undefined 42
 ```
 
-By convention (mostly from C-language programming), to represent the `undefined` value stand-alone by using `void`, you'd use `void 0` (though clearly even `void true` or any other `void` expression does the same thing). There's no practical difference between `void 0`, `void 1`, and `undefined`.
+Theo quy ước (hầu hết từ lập trình ngôn ngữ C), để biểu thị giá trị `undefined` độc lập bằng cách sử dụng `void`, bạn sẽ sử dụng `void 0` (mặc dù rõ ràng là ngay cả `void true` hoặc bất kỳ biểu thức `void` nào khác làm điều tương tự). Không có sự khác biệt thực tế nào giữa `void 0`, `void 1` và `undefined`.
 
-But the `void` operator can be useful in a few other circumstances, if you need to ensure that an expression has no result value (even if it has side effects).
+Nhưng toán tử `void` có thể hữu ích trong một vài trường hợp khác, nếu bạn cần đảm bảo rằng một biểu thức không có giá trị kết quả (ngay cả khi nó có side effect).
 
-For example:
+Cho ví dụ:
 
 ```js
 function doSomething() {
@@ -554,9 +554,9 @@ if (doSomething()) {
 }
 ```
 
-Here, the `setTimeout(..)` function returns a numeric value (the unique identifier of the timer interval, if you wanted to cancel it), but we want to `void` that out so that the return value of our function doesn't give a false-positive with the `if` statement.
+Ở đây, hàm `setTimeout(..)` trả về một giá trị số (mã định danh duy nhất của khoảng thời gian hẹn giờ, nếu bạn muốn hủy nó), nhưng chúng tôi muốn `void` để loại bỏ giá trị trả về của hàm của chúng tôi không đưa ra false-positive với câu lệnh `if`.
 
-Many devs prefer to just do these actions separately, which works the same but doesn't use the `void` operator:
+Nhiều nhà phát triển thích thực hiện các hành động này một cách riêng biệt, hoạt động giống nhau nhưng không sử dụng toán tử `void`:
 
 ```js
 if (!APP.ready) {
@@ -566,19 +566,19 @@ if (!APP.ready) {
 }
 ```
 
-In general, if there's ever a place where a value exists (from some expression) and you'd find it useful for the value to be `undefined` instead, use the `void` operator. That probably won't be terribly common in your programs, but in the rare cases you do need it, it can be quite helpful.
+Nói chung, nếu có một nơi mà một giá trị tồn tại (từ một số biểu thức) và bạn thấy giá trị đó là `undefined` là hữu ích, hãy sử dụng toán tử `void`. Điều đó có thể sẽ không quá phổ biến trong các chương trình của bạn, nhưng trong một số ít trường hợp bạn cần nó, nó có thể khá hữu ích.
 
 ### Special Numbers
 
-The `number` type includes several special values. We'll take a look at each in detail.
+Loại `number` bao gồm một số giá trị đặc biệt. Chúng ta sẽ xem xét từng chi tiết.
 
 #### The Not Number, Number
 
-Any mathematic operation you perform without both operands being `number`s (or values that can be interpreted as regular `number`s in base 10 or base 16) will result in the operation failing to produce a valid `number`, in which case you will get the `NaN` value.
+Bất kỳ phép toán nào bạn thực hiện mà không có cả hai toán hạng là `number` (hoặc các giá trị có thể được hiểu là `number` thông thường trong cơ số 10 hoặc cơ số 16) sẽ dẫn đến thao tác không thể tạo ra một `number` hợp lệ, trong trường hợp đó bạn sẽ nhận được giá trị `NaN`.
 
-`NaN` literally stands for "not a `number`", though this label/description is very poor and misleading, as we'll see shortly. It would be much more accurate to think of `NaN` as being "invalid number," "failed number," or even "bad number," than to think of it as "not a number."
+`NaN` theo nghĩa đen là viết tắt của "Not a `Number`", mặc dù nhãn/mô tả này rất kém và dễ gây hiểu lầm, như chúng ta sẽ thấy ngay sau đây. Sẽ chính xác hơn nhiều nếu coi `NaN` là "số không hợp lệ", "số không thành công" hoặc thậm chí là "số xấu" hơn là coi nó là "không phải là số".
 
-For example:
+Cho ví dụ:
 
 ```js
 var a = 2 / "foo";		// NaN
@@ -586,11 +586,11 @@ var a = 2 / "foo";		// NaN
 typeof a === "number";	// true
 ```
 
-In other words: "the type of not-a-number is 'number'!" Hooray for confusing names and semantics.
+Nói cách khác: "kiểu not a number là 'number'!" Hoan hô cái tên và ngữ nghĩa khó hiểu.
 
-`NaN` is a kind of "sentinel value" (an otherwise normal value that's assigned a special meaning) that represents a special kind of error condition within the `number` set. The error condition is, in essence: "I tried to perform a mathematic operation but failed, so here's the failed `number` result instead."
+`NaN` là một loại "giá trị trọng điểm" (một giá trị bình thường khác được gán một ý nghĩa đặc biệt) đại diện cho một loại tình trạng lỗi đặc biệt trong tập hợp `number`. Về bản chất, tình trạng lỗi là: "Tôi đã cố gắng thực hiện một phép toán nhưng không thành công, vì vậy đây là kết quả `number` không thành công."
 
-So, if you have a value in some variable and want to test to see if it's this special failed-number `NaN`, you might think you could directly compare to `NaN` itself, as you can with any other value, like `null` or `undefined`. Nope.
+Vì vậy, nếu bạn có một giá trị trong một số biến và muốn kiểm tra xem liệu đó có phải là số bị lỗi đặc biệt `NaN` này hay không, bạn có thể nghĩ rằng mình có thể so sánh trực tiếp với chính `NaN`, như bạn có thể làm với bất kỳ giá trị nào khác, như `null` hoặc `undefined`. Không.
 
 ```js
 var a = 2 / "foo";
@@ -599,9 +599,9 @@ a == NaN;	// false
 a === NaN;	// false
 ```
 
-`NaN` is a very special value in that it's never equal to another `NaN` value (i.e., it's never equal to itself). It's the only value, in fact, that is not reflexive (without the Identity characteristic `x === x`). So, `NaN !== NaN`. A bit strange, huh?
+`NaN` là một giá trị rất đặc biệt ở chỗ nó không bao giờ bằng một giá trị `NaN` khác (nghĩa là nó không bao giờ bằng chính nó). Trên thực tế, đó là giá trị duy nhất không phản xạ (không có Đặc điểm nhận dạng `x === x`). Vì vậy, `NaN !== NaN`. Hơi lạ nhỉ?
 
-So how *do* we test for it, if we can't compare to `NaN` (since that comparison would always fail)?
+Vậy làm cách nào *làm* chúng tôi kiểm tra nó, nếu chúng tôi không thể so sánh với `NaN` (vì phép so sánh đó sẽ luôn thất bại)?
 
 ```js
 var a = 2 / "foo";
@@ -609,11 +609,11 @@ var a = 2 / "foo";
 isNaN( a ); // true
 ```
 
-Easy enough, right? We use the built-in global utility called `isNaN(..)` and it tells us if the value is `NaN` or not. Problem solved!
+Đủ dễ dàng, phải không? Chúng tôi sử dụng tiện ích toàn cầu được tích hợp sẵn có tên là `isNaN(..)` và tiện ích này cho chúng tôi biết liệu giá trị có phải là `NaN` hay không. Vấn đề đã được giải quyết!
 
-Not so fast.
+Không nhanh như vậy.
 
-The `isNaN(..)` utility has a fatal flaw. It appears it tried to take the meaning of `NaN` ("Not a Number") too literally -- that its job is basically: "test if the thing passed in is either not a `number` or is a `number`." But that's not quite accurate.
+Tiện ích `isNaN(..)` có một lỗ hổng nghiêm trọng. Có vẻ như nó đã cố hiểu nghĩa của `NaN` ("Không phải là số") theo nghĩa đen -- rằng công việc của nó về cơ bản là: "kiểm tra xem thứ được truyền vào không phải là `number` hay là `number`." Nhưng điều đó không hoàn toàn chính xác.
 
 ```js
 var a = 2 / "foo";
@@ -626,9 +626,9 @@ window.isNaN( a ); // true
 window.isNaN( b ); // true -- ouch!
 ```
 
-Clearly, `"foo"` is literally *not a `number`*, but it's definitely not the `NaN` value either! This bug has been in JS since the very beginning (over 19 years of *ouch*).
+Rõ ràng, `"foo"` theo nghĩa đen *không phải là `number`*, nhưng nó chắc chắn cũng không phải là giá trị `NaN`! Lỗi này đã có trong JS ngay từ đầu (hơn 19 năm *ouch*).
 
-As of ES6, finally a replacement utility has been provided: `Number.isNaN(..)`. A simple polyfill for it so that you can safely check `NaN` values *now* even in pre-ES6 browsers is:
+Kể từ ES6, cuối cùng một tiện ích thay thế đã được cung cấp: `Number.isNaN(..)`. Một polyfill đơn giản cho nó để bạn có thể kiểm tra an toàn các giá trị `NaN` *ngay bây giờ* ngay cả trong các trình duyệt trước ES6 là:
 
 ```js
 if (!Number.isNaN) {
@@ -647,7 +647,7 @@ Number.isNaN( a ); // true
 Number.isNaN( b ); // false -- phew!
 ```
 
-Actually, we can implement a `Number.isNaN(..)` polyfill even easier, by taking advantage of that peculiar fact that `NaN` isn't equal to itself. `NaN` is the *only* value in the whole language where that's true; every other value is always **equal to itself**.
+Trên thực tế, chúng ta có thể triển khai một polyfill `Number.isNaN(..)` thậm chí còn dễ dàng hơn, bằng cách tận dụng thực tế đặc biệt là `NaN` không bằng chính nó. `NaN` là giá trị *duy nhất* trong toàn bộ ngôn ngữ khi giá trị đó đúng; mọi giá trị khác luôn **bằng chính nó**.
 
 So:
 
@@ -659,32 +659,32 @@ if (!Number.isNaN) {
 }
 ```
 
-Weird, huh? But it works!
+Lạ nhỉ? Nhưng nó đã có tác dụng!
 
-`NaN`s are probably a reality in a lot of real-world JS programs, either on purpose or by accident. It's a really good idea to use a reliable test, like `Number.isNaN(..)` as provided (or polyfilled), to recognize them properly.
+`NaN` có lẽ là một thực tế trong rất nhiều chương trình JS trong thế giới thực, do mục đích hoặc tình cờ. Bạn nên sử dụng một thử nghiệm đáng tin cậy, chẳng hạn như `Number.isNaN(..)` như được cung cấp (hoặc điền nhiều ký tự), để nhận dạng đúng chúng.
 
-If you're currently using just `isNaN(..)` in a program, the sad reality is your program *has a bug*, even if you haven't been bitten by it yet!
+Nếu bạn hiện chỉ đang sử dụng `isNaN(..)` trong một chương trình, thì thực tế đáng buồn là chương trình của bạn *có lỗi*, ngay cả khi bạn chưa bị nó cắn!
 
 #### Infinities
 
-Developers from traditional compiled languages like C are probably used to seeing either a compiler error or runtime exception, like "Divide by zero," for an operation like:
+Các nhà phát triển từ các ngôn ngữ được biên dịch truyền thống như C có thể đã quen với việc gặp lỗi trình biên dịch hoặc ngoại lệ thời gian chạy, chẳng hạn như "Chia cho số 0" đối với một thao tác như:
 
 ```js
 var a = 1 / 0;
 ```
 
-However, in JS, this operation is well-defined and results in the value `Infinity` (aka `Number.POSITIVE_INFINITY`). Unsurprisingly:
+Tuy nhiên, trong JS, thao tác này được xác định rõ và dẫn đến giá trị `Infinity` (hay còn gọi là `Number.POSITIVE_INFINITY`). không ngạc nhiên:
 
 ```js
 var a = 1 / 0;	// Infinity
 var b = -1 / 0;	// -Infinity
 ```
 
-As you can see, `-Infinity` (aka `Number.NEGATIVE_INFINITY`) results from a divide-by-zero where either (but not both!) of the divide operands is negative.
+Như bạn có thể thấy, `-Infinity` (hay còn gọi là `Number.NEGATIVE_INFINITY`) là kết quả của phép chia cho 0 trong đó một trong hai (nhưng không phải cả hai!) của toán hạng chia là âm.
 
-JS uses finite numeric representations (IEEE 754 floating-point, which we covered earlier), so contrary to pure mathematics, it seems it *is* possible to overflow even with an operation like addition or subtraction, in which case you'd get `Infinity` or `-Infinity`.
+JS sử dụng các biểu diễn số hữu hạn (floating-point - dấu phẩy động - IEEE 754, mà chúng tôi đã đề cập trước đó), do đó, trái ngược với toán học thuần túy, có vẻ như nó *có thể* bị tràn ngay cả với một phép toán như cộng hoặc trừ, trong trường hợp đó, bạn sẽ nhận được ` Infinity` hoặc `-Infinity`.
 
-For example:
+Cho minh hoạ:
 
 ```js
 var a = Number.MAX_VALUE;	// 1.7976931348623157e+308
@@ -693,32 +693,32 @@ a + Math.pow( 2, 970 );		// Infinity
 a + Math.pow( 2, 969 );		// 1.7976931348623157e+308
 ```
 
-According to the specification, if an operation like addition results in a value that's too big to represent, the IEEE 754 "round-to-nearest" mode specifies what the result should be. So, in a crude sense, `Number.MAX_VALUE + Math.pow( 2, 969 )` is closer to `Number.MAX_VALUE` than to `Infinity`, so it "rounds down," whereas `Number.MAX_VALUE + Math.pow( 2, 970 )` is closer to `Infinity` so it "rounds up".
+Theo thông số kỹ thuật, nếu một hoạt động như phép cộng dẫn đến một giá trị quá lớn để biểu thị, thì chế độ "vòng đến gần nhất" của IEEE 754 sẽ chỉ định kết quả sẽ là gì. Vì vậy, theo nghĩa thô, `Number.MAX_VALUE + Math.pow( 2, 969 )` gần với `Number.MAX_VALUE` hơn là `Infinity`, do đó, nó "làm tròn xuống", trong khi `Number.MAX_VALUE + Math. pow( 2, 970 )` gần với `Infinity` hơn nên nó "làm tròn lên".
 
-If you think too much about that, it's going to make your head hurt. So don't. Seriously, stop!
+Nếu bạn nghĩ quá nhiều về điều đó, nó sẽ khiến bạn đau đầu. Vì vậy, không. Nghiêm túc, dừng lại!
 
-Once you overflow to either one of the *infinities*, however, there's no going back. In other words, in an almost poetic sense, you can go from finite to infinite but not from infinite back to finite.
+Tuy nhiên, khi bạn tràn đến một trong các *infinity (vô cực)*, thì sẽ không quay lại được nữa. Nói cách khác, theo một nghĩa gần như thơ mộng, bạn có thể đi từ hữu hạn đến vô hạn nhưng không thể từ vô hạn trở lại hữu hạn.
 
-It's almost philosophical to ask: "What is infinity divided by infinity". Our naive brains would likely say "1" or maybe "infinity." Turns out neither is true. Both mathematically and in JavaScript, `Infinity / Infinity` is not a defined operation. In JS, this results in `NaN`.
+Câu hỏi gần như mang tính triết học: "Vô cực chia hết cho vô cực là bao nhiêu". Bộ não ngây thơ của chúng ta có thể sẽ nói "1" hoặc có thể là "vô cùng". Hóa ra không phải là sự thật. Cả về mặt toán học và trong JavaScript, `Infinity/Infinity` không phải là một phép toán xác định. Trong JS, điều này dẫn đến `NaN`.
 
-But what about any positive finite `number` divided by `Infinity`? That's easy! `0`. And what about a negative finite `number` divided by `Infinity`? Keep reading!
+Nhưng còn bất kỳ `number` hữu hạn dương nào chia cho `Infinity` thì sao? Thật dễ dàng! `0`. Còn về `number` hữu hạn âm chia cho `Infinity` thì sao? Hãy đọc tiếp!
 
 #### Zeros
 
-While it may confuse the mathematics-minded reader, JavaScript has both a normal zero `0` (otherwise known as a positive zero `+0`) *and* a negative zero `-0`. Before we explain why the `-0` exists, we should examine how JS handles it, because it can be quite confusing.
+Mặc dù có thể gây nhầm lẫn cho người đọc có đầu óc toán học, nhưng JavaScript có cả số 0 bình thường `0` (còn được gọi là số 0 dương `+0`) *và* số 0 âm `-0`. Trước khi giải thích tại sao `-0` tồn tại, chúng ta nên xem xét cách JS xử lý nó, vì nó có thể khá khó hiểu.
 
-Besides being specified literally as `-0`, negative zero also results from certain mathematic operations. For example:
+Ngoài việc được chỉ định theo nghĩa đen là `-0`, số 0 âm còn là kết quả của một số phép toán nhất định. Ví dụ:
 
 ```js
 var a = 0 / -3; // -0
 var b = 0 * -3; // -0
 ```
 
-Addition and subtraction cannot result in a negative zero.
+Phép cộng và phép trừ không thể dẫn đến số 0 âm.
 
-A negative zero when examined in the developer console will usually reveal `-0`, though that was not the common case until fairly recently, so some older browsers you encounter may still report it as `0`.
+Số 0 âm khi được kiểm tra trong bảng điều khiển dành cho nhà phát triển thường sẽ hiển thị `-0`, mặc dù đó không phải là trường hợp phổ biến cho đến gần đây, vì vậy một số trình duyệt cũ hơn mà bạn gặp vẫn có thể báo cáo là `0`.
 
-However, if you try to stringify a negative zero value, it will always be reported as `"0"`, according to the spec.
+Tuy nhiên, nếu bạn cố gắng stringify(xâu chuỗi) một giá trị âm 0, nó sẽ luôn được báo cáo là `"0"`, theo thông số kỹ thuật.
 
 ```js
 var a = 0 / -3;
@@ -735,7 +735,7 @@ String( a );				// "0"
 JSON.stringify( a );		// "0"
 ```
 
-Interestingly, the reverse operations (going from `string` to `number`) don't lie:
+Thật thú vị, các hoạt động đảo ngược (đi từ `string` sang `number`) không nói dối:
 
 ```js
 +"-0";				// -0
@@ -743,9 +743,9 @@ Number( "-0" );		// -0
 JSON.parse( "-0" );	// -0
 ```
 
-**Warning:** The `JSON.stringify( -0 )` behavior of `"0"` is particularly strange when you observe that it's inconsistent with the reverse: `JSON.parse( "-0" )` reports `-0` as you'd correctly expect.
+**Cảnh báo:** Hành vi `JSON.stringify(-0)` của `"0"` đặc biệt lạ khi bạn quan sát thấy rằng nó không nhất quán với điều ngược lại: `JSON.parse("-0")` báo cáo `-0` như bạn mong đợi một cách chính xác.
 
-In addition to stringification of negative zero being deceptive to hide its true value, the comparison operators are also (intentionally) configured to *lie*.
+Ngoài việc xâu chuỗi số 0 âm là đánh lừa để che giấu giá trị thực của nó, các toán tử so sánh cũng (cố ý) được định cấu hình để *nói dối*.
 
 ```js
 var a = 0;
@@ -761,7 +761,7 @@ a === b;	// true
 a > b;		// false
 ```
 
-Clearly, if you want to distinguish a `-0` from a `0` in your code, you can't just rely on what the developer console outputs, so you're going to have to be a bit more clever:
+Rõ ràng, nếu bạn muốn phân biệt `-0` với `0` trong mã của mình, bạn không thể chỉ dựa vào những gì bảng điều khiển dành cho nhà phát triển xuất ra, vì vậy bạn sẽ phải thông minh hơn một chút:
 
 ```js
 function isNegZero(n) {
@@ -774,17 +774,17 @@ isNegZero( 0 / -3 );	// true
 isNegZero( 0 );			// false
 ```
 
-Now, why do we need a negative zero, besides academic trivia?
+Bây giờ, tại sao chúng ta cần một số 0 âm, bên cạnh những câu đố học thuật?
 
-There are certain applications where developers use the magnitude of a value to represent one piece of information (like speed of movement per animation frame) and the sign of that `number` to represent another piece of information (like the direction of that movement).
+Có một số ứng dụng mà nhà phát triển sử dụng độ lớn của một giá trị để biểu thị một phần thông tin (chẳng hạn như tốc độ di chuyển trên mỗi khung hoạt hình) và dấu của `số` đó để biểu thị một phần thông tin khác (chẳng hạn như hướng của chuyển động đó).
 
-In those applications, as one example, if a variable arrives at zero and it loses its sign, then you would lose the information of what direction it was moving in before it arrived at zero. Preserving the sign of the zero prevents potentially unwanted information loss.
+Trong các ứng dụng đó, chẳng hạn, nếu một biến số tiến đến số 0 và nó mất dấu, thì bạn sẽ mất thông tin về hướng mà nó đang di chuyển trước khi nó về số không. Giữ nguyên dấu của số 0 để tránh mất thông tin không mong muốn.
 
 ### Special Equality
 
-As we saw above, the `NaN` value and the `-0` value have special behavior when it comes to equality comparison. `NaN` is never equal to itself, so you have to use ES6's `Number.isNaN(..)` (or a polyfill). Similarly, `-0` lies and pretends that it's equal (even `===` strict equal -- see Chapter 4) to regular positive `0`, so you have to use the somewhat hackish `isNegZero(..)` utility we suggested above.
+Như chúng ta đã thấy ở trên, giá trị `NaN` và giá trị `-0` có hành vi đặc biệt khi so sánh đẳng thức. `NaN` không bao giờ bằng chính nó, vì vậy bạn phải sử dụng `Number.isNaN(..)` của ES6 (hoặc một polyfill). Tương tự, `-0` nói dối và giả vờ rằng nó bằng (thậm chí `===` bằng nghiêm ngặt -- xem Chương 4) với `0` dương thông thường, vì vậy bạn phải sử dụng tiện ích `isNegZero(..)` hơi khó hiểu chúng tôi đã đề xuất ở trên.
 
-As of ES6, there's a new utility that can be used to test two values for absolute equality, without any of these exceptions. It's called `Object.is(..)`:
+Kể từ ES6, có một tiện ích mới có thể được sử dụng để kiểm tra hai giá trị cho sự bằng nhau tuyệt đối mà không có bất kỳ ngoại lệ nào trong số này. Nó được gọi là `Object.is(..)`:
 
 ```js
 var a = 2 / "foo";
@@ -796,7 +796,7 @@ Object.is( b, -0 );		// true
 Object.is( b, 0 );		// false
 ```
 
-There's a pretty simple polyfill for `Object.is(..)` for pre-ES6 environments:
+Có một polyfill khá đơn giản cho `Object.is(..)` cho các môi trường trước ES6:
 
 ```js
 if (!Object.is) {
@@ -815,21 +815,21 @@ if (!Object.is) {
 }
 ```
 
-`Object.is(..)` probably shouldn't be used in cases where `==` or `===` are known to be *safe* (see Chapter 4 "Coercion"), as the operators are likely much more efficient and certainly are more idiomatic/common. `Object.is(..)` is mostly for these special cases of equality.
+`Object.is(..)` có lẽ không nên được sử dụng trong các trường hợp `==` hoặc `===` được biết là *an toàn* (xem Chương 4 "Coercion (Ép kiểu)"), vì các toán tử có thể sử dụng nhiều hiệu quả hơn và chắc chắn là thành ngữ/phổ biến hơn. `Object.is(..)` chủ yếu dành cho các trường hợp bình đẳng đặc biệt này.
 
 ## Value vs. Reference
 
-In many other languages, values can either be assigned/passed by value-copy or by reference-copy depending on the syntax you use.
+Trong nhiều ngôn ngữ khác, các giá trị có thể được gán/chuyển bằng bản sao giá trị hoặc bản sao tham chiếu tùy thuộc vào cú pháp bạn sử dụng.
 
-For example, in C++ if you want to pass a `number` variable into a function and have that variable's value updated, you can declare the function parameter like `int& myNum`, and when you pass in a variable like `x`, `myNum` will be a **reference to `x`**; references are like a special form of pointers, where you obtain a pointer to another variable (like an *alias*). If you don't declare a reference parameter, the value passed in will *always* be copied, even if it's a complex object.
+Ví dụ: trong C++ nếu bạn muốn truyền một biến `number` vào một function và cập nhật giá trị của biến đó, bạn có thể khai báo tham số hàm như `int& myNum` và khi bạn truyền một biến như `x`, ` myNum` sẽ là một **tham chiếu đến `x`**; các tham chiếu giống như một dạng con trỏ đặc biệt, nơi bạn có được một con trỏ tới một biến khác (như một *alias -bí danh-*). Nếu bạn không khai báo một tham số tham chiếu, thì giá trị được truyền vào sẽ *luôn* được sao chép, ngay cả khi đó là một object phức tạp.
 
-In JavaScript, there are no pointers, and references work a bit differently. You cannot have a reference from one JS variable to another variable. That's just not possible.
+Trong JavaScript, không có con trỏ và tham chiếu hoạt động hơi khác một chút. Bạn không thể có tham chiếu từ biến JS này sang biến khác. Điều đó là không thể.
 
-A reference in JS points at a (shared) **value**, so if you have 10 different references, they are all always distinct references to a single shared value; **none of them are references/pointers to each other.**
+Một tham chiếu trong JS trỏ đến một **giá trị** (được chia sẻ), vì vậy nếu bạn có 10 tham chiếu khác nhau, thì tất cả chúng luôn là các tham chiếu riêng biệt cho một giá trị được chia sẻ duy nhất; **không cái nào trong số chúng là tham chiếu/con trỏ cho nhau.**
 
-Moreover, in JavaScript, there are no syntactic hints that control value vs. reference assignment/passing. Instead, the *type* of the value *solely* controls whether that value will be assigned by value-copy or by reference-copy.
+Ngoài ra, trong JavaScript, không có gợi ý cú pháp nào kiểm soát giá trị so với việc gán/truyền tham chiếu. Thay vào đó, *loại* của giá trị *chỉ* kiểm soát liệu giá trị đó sẽ được gán bằng bản sao giá trị hay bằng bản sao tham chiếu.
 
-Let's illustrate:
+Hãy minh họa:
 
 ```js
 var a = 2;
@@ -845,15 +845,15 @@ c; // [1,2,3,4]
 d; // [1,2,3,4]
 ```
 
-Simple values (aka scalar primitives) are *always* assigned/passed by value-copy: `null`, `undefined`, `string`, `number`, `boolean`, and ES6's `symbol`.
+Các giá trị đơn giản (aka scalar primitives) *luôn luôn* được gán/truyền bởi bản sao giá trị: `null`, `undefined`, `string`, `number`, `boolean` và `symbol` của ES6.
 
-Compound values -- `object`s (including `array`s, and all boxed object wrappers -- see Chapter 3) and `function`s -- *always* create a copy of the reference on assignment or passing.
+Các giá trị kết hợp -- `object` (bao gồm `array` và tất cả các trình bao bọc đối tượng được đóng gói -- xem Chương 3) và `function` -- *luôn* tạo một bản sao của tham chiếu khi gán hoặc truyền.
 
-In the above snippet, because `2` is a scalar primitive, `a` holds one initial copy of that value, and `b` is assigned another *copy* of the value. When changing `b`, you are in no way changing the value in `a`.
+Trong đoạn code trên, vì `2` là một scalar primitive, `a` giữ một bản sao ban đầu của giá trị đó và `b` được gán một *bản sao* khác của giá trị. Khi thay đổi `b`, bạn hoàn toàn không thay đổi giá trị trong `a`.
 
-But **both `c` and `d`** are separate references to the same shared value `[1,2,3]`, which is a compound value. It's important to note that neither `c` nor `d` more "owns" the `[1,2,3]` value -- both are just equal peer references to the value. So, when using either reference to modify (`.push(4)`) the actual shared `array` value itself, it's affecting just the one shared value, and both references will reference the newly modified value `[1,2,3,4]`.
+Nhưng **cả `c` và `d`** đều là các tham chiếu riêng biệt đến cùng một giá trị được chia sẻ `[1,2,3]`, là một giá trị kết hợp. Điều quan trọng cần lưu ý là cả `c` và `d` đều không "sở hữu" giá trị `[1,2,3]` -- cả hai đều chỉ là tham chiếu ngang hàng với giá trị. Vì vậy, khi sử dụng một trong hai tham chiếu để sửa đổi (`.push(4)`) chính giá trị `array` được chia sẻ thực tế, nó chỉ ảnh hưởng đến một giá trị được chia sẻ và cả hai tham chiếu sẽ tham chiếu giá trị mới được sửa đổi `[1,2,3,4]`.
 
-Since references point to the values themselves and not to the variables, you cannot use one reference to change where another reference is pointed:
+Vì các tham chiếu trỏ đến chính các giá trị chứ không phải các biến, nên bạn không thể sử dụng một tham chiếu để thay đổi nơi một tham chiếu khác được trỏ đến:
 
 ```js
 var a = [1,2,3];
@@ -867,9 +867,9 @@ a; // [1,2,3]
 b; // [4,5,6]
 ```
 
-When we make the assignment `b = [4,5,6]`, we are doing absolutely nothing to affect *where* `a` is still referencing (`[1,2,3]`). To do that, `b` would have to be a pointer to `a` rather than a reference to the `array` -- but no such capability exists in JS!
+Khi chúng tôi thực hiện phép gán `b = [4,5,6]`, chúng tôi hoàn toàn không làm gì để ảnh hưởng đến *nơi* `a` vẫn đang tham chiếu (`[1,2,3]`). Để làm điều đó, `b` sẽ phải là một con trỏ tới `a` chứ không phải là một tham chiếu tới `array` -- nhưng không có khả năng như vậy tồn tại trong JS!
 
-The most common way such confusion happens is with function parameters:
+Cách phổ biến nhất mà sự nhầm lẫn như vậy xảy ra là với các function parameters:
 
 ```js
 function foo(x) {
@@ -889,11 +889,11 @@ foo( a );
 a; // [1,2,3,4]  not  [4,5,6,7]
 ```
 
-When we pass in the argument `a`, it assigns a copy of the `a` reference to `x`. `x` and `a` are separate references pointing at the same `[1,2,3]` value. Now, inside the function, we can use that reference to mutate the value itself (`push(4)`). But when we make the assignment `x = [4,5,6]`, this is in no way affecting where the initial reference `a` is pointing -- still points at the (now modified) `[1,2,3,4]` value.
+Khi chúng ta truyền đối số `a` vào, nó sẽ gán một bản sao của tham chiếu `a` cho `x`. `x` và `a` là các tham chiếu riêng biệt chỉ vào cùng một giá trị `[1,2,3]`. Bây giờ, bên trong hàm, chúng ta có thể sử dụng tham chiếu đó để thay đổi giá trị của chính nó (`push(4)`). Nhưng khi chúng ta thực hiện phép gán `x = [4,5,6]`, điều này không hề ảnh hưởng đến vị trí tham chiếu ban đầu `a` đang trỏ tới -- vẫn trỏ tới (hiện đã được sửa đổi) `[1,2,3,4]` giá trị.
 
-There is no way to use the `x` reference to change where `a` is pointing. We could only modify the contents of the shared value that both `a` and `x` are pointing to.
+Không có cách nào sử dụng tham chiếu `x` để thay đổi vị trí trỏ của `a`. Chúng tôi chỉ có thể sửa đổi nội dung của giá trị được chia sẻ mà cả `a` và `x` đều trỏ tới.
 
-To accomplish changing `a` to have the `[4,5,6,7]` value contents, you can't create a new `array` and assign -- you must modify the existing `array` value:
+Để hoàn thành việc thay đổi `a` để có nội dung giá trị `[4,5,6,7]`, bạn không thể tạo `array` mới và gán -- bạn phải sửa đổi giá trị `array` hiện có:
 
 ```js
 function foo(x) {
@@ -913,19 +913,19 @@ foo( a );
 a; // [4,5,6,7]  not  [1,2,3,4]
 ```
 
-As you can see, `x.length = 0` and `x.push(4,5,6,7)` were not creating a new `array`, but modifying the existing shared `array`. So of course, `a` references the new `[4,5,6,7]` contents.
+Như bạn có thể thấy, `x.length = 0` và `x.push(4,5,6,7)` không tạo `array` mới mà sửa đổi `array` được chia sẻ hiện có. Vì vậy, tất nhiên, `a` tham chiếu nội dung `[4,5,6,7]` mới.
 
-Remember: you cannot directly control/override value-copy vs. reference -- those semantics are controlled entirely by the type of the underlying value.
+Hãy nhớ rằng: bạn không thể kiểm soát/ghi đè trực tiếp bản sao giá trị so với tham chiếu -- những ngữ nghĩa đó được kiểm soát hoàn toàn bởi loại giá trị cơ bản.
 
-To effectively pass a compound value (like an `array`) by value-copy, you need to manually make a copy of it, so that the reference passed doesn't still point to the original. For example:
+Để chuyển một giá trị phức hợp (chẳng hạn như `mảng`) một cách hiệu quả bằng cách sao chép giá trị, bạn cần tạo một bản sao của giá trị đó theo cách thủ công để tham chiếu được chuyển không còn trỏ đến giá trị gốc. Ví dụ:
 
 ```js
 foo( a.slice() );
 ```
 
-`slice(..)` with no parameters by default makes an entirely new (shallow) copy of the `array`. So, we pass in a reference only to the copied `array`, and thus `foo(..)` cannot affect the contents of `a`.
+Theo mặc định, `slice(..)` không có tham số sẽ tạo một bản sao hoàn toàn mới (shallow) của `array`. Vì vậy, chúng tôi chỉ chuyển tham chiếu đến `array` đã sao chép và do đó `foo(..)` không thể ảnh hưởng đến nội dung của `a`.
 
-To do the reverse -- pass a scalar primitive value in a way where its value updates can be seen, kinda like a reference -- you have to wrap the value in another compound value (`object`, `array`, etc) that *can* be passed by reference-copy:
+Để thực hiện ngược lại -- chuyển một giá trị scala primitive theo cách mà giá trị cập nhật của nó có thể được nhìn thấy, giống như một tham chiếu -- bạn phải bọc giá trị đó trong một giá trị phức hợp khác (`object`, `symbol`, v.v.) *có thể* được chuyển qua bản sao tham chiếu:
 
 ```js
 function foo(wrapper) {
@@ -941,11 +941,11 @@ foo( obj );
 obj.a; // 42
 ```
 
-Here, `obj` acts as a wrapper for the scalar primitive property `a`. When passed to `foo(..)`, a copy of the `obj` reference is passed in and set to the `wrapper` parameter. We now can use the `wrapper` reference to access the shared object, and update its property. After the function finishes, `obj.a` will see the updated value `42`.
+Ở đây, `obj` hoạt động như một trình bao bọc cho thuộc tính scalar primitive `a`. Khi được chuyển đến `foo(..)`, một bản sao của tham chiếu `obj` được chuyển vào và đặt thành tham số `wrapper`. Bây giờ chúng ta có thể sử dụng tham chiếu `wrapper` để truy cập đối tượng được chia sẻ và cập nhật thuộc tính của nó. Sau khi hàm kết thúc, `obj.a` sẽ thấy giá trị được cập nhật là `42`.
 
-It may occur to you that if you wanted to pass in a reference to a scalar primitive value like `2`, you could just box the value in its `Number` object wrapper (see Chapter 3).
+Có thể xảy ra với bạn rằng nếu bạn muốn chuyển tham chiếu đến một giá trị scalar primitive như `2`, bạn chỉ cần đóng hộp giá trị đó trong trình bao bọc object `Number` của nó (xem Chương 3).
 
-It *is* true a copy of the reference to this `Number` object *will* be passed to the function, but unfortunately, having a reference to the shared object is not going to give you the ability to modify the shared primitive value, like you may expect:
+Bản sao của tham chiếu đến đối tượng `Number` này *sẽ* được truyền cho hàm *là* đúng, nhưng thật không may, việc có tham chiếu đến đối tượng được chia sẻ sẽ không cung cấp cho bạn khả năng sửa đổi giá trị primitive được chia sẻ, như bạn có thể mong đợi:
 
 ```js
 function foo(x) {
@@ -960,26 +960,26 @@ foo( b );
 console.log( b ); // 2, not 3
 ```
 
-The problem is that the underlying scalar primitive value is *not mutable* (same goes for `String` and `Boolean`). If a `Number` object holds the scalar primitive value `2`, that exact `Number` object can never be changed to hold another value; you can only create a whole new `Number` object with a different value.
+Vấn đề là giá trị scalar primitive cơ bản *not mutable (không thể thay đổi)* (tương tự với `String` và `Boolean`). Nếu một đối tượng `Number` giữ giá trị scalar primitive `2`, thì đối tượng `Number` chính xác đó không bao giờ có thể được thay đổi để giữ một giá trị khác; bạn chỉ có thể tạo một đối tượng `Number` hoàn toàn mới với một giá trị khác.
 
-When `x` is used in the expression `x + 1`, the underlying scalar primitive value `2` is unboxed (extracted) from the `Number` object automatically, so the line `x = x + 1` very subtly changes `x` from being a shared reference to the `Number` object, to just holding the scalar primitive value `3` as a result of the addition operation `2 + 1`. Therefore, `b` on the outside still references the original unmodified/immutable `Number` object holding the value `2`.
+Khi `x` được sử dụng trong biểu thức `x + 1`, giá trị scalar primitive `2` sẽ tự động được mở hộp (trích xuất) khỏi đối tượng `Number`, do đó, dòng `x = x + 1` thay đổi rất tinh vi ` x` từ một tham chiếu được chia sẻ đến đối tượng `Number`, sang việc chỉ giữ giá trị scalar primitive `3` do hoạt động cộng `2 + 1`. Do đó, `b` ở bên ngoài vẫn tham chiếu đến đối tượng `Number` không thay đổi/bất biến ban đầu đang giữ giá trị `2`.
 
-You *can* add properties on top of the `Number` object (just not change its inner primitive value), so you could exchange information indirectly via those additional properties.
+Bạn *có thể* thêm các thuộc tính lên trên đối tượng `Number` (chỉ cần không thay đổi giá trị primitive bên trong của nó), vì vậy bạn có thể trao đổi thông tin gián tiếp thông qua các thuộc tính bổ sung đó.
 
-This is not all that common, however; it probably would not be considered a good practice by most developers.
+Tuy nhiên, đây không phải là tất cả những gì phổ biến; nó có thể sẽ không được hầu hết các nhà phát triển coi là một phương pháp hay.
 
-Instead of using the wrapper object `Number` in this way, it's probably much better to use the manual object wrapper (`obj`) approach in the earlier snippet. That's not to say that there's no clever uses for the boxed object wrappers like `Number` -- just that you should probably prefer the scalar primitive value form in most cases.
+Thay vì sử dụng đối tượng trình bao bọc `Number` theo cách này, có lẽ tốt hơn nhiều là sử dụng cách tiếp cận trình bao bọc đối tượng thủ công (`obj`) trong đoạn mã trước đó. Điều đó không có nghĩa là không có cách sử dụng thông minh nào cho các trình bao bọc đối tượng được đóng hộp như `Number` -- chỉ là bạn có thể thích dạng giá trị scalar primitive hơn trong hầu hết các trường hợp.
 
-References are quite powerful, but sometimes they get in your way, and sometimes you need them where they don't exist. The only control you have over reference vs. value-copy behavior is the type of the value itself, so you must indirectly influence the assignment/passing behavior by which value types you choose to use.
+Tham chiếu khá mạnh mẽ, nhưng đôi khi chúng cản trở bạn và đôi khi bạn cần chúng khi chúng không tồn tại. Kiểm soát duy nhất mà bạn có đối với hành vi tham chiếu so với hành vi sao chép giá trị là loại của chính giá trị đó, vì vậy bạn phải gián tiếp tác động đến hành vi gán/truyền theo loại giá trị mà bạn chọn sử dụng.
 
 ## Review
 
-In JavaScript, `array`s are simply numerically indexed collections of any value-type. `string`s are somewhat "`array`-like", but they have distinct behaviors and care must be taken if you want to treat them as `array`s. Numbers in JavaScript include both "integers" and floating-point values.
+Trong JavaScript, `array` chỉ đơn giản là các tập hợp được lập chỉ mục bằng số của bất kỳ loại giá trị nào. `string` hơi giống "`array`", nhưng chúng có các hành vi riêng biệt và bạn phải cẩn thận nếu bạn muốn coi chúng là `array`. Các số trong JavaScript bao gồm cả giá trị "số nguyên" và dấu phẩy động.
 
-Several special values are defined within the primitive types.
+Một số giá trị đặc biệt được xác định trong các kiểu nguyên thủy(primitive types).
 
-The `null` type has just one value: `null`, and likewise the `undefined` type has just the `undefined` value. `undefined` is basically the default value in any variable or property if no other value is present. The `void` operator lets you create the `undefined` value from any other value.
+Loại `null` chỉ có một giá trị: `null` và tương tự như vậy, loại `undefined` chỉ có giá trị `undefined`. `undefined` về cơ bản là giá trị mặc định trong bất kỳ biến hoặc thuộc tính nào nếu không có giá trị nào khác. Toán tử `void` cho phép bạn tạo giá trị `undefined` từ bất kỳ giá trị nào khác.
 
-`number`s include several special values, like `NaN` (supposedly "Not a Number", but really more appropriately "invalid number"); `+Infinity` and `-Infinity`; and `-0`.
+`number` bao gồm một số giá trị đặc biệt, như `NaN` (được cho là "Không phải là số", nhưng thực sự thích hợp hơn là "số không hợp lệ"); `+Infinity` và `-Infinity`; và `-0`.
 
-Simple scalar primitives (`string`s, `number`s, etc.) are assigned/passed by value-copy, but compound values (`object`s, etc.) are assigned/passed by reference-copy. References are not like references/pointers in other languages -- they're never pointed at other variables/references, only at the underlying values.
+Các scalar primitive đơn giản (`string`, `number`, v.v.) được gán/truyền bởi bản sao giá trị, nhưng các giá trị phức hợp (`object`, v.v.) được gán/truyền bởi bản sao tham chiếu. Tham chiếu không giống như tham chiếu/con trỏ trong các ngôn ngữ khác -- chúng không bao giờ được trỏ vào các biến/tham chiếu khác, chỉ vào các giá trị cơ bản.
