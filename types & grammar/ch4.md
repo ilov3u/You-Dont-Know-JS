@@ -1,27 +1,27 @@
 # You Don't Know JS: Types & Grammar
 # Chapter 4: Coercion
 
-Now that we much more fully understand JavaScript's types and values, we turn our attention to a very controversial topic: coercion.
+Bây giờ chúng ta đã hiểu đầy đủ hơn về các loại và giá trị của JavaScript, chúng ta chuyển sự chú ý sang một chủ đề gây tranh cãi: sự coercion (ép kiểu).
 
-As we mentioned in Chapter 1, the debates over whether coercion is a useful feature or a flaw in the design of the language (or somewhere in between!) have raged since day one. If you've read other popular books on JS, you know that the overwhelmingly prevalent *message* out there is that coercion is magical, evil, confusing, and just downright a bad idea.
+Như chúng tôi đã đề cập trong Chương 1, các cuộc tranh luận về việc liệu tính ép kiểu(coercion) là một tính năng hữu ích hay một lỗ hổng trong thiết kế của ngôn ngữ (hoặc ở đâu đó ở giữa!) đã nổ ra ngay từ ngày đầu tiên. Nếu bạn đã đọc những cuốn sách nổi tiếng khác về JS, bạn sẽ biết rằng *thông điệp* phổ biến ngoài kia là sự ép kiểu là ma thuật, xấu xa, khó hiểu và hoàn toàn là một ý tưởng tồi.
 
-In the same overall spirit of this book series, rather than running away from coercion because everyone else does, or because you get bitten by some quirk, I think you should run toward that which you don't understand and seek to *get it* more fully.
+Theo tinh thần chung của bộ sách này, thay vì chạy trốn khỏi sự coercion (ép kiểu) bởi vì những người khác cũng vậy, hoặc bởi vì bạn bị cắn bởi một số điều kỳ quặc, tôi nghĩ bạn nên hướng tới những gì bạn không hiểu và tìm cách *có được nó* đầy đủ hơn.
 
-Our goal is to fully explore the pros and cons (yes, there *are* pros!) of coercion, so that you can make an informed decision on its appropriateness in your program.
+Mục tiêu của chúng tôi là khám phá đầy đủ những ưu và nhược điểm (vâng, *có* ưu!) của sự coercion, để bạn có thể đưa ra quyết định sáng suốt về sự phù hợp của nó trong chương trình của mình.
 
 ## Converting Values
 
-Converting a value from one type to another is often called "type casting," when done explicitly, and "coercion" when done implicitly (forced by the rules of how a value is used).
+Chuyển đổi một giá trị từ type này sang type khác thường được gọi là "type casting (truyền kiểu)" khi được thực hiện rõ ràng và "coercion (ép kiểu)" khi được thực hiện ngầm (bắt buộc bởi các quy tắc về cách sử dụng giá trị).
 
-**Note:** It may not be obvious, but JavaScript coercions always result in one of the scalar primitive (see Chapter 2) values, like `string`, `number`, or `boolean`. There is no coercion that results in a complex value like `object` or `function`. Chapter 3 covers "boxing," which wraps scalar primitive values in their `object` counterparts, but this is not really coercion in an accurate sense.
+**Lưu ý:** Điều này có thể không rõ ràng, nhưng các lệnh ép kiểu JavaScript luôn dẫn đến một trong các giá trị scalar primitive (xem Chương 2), như `string`, `number` hoặc `boolean`. Không có sự ép kiểu nào dẫn đến một giá trị phức tạp như `object` hoặc `function`. Chương 3 đề cập đến "boxing", bao bọc các giá trị scalar primitive trong các đối tượng `object` của chúng, nhưng đây không thực sự là sự ép kiểu theo nghĩa chính xác.
 
-Another way these terms are often distinguished is as follows: "type casting" (or "type conversion") occur in statically typed languages at compile time, while "type coercion" is a runtime conversion for dynamically typed languages.
+Một cách khác mà các thuật ngữ này thường được phân biệt như sau: "type casting (truyền kiểu)" (hoặc "type conversion (chuyển đổi kiểu)") xảy ra trong các ngôn ngữ được nhập tĩnh tại thời điểm biên dịch, trong khi "coercion (ép buộc kiểu)" là chuyển đổi thời gian chạy cho các ngôn ngữ được nhập động.
 
-However, in JavaScript, most people refer to all these types of conversions as *coercion*, so the way I prefer to distinguish is to say "implicit coercion" vs. "explicit coercion."
+Tuy nhiên, trong JavaScript, hầu hết mọi người gọi tất cả các loại chuyển đổi này là *coercion - ép buộc*, vì vậy cách tôi muốn phân biệt là nói "implicit coercion (ép buộc ngầm)" so với "explicit coercion (ép buộc tường minh)".
 
-The difference should be obvious: "explicit coercion" is when it is obvious from looking at the code that a type conversion is intentionally occurring, whereas "implicit coercion" is when the type conversion will occur as a less obvious side effect of some other intentional operation.
+Sự khác biệt phải rõ ràng: "explicit coercion" là khi nhìn vào code rõ ràng là chuyển đổi type đang xảy ra có chủ ý, trong khi "implicit coercion" là khi chuyển đổi type sẽ xảy ra như một side effect ít rõ ràng hơn của một số cố ý khác hoạt động.
 
-For example, consider these two approaches to coercion:
+Ví dụ, hãy xem xét hai cách tiếp cận sau để coercion:
 
 ```js
 var a = 42;
@@ -31,31 +31,31 @@ var b = a + "";			// implicit coercion
 var c = String( a );	// explicit coercion
 ```
 
-For `b`, the coercion that occurs happens implicitly, because the `+` operator combined with one of the operands being a `string` value (`""`) will insist on the operation being a `string` concatenation (adding two strings together), which *as a (hidden) side effect* will force the `42` value in `a` to be coerced to its `string` equivalent: `"42"`.
+Đối với `b`, sự ép kiểu xảy ra diễn ra hoàn toàn, bởi vì toán tử `+` được kết hợp với một trong các toán hạng là giá trị `string` (`""`) sẽ nhấn mạnh vào hoạt động là phép nối `string` (thêm hai các string với nhau), mà *với tư cách là một side effect (ẩn)* sẽ buộc giá trị `42` trong `a` bị ép thành giá trị `string` tương đương: `"42"`.
 
-By contrast, the `String(..)` function makes it pretty obvious that it's explicitly taking the value in `a` and coercing it to a `string` representation.
+Ngược lại, hàm `String(..)` cho thấy khá rõ ràng rằng nó rõ ràng lấy giá trị trong `a` và buộc nó thành biểu diễn `string`.
 
-Both approaches accomplish the same effect: `"42"` comes from `42`. But it's the *how* that is at the heart of the heated debates over JavaScript coercion.
+Cả hai cách tiếp cận đều đạt được hiệu quả như nhau: `"42"` bắt nguồn từ `42`. Nhưng chính *cách thức* mới là tâm điểm của các cuộc tranh luận sôi nổi về coercion (sự ép buộc) của JavaScript.
 
-**Note:** Technically, there's some nuanced behavioral difference here beyond the stylistic difference. We cover that in more detail later in the chapter, in the "Implicitly: Strings <--> Numbers" section.
+**Lưu ý:** Về mặt kỹ thuật, có một số sắc thái khác biệt về hành vi ở đây ngoài sự khác biệt về phong cách. Chúng tôi sẽ trình bày chi tiết hơn ở phần sau của chương này, trong phần "Implicitly: String <--> Number".
 
-The terms "explicit" and "implicit," or "obvious" and "hidden side effect," are *relative*.
+Các thuật ngữ "explicit (rõ ràng)" và "implicit (ngầm ý)" hoặc "obvious (minh bạch)" và "hidden side effect (tác dụng phụ tiềm ẩn)" là *tương đối*.
 
-If you know exactly what `a + ""` is doing and you're intentionally doing that to coerce to a `string`, you might feel the operation is sufficiently "explicit." Conversely, if you've never seen the `String(..)` function used for `string` coercion, its behavior might seem hidden enough as to feel "implicit" to you.
+Nếu bạn biết chính xác `a + ""` đang làm gì và bạn đang cố tình làm điều đó để ép buộc một `string`, bạn có thể cảm thấy thao tác này đủ "explicit (rõ ràng)". Ngược lại, nếu bạn chưa bao giờ thấy hàm `String(..)` được sử dụng để ép kiểu `string`, thì hành vi của nó có vẻ ẩn đến mức khiến bạn cảm thấy "implicit".
 
-But we're having this discussion of "explicit" vs. "implicit" based on the likely opinions of an *average, reasonably informed, but not expert or JS specification devotee* developer. To whatever extent you do or do not find yourself fitting neatly in that bucket, you will need to adjust your perspective on our observations here accordingly.
+Nhưng chúng ta đang có cuộc thảo luận về "explicit" so với "implicit" dựa trên ý kiến có thể có của một nhà phát triển *trung bình, được cung cấp thông tin hợp lý, nhưng không phải là chuyên gia hoặc nhà phát triển đặc tả JS*. Dù bạn thấy mình nằm gọn trong cái xô đó ở mức độ nào, bạn sẽ cần phải điều chỉnh quan điểm của mình đối với những quan sát của chúng ta ở đây cho phù hợp.
 
-Just remember: it's often rare that we write our code and are the only ones who ever read it. Even if you're an expert on all the ins and outs of JS, consider how a less experienced teammate of yours will feel when they read your code. Will it be "explicit" or "implicit" to them in the same way it is for you?
+Chỉ cần nhớ rằng: hiếm khi chúng ta viết code của mình và là người duy nhất đọc nó. Ngay cả khi bạn là chuyên gia về tất cả thông tin chi tiết về JS, hãy xem xét cảm giác của một đồng đội ít kinh nghiệm hơn của bạn khi họ đọc code của bạn. Nó sẽ "explicit" hay "implicit" đối với họ giống như đối với bạn?
 
 ## Abstract Value Operations
 
-Before we can explore *explicit* vs *implicit* coercion, we need to learn the basic rules that govern how values *become* either a `string`, `number`, or `boolean`. The ES5 spec in section 9 defines several "abstract operations" (fancy spec-speak for "internal-only operation") with the rules of value conversion. We will specifically pay attention to: `ToString`, `ToNumber`, and `ToBoolean`, and to a lesser extent, `ToPrimitive`.
+Trước khi có thể khám phá sự ép kiểu *explicit* so với *implicit*, chúng ta cần tìm hiểu các quy tắc cơ bản chi phối cách các giá trị *trở thành* hoặc là `string`, `number` hoặc `boolean`. Thông số kỹ thuật ES5 trong phần 9 xác định một số "hoạt động trừu tượng" (thông số kỹ thuật ưa thích cho "hoạt động chỉ dành cho nội bộ") với các quy tắc chuyển đổi giá trị. Chúng tôi sẽ đặc biệt chú ý đến: `ToString`, `ToNumber` và `ToBoolean` và ở mức độ thấp hơn là `ToPrimitive`.
 
 ### `ToString`
 
-When any non-`string` value is coerced to a `string` representation, the conversion is handled by the `ToString` abstract operation in section 9.8 of the specification.
+Khi bất kỳ giá trị không phải `string` nào bị ép buộc thành biểu diễn `string`, thì chuyển đổi được xử lý bởi thao tác trừu tượng `ToString` trong phần 9.8 của đặc tả.
 
-Built-in primitive values have natural stringification: `null` becomes `"null"`, `undefined` becomes `"undefined"` and `true` becomes `"true"`. `number`s are generally expressed in the natural way you'd expect, but as we discussed in Chapter 2, very small or very large `numbers` are represented in exponent form:
+Các giá trị primitive có nature stringification (chuỗi hóa tự nhiên): `null` trở thành `"null"`, `undefined` trở thành `"undefined"` và `true` trở thành `"true"`. `number` thường được thể hiện theo cách tự nhiên mà bạn mong đợi, nhưng như chúng ta đã thảo luận trong Chương 2, `number` rất nhỏ hoặc rất lớn được thể hiện ở dạng số mũ:
 
 ```js
 // multiplying `1.07` by `1000`, seven times over
@@ -65,13 +65,13 @@ var a = 1.07 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
 a.toString(); // "1.07e21"
 ```
 
-For regular objects, unless you specify your own, the default `toString()` (located in `Object.prototype.toString()`) will return the *internal `[[Class]]`* (see Chapter 3), like for instance `"[object Object]"`.
+Đối với các object thông thường, trừ khi bạn chỉ định đối tượng của riêng mình, `toString()` mặc định (nằm trong `Object.prototype.toString()`) sẽ trả về *internal `[[Class]]`* (xem Chương 3), như ví dụ `"[object Object]"`.
 
-But as shown earlier, if an object has its own `toString()` method on it, and you use that object in a `string`-like way, its `toString()` will automatically be called, and the `string` result of that call will be used instead.
+Nhưng như đã trình bày trước đó, nếu một object có phương thức `toString()` của riêng nó trên đó và bạn sử dụng object đó theo cách giống như `string`, thì `toString()` của nó sẽ tự động được gọi và `string` thay vào đó, kết quả của cuộc gọi đó sẽ được sử dụng.
 
-**Note:** The way an object is coerced to a `string` technically goes through the `ToPrimitive` abstract operation (ES5 spec, section 9.1), but those nuanced details are covered in more detail in the `ToNumber` section later in this chapter, so we will skip over them here.
+**Lưu ý:** Cách một object được ép kiểu vào một `string` về mặt kỹ thuật đi qua thao tác trừu tượng `ToPrimitive` (thông số ES5, phần 9.1), nhưng các chi tiết cụ thể đó sẽ được đề cập chi tiết hơn trong phần `ToNumber` sau trong chương này, vì vậy chúng tôi sẽ bỏ qua chúng ở đây.
 
-Arrays have an overridden default `toString()` that stringifies as the (string) concatenation of all its values (each stringified themselves), with `","` in between each value:
+Mảng có một overridden mặc định `toString()`, xâu chuỗi thành chuỗi nối (chuỗi) của tất cả các giá trị của nó (mỗi giá trị được xâu chuỗi riêng), với `","` ở giữa mỗi giá trị:
 
 ```js
 var a = [1,2,3];
@@ -79,15 +79,15 @@ var a = [1,2,3];
 a.toString(); // "1,2,3"
 ```
 
-Again, `toString()` can either be called explicitly, or it will automatically be called if a non-`string` is used in a `string` context.
+Một lần nữa, `toString()` có thể được gọi một cách explicit hoặc nó sẽ tự động được gọi nếu không phải là `string` được sử dụng trong ngữ cảnh `string`.
 
 #### JSON Stringification
 
-Another task that seems awfully related to `ToString` is when you use the `JSON.stringify(..)` utility to serialize a value to a JSON-compatible `string` value.
+Một nhiệm vụ khác có vẻ rất liên quan đến `ToString` là khi bạn sử dụng utility `JSON.stringify(..)` để tuần tự hóa một giá trị thành giá trị `string` tương thích với JSON.
 
-It's important to note that this stringification is not exactly the same thing as coercion. But since it's related to the `ToString` rules above, we'll take a slight diversion to cover JSON stringification behaviors here.
+Điều quan trọng cần lưu ý là sự xâu chuỗi này không hoàn toàn giống với sự ép kiểu. Nhưng vì nó liên quan đến các quy tắc `ToString` ở trên, nên chúng tôi sẽ có một chút chuyển hướng để đề cập đến các hành vi xâu chuỗi JSON tại đây.
 
-For most simple values, JSON stringification behaves basically the same as `toString()` conversions, except that the serialization result is *always a `string`*:
+Đối với hầu hết các giá trị đơn giản, JSON stringification về cơ bản hoạt động giống như chuyển đổi `toString()`, ngoại trừ kết quả tuần tự hóa *luôn là `string`*:
 
 ```js
 JSON.stringify( 42 );	// "42"
@@ -96,13 +96,13 @@ JSON.stringify( null );	// "null"
 JSON.stringify( true );	// "true"
 ```
 
-Any *JSON-safe* value can be stringified by `JSON.stringify(..)`. But what is *JSON-safe*? Any value that can be represented validly in a JSON representation.
+Bất kỳ giá trị *JSON-safe* nào cũng có thể được xâu chuỗi bằng `JSON.stringify(..)`. Nhưng *An toàn với JSON* là gì? Bất kỳ giá trị nào có thể được biểu diễn hợp lệ trong biểu diễn JSON.
 
-It may be easier to consider values that are **not** JSON-safe. Some examples: `undefined`s, `function`s, (ES6+) `symbol`s, and `object`s with circular references (where property references in an object structure create a never-ending cycle through each other). These are all illegal values for a standard JSON structure, mostly because they aren't portable to other languages that consume JSON values.
+Có thể dễ dàng hơn khi xem xét các giá trị **không** JSON-safe. Một số ví dụ: `undefined`, `function`, (ES6+) `symbol` và `object` với các tham chiếu vòng tròn (trong đó các tham chiếu thuộc tính trong một cấu trúc đối tượng tạo ra một chu kỳ không bao giờ kết thúc qua nhau). Đây là tất cả các giá trị không hợp lệ đối với cấu trúc JSON tiêu chuẩn, chủ yếu là do chúng không thể chuyển sang các ngôn ngữ khác sử dụng các giá trị JSON.
 
-The `JSON.stringify(..)` utility will automatically omit `undefined`, `function`, and `symbol` values when it comes across them. If such a value is found in an `array`, that value is replaced by `null` (so that the array position information isn't altered). If found as a property of an `object`, that property will simply be excluded.
+Utility `JSON.stringify(..)` sẽ tự động bỏ qua các giá trị `undefined`, `function` và `symbol` khi bắt gặp chúng. Nếu một giá trị như vậy được tìm thấy trong một `array`, thì giá trị đó sẽ được thay thế bằng `null` (để thông tin về vị trí của mảng không bị thay đổi). Nếu được tìm thấy dưới dạng thuộc tính của một `object`, thì thuộc tính đó sẽ bị loại trừ.
 
-Consider:
+Xem xét:
 
 ```js
 JSON.stringify( undefined );					// undefined
@@ -112,11 +112,11 @@ JSON.stringify( [1,undefined,function(){},4] );	// "[1,null,null,4]"
 JSON.stringify( { a:2, b:function(){} } );		// "{"a":2}"
 ```
 
-But if you try to `JSON.stringify(..)` an `object` with circular reference(s) in it, an error will be thrown.
+Nhưng nếu bạn cố gắng `JSON.stringify(..)` một `object` có (các) tham chiếu vòng trong đó, thì sẽ xảy ra lỗi.
 
-JSON stringification has the special behavior that if an `object` value has a `toJSON()` method defined, this method will be called first to get a value to use for serialization.
+JSON stringification có hành vi đặc biệt là nếu một giá trị `object` có phương thức `toJSON()` được xác định, thì phương thức này sẽ được gọi trước để lấy giá trị sử dụng cho tuần tự hóa.
 
-If you intend to JSON stringify an object that may contain illegal JSON value(s), or if you just have values in the `object` that aren't appropriate for the serialization, you should define a `toJSON()` method for it that returns a *JSON-safe* version of the `object`.
+Nếu bạn định JSON xâu chuỗi một object có thể chứa (các) giá trị JSON bất hợp pháp hoặc nếu bạn chỉ có các giá trị trong `object` không phù hợp để tuần tự hóa, thì bạn nên xác định một phương thức `toJSON()` cho nó trả về phiên bản *JSON-safe* của `object`.
 
 For example:
 
@@ -144,11 +144,11 @@ a.toJSON = function() {
 JSON.stringify( a ); // "{"b":42}"
 ```
 
-It's a very common misconception that `toJSON()` should return a JSON stringification representation. That's probably incorrect, unless you're wanting to actually stringify the `string` itself (usually not!). `toJSON()` should return the actual regular value (of whatever type) that's appropriate, and `JSON.stringify(..)` itself will handle the stringification.
+Một quan niệm sai lầm rất phổ biến là `toJSON()` sẽ trả về một biểu diễn chuỗi hóa JSON. Điều đó có thể không chính xác, trừ khi bạn thực sự muốn xâu chuỗi chính `string` (thường là không!). `toJSON()` sẽ trả về giá trị thông thường thực tế (thuộc bất kỳ loại nào) phù hợp và bản thân `JSON.stringify(..)` sẽ xử lý quá trình xâu chuỗi hóa.
 
-In other words, `toJSON()` should be interpreted as "to a JSON-safe value suitable for stringification," not "to a JSON string" as many developers mistakenly assume.
+Nói cách khác, `toJSON()` nên được hiểu là "với một giá trị an toàn JSON phù hợp để xâu chuỗi hóa", chứ không phải "với một chuỗi JSON" như nhiều nhà phát triển lầm tưởng.
 
-Consider:
+Xem xét:
 
 ```js
 var a = {
@@ -176,15 +176,15 @@ JSON.stringify( a ); // "[2,3]"
 JSON.stringify( b ); // ""[2,3]""
 ```
 
-In the second call, we stringified the returned `string` rather than the `array` itself, which was probably not what we wanted to do.
+Trong cuộc gọi thứ hai, chúng tôi đã xâu chuỗi `string` được trả về thay vì chính `array`, đây có thể không phải là điều chúng tôi muốn làm.
 
-While we're talking about `JSON.stringify(..)`, let's discuss some lesser-known functionalities that can still be very useful.
+Trong khi chúng ta đang nói về `JSON.stringify(..)`, chúng ta hãy thảo luận về một số chức năng ít được biết đến hơn nhưng vẫn có thể rất hữu ích.
 
-An optional second argument can be passed to `JSON.stringify(..)` that is called *replacer*. This argument can either be an `array` or a `function`. It's used to customize the recursive serialization of an `object` by providing a filtering mechanism for which properties should and should not be included, in a similar way to how `toJSON()` can prepare a value for serialization.
+Đối số thứ hai tùy chọn có thể được chuyển đến `JSON.stringify(..)` được gọi là *replacer*. Đối số này có thể là `array` hoặc `function`. Nó được sử dụng để tùy chỉnh quá trình tuần tự hóa đệ quy của một `object` bằng cách cung cấp một cơ chế lọc cho các thuộc tính nên và không nên đưa vào, theo cách tương tự như cách `toJSON()` có thể chuẩn bị một giá trị cho quá trình tuần tự hóa.
 
-If *replacer* is an `array`, it should be an `array` of `string`s, each of which will specify a property name that is allowed to be included in the serialization of the `object`. If a property exists that isn't in this list, it will be skipped.
+Nếu *replacer* là một `array`, thì nó phải là một `array` gồm `string`, mỗi string sẽ chỉ định tên thuộc tính được phép đưa vào tuần tự hóa của `object`. Nếu một property tồn tại không có trong danh sách này, nó sẽ bị bỏ qua.
 
-If *replacer* is a `function`, it will be called once for the `object` itself, and then once for each property in the `object`, and each time is passed two arguments, *key* and *value*. To skip a *key* in the serialization, return `undefined`. Otherwise, return the *value* provided.
+Nếu *replacer* là một `function`, thì nó sẽ được gọi một lần cho chính `object`, sau đó một lần cho mỗi thuộc tính trong `object` và mỗi lần được truyền hai đối số, *key* và *value*. Để bỏ qua *key* trong quá trình tuần tự hóa, hãy trả về `undefined`. Nếu không, hãy trả về *giá trị* đã cung cấp.
 
 ```js
 var a = {
@@ -201,9 +201,9 @@ JSON.stringify( a, function(k,v){
 // "{"b":42,"d":[1,2,3]}"
 ```
 
-**Note:** In the `function` *replacer* case, the key argument `k` is `undefined` for the first call (where the `a` object itself is being passed in). The `if` statement **filters out** the property named `"c"`. Stringification is recursive, so the `[1,2,3]` array has each of its values (`1`, `2`, and `3`) passed as `v` to *replacer*, with indexes (`0`, `1`, and `2`) as `k`.
+**Lưu ý:** Trong trường hợp `function` *replacer*, đối số chính `k` là `undefined` cho lệnh gọi đầu tiên (trong đó chính object `a` được chuyển vào). Câu lệnh `if` **lọc ra** thuộc tính có tên `"c"`. Stringification là đệ quy, do đó, array `[1,2,3]` có từng giá trị của nó (`1`, `2` và `3`) được chuyển dưới dạng `v` sang *replacer*, với các chỉ mục (`0 `, `1` và `2`) dưới dạng `k`.
 
-A third optional argument can also be passed to `JSON.stringify(..)`, called *space*, which is used as indentation for prettier human-friendly output. *space* can be a positive integer to indicate how many space characters should be used at each indentation level. Or, *space* can be a `string`, in which case up to the first ten characters of its value will be used for each indentation level.
+Đối số tùy chọn thứ ba cũng có thể được chuyển đến `JSON.stringify(..)`, được gọi là *space*, được sử dụng làm thụt đầu dòng cho đầu ra đẹp hơn, thân thiện với con người hơn. *space* có thể là một số nguyên dương để cho biết có bao nhiêu ký tự khoảng trắng nên được sử dụng ở mỗi mức thụt đầu dòng. Hoặc, *space* có thể là một `chuỗi`, trong trường hợp đó, tối đa mười ký tự đầu tiên của giá trị của nó sẽ được sử dụng cho mỗi cấp độ thụt lề.
 
 ```js
 var a = {
@@ -235,32 +235,32 @@ JSON.stringify( a, null, "-----" );
 // }"
 ```
 
-Remember, `JSON.stringify(..)` is not directly a form of coercion. We covered it here, however, for two reasons that relate its behavior to `ToString` coercion:
+Hãy nhớ rằng, `JSON.stringify(..)` không trực tiếp là một hình thức coercion. Tuy nhiên, chúng tôi đề cập đến vấn đề này ở đây vì hai lý do liên quan đến hành vi của nó với sự coercion `ToString`:
 
-1. `string`, `number`, `boolean`, and `null` values all stringify for JSON basically the same as how they coerce to `string` values via the rules of the `ToString` abstract operation.
-2. If you pass an `object` value to `JSON.stringify(..)`, and that `object` has a `toJSON()` method on it, `toJSON()` is automatically called to (sort of) "coerce" the value to be *JSON-safe* before stringification.
+1. Tất cả các giá trị `string`, `number`, `boolean` và `null` đều xâu chuỗi hóa cho JSON về cơ bản giống như cách chúng ép buộc các giá trị `string` thông qua các quy tắc của thao tác trừu tượng `ToString`.
+2. Nếu bạn chuyển một giá trị `object` cho `JSON.stringify(..)` và `object` đó có phương thức `toJSON()` trên đó, thì `toJSON()` sẽ tự động được gọi tới (đại loại là) "ép buộc" giá trị phải *JSON-safe* trước khi xâu chuỗi.
 
 ### `ToNumber`
 
-If any non-`number` value is used in a way that requires it to be a `number`, such as a mathematical operation, the ES5 spec defines the `ToNumber` abstract operation in section 9.3.
+Nếu bất kỳ giá trị nào không phải là `number` được sử dụng theo cách yêu cầu giá trị đó phải là `number`, chẳng hạn như một phép toán, thông số kỹ thuật ES5 sẽ xác định phép toán trừu tượng `ToNumber` trong phần 9.3.
 
-For example, `true` becomes `1` and `false` becomes `0`. `undefined` becomes `NaN`, but (curiously) `null` becomes `0`.
+Ví dụ: `true` trở thành `1` và `false` trở thành `0`. `undefined` trở thành `NaN`, nhưng (thật kỳ lạ) `null` trở thành `0`.
 
-`ToNumber` for a `string` value essentially works for the most part like the rules/syntax for numeric literals (see Chapter 3). If it fails, the result is `NaN` (instead of a syntax error as with `number` literals). One example difference is that `0`-prefixed octal numbers are not handled as octals (just as normal base-10 decimals) in this operation, though such octals are valid as `number` literals (see Chapter 2).
+`ToNumber` cho một giá trị `string` về cơ bản hoạt động đối với hầu hết các phần giống như các quy tắc/cú pháp cho các chữ số (xem Chương 3). Nếu không thành công, kết quả là `NaN` (thay vì lỗi cú pháp như với chữ `number`). Một điểm khác biệt ví dụ là các số bát phân có tiền tố `0` không được xử lý dưới dạng bát phân (giống như các số thập phân cơ số 10 thông thường) trong thao tác này, mặc dù các bát phân như vậy có giá trị dưới dạng chữ `number` (xem Chương 2).
 
-**Note:** The differences between `number` literal grammar and `ToNumber` on a `string` value are subtle and highly nuanced, and thus will not be covered further here. Consult section 9.3.1 of the ES5 spec for more information.
+**Lưu ý:** Sự khác biệt giữa ngữ pháp chữ `number` và `ToNumber` trên giá trị `string` là tinh tế và có nhiều sắc thái, do đó sẽ không được đề cập thêm ở đây. Tham khảo phần 9.3.1 của thông số kỹ thuật ES5 để biết thêm thông tin.
 
-Objects (and arrays) will first be converted to their primitive value equivalent, and the resulting value (if a primitive but not already a `number`) is coerced to a `number` according to the `ToNumber` rules just mentioned.
+Các object (và array) trước tiên sẽ được chuyển đổi thành giá trị primitive tương đương và giá trị kết quả (nếu là primitive nhưng chưa phải là `number`) được buộc thành `number` theo quy tắc `ToNumber` vừa được đề cập.
 
-To convert to this primitive value equivalent, the `ToPrimitive` abstract operation (ES5 spec, section 9.1) will consult the value (using the internal `DefaultValue` operation -- ES5 spec, section 8.12.8) in question to see if it has a `valueOf()` method. If `valueOf()` is available and it returns a primitive value, *that* value is used for the coercion. If not, but `toString()` is available, it will provide the value for the coercion.
+Để chuyển đổi thành giá trị primitive tương đương này, thao tác trừu tượng `ToPrimitive` (đặc tả ES5, phần 9.1) sẽ tham khảo giá trị (sử dụng thao tác `DefaultValue` nội bộ -- thông số ES5, phần 8.12.8) được đề cập để xem liệu nó có phương thức `valueOf()`. Nếu `valueOf()` khả dụng và nó trả về một giá trị nguyên thủy, thì giá trị *đó* được sử dụng để coercion (ép kiểu). Nếu không, nhưng `toString()` có sẵn, nó sẽ cung cấp giá trị cho sự coercion.
 
-If neither operation can provide a primitive value, a `TypeError` is thrown.
+Nếu không hoạt động nào có thể cung cấp giá trị nguyên thủy, thì `TypeError` sẽ được đưa ra.
 
-As of ES5, you can create such a noncoercible object -- one without `valueOf()` and `toString()` -- if it has a `null` value for its `[[Prototype]]`, typically created with `Object.create(null)`. See the *this & Object Prototypes* title of this series for more information on `[[Prototype]]`s.
+Kể từ ES5, bạn có thể tạo một đối tượng không thể ép buộc như vậy -- một đối tượng không có `valueOf()` và `toString()` -- nếu nó có giá trị `null` cho `[[Prototype]]` của nó, thường được tạo bằng ` Object.create(null)`. Xem tập *this & Object Prototypes* của bộ sách này để biết thêm thông tin về `[[Prototype]]`.
 
-**Note:** We cover how to coerce to `number`s later in this chapter in detail, but for this next code snippet, just assume the `Number(..)` function does so.
+**Lưu ý:** Chúng tôi sẽ đề cập chi tiết cách ép kiểu đến `number` ở phần sau của chương này, nhưng đối với đoạn code tiếp theo này, chỉ cần giả sử hàm `Number(..)` làm như vậy.
 
-Consider:
+Xem xét:
 
 ```js
 var a = {
@@ -290,24 +290,24 @@ Number( [ "abc" ] );	// NaN
 
 ### `ToBoolean`
 
-Next, let's have a little chat about how `boolean`s behave in JS. There's **lots of confusion and misconception** floating out there around this topic, so pay close attention!
+Tiếp theo, chúng ta hãy trò chuyện một chút về cách `boolean` hoạt động trong JS. Có **rất nhiều nhầm lẫn và quan niệm sai lầm** xung quanh chủ đề này, vì vậy hãy chú ý!
 
-First and foremost, JS has actual keywords `true` and `false`, and they behave exactly as you'd expect of `boolean` values. It's a common misconception that the values `1` and `0` are identical to `true`/`false`. While that may be true in other languages, in JS the `number`s are `number`s and the `boolean`s are `boolean`s. You can coerce `1` to `true` (and vice versa) or `0` to `false` (and vice versa). But they're not the same.
+Đầu tiên và quan trọng nhất, JS có các từ khóa thực tế `true` và `false`, và chúng hoạt động chính xác như bạn mong đợi về các giá trị `boolean`. Một quan niệm sai lầm phổ biến là các giá trị `1` và `0` giống hệt với `true`/`false`. Mặc dù điều đó có thể đúng với các ngôn ngữ khác, nhưng trong JS, `số` là `số` và `boolean` là `boolean`. Bạn có thể ép buộc `1` thành `true` (và ngược lại) hoặc `0` thành `false` (và ngược lại). Nhưng chúng không giống nhau.
 
 #### Falsy Values
 
-But that's not the end of the story. We need to discuss how values other than the two `boolean`s behave whenever you coerce *to* their `boolean` equivalent.
+Nhưng đó không phải là kết thúc của câu chuyện. Chúng ta cần thảo luận về cách các giá trị khác với hai `boolean` hoạt động bất cứ khi nào bạn ép buộc *thành* tương đương `boolean` của chúng.
 
-All of JavaScript's values can be divided into two categories:
+Tất cả các giá trị của JavaScript có thể được chia thành hai nhóm:
 
-1. values that will become `false` if coerced to `boolean`
-2. everything else (which will obviously become `true`)
+1. các giá trị sẽ trở thành `false` nếu bị ép thành `boolean`
+2. mọi thứ khác (rõ ràng sẽ trở thành `true`)
 
-I'm not just being facetious. The JS spec defines a specific, narrow list of values that will coerce to `false` when coerced to a `boolean` value.
+Tôi không chỉ là một người hài hước. Đặc tả JS xác định một danh sách cụ thể, hẹp gồm các giá trị sẽ ép thành `false` khi bị ép thành giá trị `boolean`.
 
-How do we know what the list of values is? In the ES5 spec, section 9.2 defines a `ToBoolean` abstract operation, which says exactly what happens for all the possible values when you try to coerce them "to boolean."
+Làm thế nào để chúng ta biết danh sách các giá trị là gì? Trong thông số kỹ thuật ES5, phần 9.2 định nghĩa một thao tác trừu tượng `ToBoolean`, cho biết chính xác điều gì sẽ xảy ra với tất cả các giá trị có thể khi bạn cố ép chúng "thành boolean".
 
-From that table, we get the following as the so-called "falsy" values list:
+Từ bảng đó, chúng tôi nhận được danh sách giá trị được gọi là "falsy" sau đây:
 
 * `undefined`
 * `null`
@@ -315,21 +315,21 @@ From that table, we get the following as the so-called "falsy" values list:
 * `+0`, `-0`, and `NaN`
 * `""`
 
-That's it. If a value is on that list, it's a "falsy" value, and it will coerce to `false` if you force a `boolean` coercion on it.
+Đó là nó. Nếu một giá trị nằm trong danh sách đó, thì đó là giá trị "falsy" và nó sẽ ép buộc thành `false` nếu bạn ép buộc `boolean` lên nó.
 
-By logical conclusion, if a value is *not* on that list, it must be on *another list*, which we call the "truthy" values list. But JS doesn't really define a "truthy" list per se. It gives some examples, such as saying explicitly that all objects are truthy, but mostly the spec just implies: **anything not explicitly on the falsy list is therefore truthy.**
+Theo kết luận hợp lý, nếu một giá trị *không* trong danh sách đó, thì giá trị đó phải nằm trong *danh sách khác*, mà chúng tôi gọi là danh sách giá trị "truthy". Nhưng JS không thực sự định nghĩa một danh sách "truthy". Nó đưa ra một số ví dụ, chẳng hạn như nói rõ ràng rằng tất cả các đối tượng là truthy, nhưng hầu hết thông số kỹ thuật chỉ ngụ ý: **bất cứ điều gì không tồn tại trong danh sách falsy do đó là truthy.**
 
 #### Falsy Objects
 
-Wait a minute, that section title even sounds contradictory. I literally *just said* the spec calls all objects truthy, right? There should be no such thing as a "falsy object."
+Đợi một chút, tiêu đề của phần đó thậm chí nghe có vẻ mâu thuẫn. Tôi thực sự *vừa nói* thông số kỹ thuật gọi tất cả các object là truthy, phải không? Không nên có cái gọi là "falsy object".
 
-What could that possibly even mean?
+Điều đó thậm chí có thể có nghĩa là gì?
 
-You might be tempted to think it means an object wrapper (see Chapter 3) around a falsy value (such as `""`, `0` or `false`). But don't fall into that *trap*.
+Bạn có thể nghĩ rằng nó có nghĩa là một object wrapper (xem Chương 3) xung quanh một giá trị giả (chẳng hạn như `""`, `0` hoặc `false`). Nhưng đừng rơi vào *cái bẫy* đó.
 
-**Note:** That's a subtle specification joke some of you may get.
+**Lưu ý:** Đó là một trò đùa tinh tế về thông số kỹ thuật mà một số bạn có thể mắc phải.
 
-Consider:
+Xem xét:
 
 ```js
 var a = new Boolean( false );
@@ -337,7 +337,7 @@ var b = new Number( 0 );
 var c = new String( "" );
 ```
 
-We know all three values here are objects (see Chapter 3) wrapped around obviously falsy values. But do these objects behave as `true` or as `false`? That's easy to answer:
+Chúng ta biết cả ba giá trị ở đây đều là các object (xem Chương 3) bao quanh các giá trị rõ ràng là falsy. Nhưng những object này hoạt động như `true` hay `false`? Thật dễ dàng để trả lời:
 
 ```js
 var d = Boolean( a && b && c );
@@ -345,45 +345,45 @@ var d = Boolean( a && b && c );
 d; // true
 ```
 
-So, all three behave as `true`, as that's the only way `d` could end up as `true`.
+Vì vậy, cả ba đều hành xử như `true`, vì đó là cách duy nhất `d` có thể trở thành `true`.
 
-**Tip:** Notice the `Boolean( .. )` wrapped around the `a && b && c` expression -- you might wonder why that's there. We'll come back to that later in this chapter, so make a mental note of it. For a sneak-peek (trivia-wise), try for yourself what `d` will be if you just do `d = a && b && c` without the `Boolean( .. )` call!
+**Mẹo:** Lưu ý `Boolean( .. )` bao quanh biểu thức `a && b && c` -- bạn có thể thắc mắc tại sao lại có biểu thức đó. Chúng ta sẽ quay lại vấn đề đó sau trong chương này, vì vậy hãy ghi nhớ nó trong đầu. Để xem trước (đố vui), hãy tự mình thử xem `d` sẽ là gì nếu bạn chỉ thực hiện `d = a && b && c` mà không có lệnh gọi `Boolean( .. )`!
 
-So, if "falsy objects" are **not just objects wrapped around falsy values**, what the heck are they?
+Vì vậy, nếu "falsy object" **không chỉ là object bao quanh các giá trị falsy**, thì chúng là cái quái gì vậy?
 
-The tricky part is that they can show up in your JS program, but they're not actually part of JavaScript itself.
+Điều khó khăn là chúng có thể xuất hiện trong chương trình JS của bạn, nhưng bản thân chúng không thực sự là một phần của JavaScript.
 
 **What!?**
 
-There are certain cases where browsers have created their own sort of *exotic* values behavior, namely this idea of "falsy objects," on top of regular JS semantics.
+Có một số trường hợp mà các trình duyệt đã tạo ra loại hành vi giá trị *kỳ lạ* của riêng chúng, cụ thể là ý tưởng về "falsy object" này trên ngữ nghĩa JS thông thường.
 
-A "falsy object" is a value that looks and acts like a normal object (properties, etc.), but when you coerce it to a `boolean`, it coerces to a `false` value.
+"Falsy object" là một giá trị có hình thức và hoạt động giống như một object bình thường (thuộc tính, v.v.), nhưng khi bạn ép buộc nó thành một `boolean`, nó sẽ ép buộc thành một giá trị `false`.
 
 **Why!?**
 
-The most well-known case is `document.all`: an array-like (object) provided to your JS program *by the DOM* (not the JS engine itself), which exposes elements in your page to your JS program. It *used* to behave like a normal object--it would act truthy. But not anymore.
+Trường hợp nổi tiếng nhất là `document.all`: một (object) dạng array được cung cấp cho chương trình JS của bạn *bởi DOM* (không phải chính công cụ JS), hiển thị các thành phần trong trang của bạn cho chương trình JS của bạn. Nó *đã từng* hoạt động như một object bình thường--nó sẽ hoạt động truthy. Nhưng không còn nữa.
 
-`document.all` itself was never really "standard" and has long since been deprecated/abandoned.
+Bản thân `document.all` chưa bao giờ thực sự là "tiêu chuẩn" và từ lâu đã không còn được dùng nữa/bị bỏ rơi.
 
-"Can't they just remove it, then?" Sorry, nice try. Wish they could. But there's far too many legacy JS code bases out there that rely on using it.
+"Vậy họ không thể gỡ bỏ nó sao?" Xin lỗi, cố gắng tốt đẹp. Ước gì họ có thể. Nhưng có quá nhiều cơ sở code JS kế thừa dựa trên việc sử dụng nó.
 
-So, why make it act falsy? Because coercions of `document.all` to `boolean` (like in `if` statements) were almost always used as a means of detecting old, nonstandard IE.
+Vì vậy, tại sao làm cho nó hoạt động sai? Bởi vì việc ép buộc `document.all` thành `boolean` (như trong các câu lệnh `if`) hầu như luôn được sử dụng như một phương tiện để phát hiện IE cũ, không chuẩn.
 
-IE has long since come up to standards compliance, and in many cases is pushing the web forward as much or more than any other browser. But all that old `if (document.all) { /* it's IE */ }` code is still out there, and much of it is probably never going away. All this legacy code is still assuming it's running in decade-old IE, which just leads to bad browsing experience for IE users.
+IE từ lâu đã tuân thủ các tiêu chuẩn và trong nhiều trường hợp đang đẩy web tiến lên nhiều hoặc hơn bất kỳ trình duyệt nào khác. Nhưng tất cả mã `if (document.all) { /* it's IE */ }` cũ đó vẫn còn tồn tại và phần lớn trong số đó có lẽ sẽ không bao giờ biến mất. Tất cả code kế thừa này vẫn giả định rằng nó đang chạy trong IE đã có tuổi đời hàng chục năm, điều này chỉ dẫn đến trải nghiệm duyệt web không tốt cho người dùng IE.
 
-So, we can't remove `document.all` completely, but IE doesn't want `if (document.all) { .. }` code to work anymore, so that users in modern IE get new, standards-compliant code logic.
+Vì vậy, chúng tôi không thể xóa hoàn toàn `document.all`, nhưng IE không muốn mã `if (document.all) { .. }` hoạt động nữa, để người dùng trong IE hiện đại nhận được mã mới, tuân thủ tiêu chuẩn Hợp lý.
 
-"What should we do?" **"I've got it! Let's bastardize the JS type system and pretend that `document.all` is falsy!"
+"Chúng ta nên làm gì?" **"Tôi hiểu rồi! Hãy phá hủy hệ thống loại JS và giả vờ rằng `document.all` là falsy!"
 
-Ugh. That sucks. It's a crazy gotcha that most JS developers don't understand. But the alternative (doing nothing about the above no-win problems) sucks *just a little bit more*.
+Ư. Điều đó thật tệ. Đó là một vấn đề điên rồ mà hầu hết các nhà phát triển JS không hiểu. Nhưng giải pháp thay thế (không làm gì với các vấn đề không thắng ở trên) thật tệ *chỉ một chút nữa thôi*.
 
-So... that's what we've got: crazy, nonstandard "falsy objects" added to JavaScript by the browsers. Yay!
+Vì vậy, ... đó là những gì chúng ta có: "object falsy" điên rồ, phi tiêu chuẩn được trình duyệt thêm vào JavaScript bởi trình duyệt. Vâng!
 
 #### Truthy Values
 
-Back to the truthy list. What exactly are the truthy values? Remember: **a value is truthy if it's not on the falsy list.**
+Quay lại danh sách truthy. Các giá trị truthy chính xác là gì? Hãy nhớ rằng: **một giá trị là truthy nếu nó không nằm trong danh sách falsy.**
 
-Consider:
+Xem xét:
 
 ```js
 var a = "false";
@@ -395,11 +395,11 @@ var d = Boolean( a && b && c );
 d;
 ```
 
-What value do you expect `d` to have here? It's gotta be either `true` or `false`.
+Bạn mong đợi `d` có giá trị gì ở đây? Nó phải là `true` hoặc `false`.
 
-It's `true`. Why? Because despite the contents of those `string` values looking like falsy values, the `string` values themselves are all truthy, because `""` is the only `string` value on the falsy list.
+Nó là `true`. Tại sao? Bởi vì mặc dù nội dung của các giá trị `string` đó trông giống như các giá trị falsy, nhưng bản thân các giá trị `string` đều là truthy, bởi vì `""` là giá trị `string` duy nhất trong danh sách falsy.
 
-What about these?
+Cái gì về những điều này?
 
 ```js
 var a = [];				// empty array -- truthy or falsy?
@@ -411,29 +411,29 @@ var d = Boolean( a && b && c );
 d;
 ```
 
-Yep, you guessed it, `d` is still `true` here. Why? Same reason as before. Despite what it may seem like, `[]`, `{}`, and `function(){}` are *not* on the falsy list, and thus are truthy values.
+Đúng, bạn đã đoán ra rồi, `d` vẫn là `true` ở đây. Tại sao? Cùng một lý do như trước đây. Mặc dù nó có vẻ như thế nào, `[]`, `{}` và `function(){}` *không* nằm trong danh sách falsy và do đó là các giá trị truthy.
 
-In other words, the truthy list is infinitely long. It's impossible to make such a list. You can only make a finite falsy list and consult *it*.
+Nói cách khác, danh sách truthy dài vô tận. Không thể lập một danh sách như vậy. Bạn chỉ có thể tạo một danh sách giả hữu hạn và tham khảo *nó*.
 
-Take five minutes, write the falsy list on a post-it note for your computer monitor, or memorize it if you prefer. Either way, you'll easily be able to construct a virtual truthy list whenever you need it by simply asking if it's on the falsy list or not.
+Hãy dành năm phút, viết danh sách giả falsy vào một tờ giấy ghi chú dán lên màn hình máy tính của bạn hoặc ghi nhớ nó nếu bạn thích. Dù bằng cách nào, bạn sẽ dễ dàng có thể tạo một danh sách truthy bất cứ khi nào bạn cần bằng cách hỏi xem nó có nằm trong danh sách falsy hay không.
 
-The importance of truthy and falsy is in understanding how a value will behave if you coerce it (either explicitly or implicitly) to a `boolean` value. Now that you have those two lists in mind, we can dive into coercion examples themselves.
+Tầm quan trọng của truthy và falsy là trong việc hiểu giá trị sẽ hoạt động như thế nào nếu bạn ép kiểu nó (dù rõ ràng hay ngầm định) thành giá trị `boolean`. Bây giờ bạn đã có hai danh sách đó trong đầu, chúng ta có thể đi sâu vào các ví dụ coercion.
 
 ## Explicit Coercion
 
-*Explicit* coercion refers to type conversions that are obvious and explicit. There's a wide range of type conversion usage that clearly falls under the *explicit* coercion category for most developers.
+*Explicit* coercion đề cập đến chuyển đổi kiểu minh bạch và rõ ràng. Có nhiều cách sử dụng chuyển đổi kiểu rõ ràng thuộc danh mục *explicit* coercion đối với hầu hết các nhà phát triển.
 
-The goal here is to identify patterns in our code where we can make it clear and obvious that we're converting a value from one type to another, so as to not leave potholes for future developers to trip into. The more explicit we are, the more likely someone later will be able to read our code and understand without undue effort what our intent was.
+Mục tiêu ở đây là xác định các pattern trong code của chúng ta, nơi chúng ta có thể làm cho nó rõ ràng và hiển nhiên rằng chúng ta đang chuyển đổi một giá trị từ loại này sang loại khác, để không để lại các lỗ hổng cho các nhà phát triển trong tương lai. Chúng ta càng rõ ràng thì càng có nhiều khả năng ai đó sau này sẽ có thể đọc mã của chúng ta và hiểu mà không cần nỗ lực quá mức về mục đích của chúng ta.
 
-It would be hard to find any salient disagreements with *explicit* coercion, as it most closely aligns with how the commonly accepted practice of type conversion works in statically typed languages. As such, we'll take for granted (for now) that *explicit* coercion can be agreed upon to not be evil or controversial. We'll revisit this later, though.
+Thật khó để tìm thấy bất kỳ sự bất đồng nổi bật nào với sự *explicit* coercion, vì nó phù hợp nhất với cách thực hành chuyển đổi loại được chấp nhận phổ biến hoạt động trong các ngôn ngữ được nhập tĩnh. Do đó, chúng ta sẽ chấp nhận (hiện tại) rằng *explicit* coercion có thể được thỏa thuận là không xấu xa hoặc gây tranh cãi. Tuy nhiên, chúng ta sẽ xem lại điều này sau.
 
 ### Explicitly: Strings <--> Numbers
 
-We'll start with the simplest and perhaps most common coercion operation: coercing values between `string` and `number` representation.
+Chúng ta sẽ bắt đầu với thao tác ép kiểu đơn giản nhất và có lẽ là phổ biến nhất: ép kiểu các giá trị giữa biểu diễn `string` và `number`.
 
-To coerce between `string`s and `number`s, we use the built-in `String(..)` and `Number(..)` functions (which we referred to as "native constructors" in Chapter 3), but **very importantly**, we do not use the `new` keyword in front of them. As such, we're not creating object wrappers.
+Để ép kiểu giữa `string` và `number`, chúng ta sử dụng các hàm `String(..)` và `Number(..)` tích hợp sẵn (mà chúng ta gọi là "native constructor" trong Chương 3), nhưng **rất quan trọng**, chúng ta không sử dụng từ khóa `new` trước chúng. Như vậy, chúng ta không tạo object wrapper.
 
-Instead, we're actually *explicitly coercing* between the two types:
+Thay vào đó, chúng tôi đang thực sự *ràng buộc ép kiểu* giữa hai kiểu:
 
 ```js
 var a = 42;
@@ -446,15 +446,15 @@ b; // "42"
 d; // 3.14
 ```
 
-`String(..)` coerces from any other value to a primitive `string` value, using the rules of the `ToString` operation discussed earlier. `Number(..)` coerces from any other value to a primitive `number` value, using the rules of the `ToNumber` operation discussed earlier.
+`String(..)` ép buộc từ bất kỳ giá trị nào khác thành giá trị primitive `string`, sử dụng các quy tắc của thao tác `ToString` đã thảo luận trước đó. `Number(..)` ép buộc từ bất kỳ giá trị nào khác thành giá trị primitive `number`, sử dụng các quy tắc của thao tác `ToNumber` đã thảo luận trước đó.
 
-I call this *explicit* coercion because in general, it's pretty obvious to most developers that the end result of these operations is the applicable type conversion.
+Tôi gọi đây là sự *explicit* coercion vì nhìn chung, hầu hết các nhà phát triển đều thấy rõ rằng kết quả cuối cùng của các hoạt động này là chuyển đổi kiểu có thể áp dụng.
 
-In fact, this usage actually looks a lot like it does in some other statically typed languages.
+Trên thực tế, cách sử dụng này thực sự trông rất giống với một số ngôn ngữ được nhập tĩnh khác.
 
-For example, in C/C++, you can say either `(int)x` or `int(x)`, and both will convert the value in `x` to an integer. Both forms are valid, but many prefer the latter, which kinda looks like a function call. In JavaScript, when you say `Number(x)`, it looks awfully similar. Does it matter that it's *actually* a function call in JS? Not really.
+Ví dụ: trong C/C++, bạn có thể nói `(int)x` hoặc `int(x)` và cả hai sẽ chuyển đổi giá trị trong `x` thành một số nguyên. Cả hai hình thức đều hợp lệ, nhưng nhiều người thích hình thức sau, trông giống như một lời gọi hàm. Trong JavaScript, khi bạn nói `Number(x)`, nó trông cực kỳ giống nhau. Có vấn đề gì khi nó *thực sự* là một lệnh gọi hàm trong JS không? Không thực sự.
 
-Besides `String(..)` and `Number(..)`, there are other ways to "explicitly" convert these values between `string` and `number`:
+Ngoài `String(..)` và `Number(..)`, còn có nhiều cách khác để chuyển đổi "rõ ràng" các giá trị này giữa `string` và `number`:
 
 ```js
 var a = 42;
@@ -467,15 +467,15 @@ b; // "42"
 d; // 3.14
 ```
 
-Calling `a.toString()` is ostensibly explicit (pretty clear that "toString" means "to a string"), but there's some hidden implicitness here. `toString()` cannot be called on a *primitive* value like `42`. So JS automatically "boxes" (see Chapter 3) `42` in an object wrapper, so that `toString()` can be called against the object. In other words, you might call it "explicitly implicit."
+Việc gọi `a.toString()` có vẻ rõ ràng (khá rõ ràng rằng "toString" có nghĩa là "đến một chuỗi"), nhưng có một số ẩn ý ở đây. `toString()` không thể được gọi trên một giá trị *primitive* như `42`. Vì vậy, JS tự động "đóng hộp" (xem Chương 3) `42` trong một object wrapper (trình bao bọc đối tượng), để `toString()` có thể được gọi đối với object. Nói cách khác, bạn có thể gọi nó là "ngầm rõ ràng."
 
-`+c` here is showing the *unary operator* form (operator with only one operand) of the `+` operator. Instead of performing mathematic addition (or string concatenation -- see below), the unary `+` explicitly coerces its operand (`c`) to a `number` value.
+`+c` ở đây đang hiển thị dạng *unary operator (toán tử đơn hạng)* (toán tử chỉ có một toán hạng) của toán tử `+`. Thay vì thực hiện phép cộng toán học (hoặc nối chuỗi -- xem bên dưới), đơn vị `+` ép buộc toán hạng của nó (`c`) một cách rõ ràng với giá trị `number`.
 
-Is `+c` *explicit* coercion? Depends on your experience and perspective. If you know (which you do, now!) that unary `+` is explicitly intended for `number` coercion, then it's pretty explicit and obvious. However, if you've never seen it before, it can seem awfully confusing, implicit, with hidden side effects, etc.
+Có phải `+c` *explicit* coercion không? Phụ thuộc vào kinh nghiệm và quan điểm của bạn. Nếu bạn biết (bạn biết rồi đấy!) rằng `+` đơn nguyên được dự định rõ ràng cho việc ép kiểu `number`, thì điều đó khá rõ ràng và hiển nhiên. Tuy nhiên, nếu bạn chưa từng thấy nó trước đây, thì nó có vẻ cực kỳ khó hiểu, ẩn ý, với các tác dụng phụ tiềm ẩn, v.v.
 
-**Note:** The generally accepted perspective in the open-source JS community is that unary `+` is an accepted form of *explicit* coercion.
+**Lưu ý:** Quan điểm thường được chấp nhận trong cộng đồng JS nguồn mở là `+` đơn nguyên là một hình thức *explicit* coercion được chấp nhận.
 
-Even if you really like the `+c` form, there are definitely places where it can look awfully confusing. Consider:
+Ngay cả khi bạn thực sự thích biểu mẫu `+c`, chắc chắn vẫn có những chỗ khiến nó trông cực kỳ khó hiểu. Xem xét:
 
 ```js
 var c = "3.14";
@@ -484,23 +484,23 @@ var d = 5+ +c;
 d; // 8.14
 ```
 
-The unary `-` operator also coerces like `+` does, but it also flips the sign of the number. However, you cannot put two `--` next to each other to unflip the sign, as that's parsed as the decrement operator. Instead, you would need to do: `- -"3.14"` with a space in between, and that would result in coercion to `3.14`.
+Toán tử `-` đơn nguyên cũng cưỡng bức giống như `+`, nhưng nó cũng đảo ngược dấu của số. Tuy nhiên, bạn không thể đặt hai dấu `--` cạnh nhau để bỏ lật dấu, vì dấu đó được phân tích thành toán tử giảm dần. Thay vào đó, bạn sẽ cần thực hiện: `- -"3.14"` với khoảng trắng ở giữa và điều đó sẽ dẫn đến việc ép buộc thành `3.14`.
 
-You can probably dream up all sorts of hideous combinations of binary operators (like `+` for addition) next to the unary form of an operator. Here's another crazy example:
+Bạn có thể có thể nghĩ ra tất cả các loại kết hợp gớm ghiếc của các toán tử nhị phân (như `+` để bổ sung) bên cạnh dạng đơn nguyên của toán tử. Đây là một ví dụ điên rồ khác:
 
 ```js
 1 + - + + + - + 1;	// 2
 ```
 
-You should strongly consider avoiding unary `+` (or `-`) coercion when it's immediately adjacent to other operators. While the above works, it would almost universally be considered a bad idea. Even `d = +c` (or `d =+ c` for that matter!) can far too easily be confused for `d += c`, which is entirely different!
+Bạn nên cân nhắc kỹ lưỡng việc tránh ép buộc `+` (hoặc `-`) đơn nguyên khi nó liền kề với các toán tử khác. Trong khi các công việc trên, nó hầu như sẽ được coi là một ý tưởng tồi. Ngay cả `d = +c` (hoặc `d =+ c` đối với vấn đề đó!) cũng có thể dễ dàng bị nhầm lẫn với `d += c`, điều này hoàn toàn khác!
 
-**Note:** Another extremely confusing place for unary `+` to be used adjacent to another operator would be the `++` increment operator and `--` decrement operator. For example: `a +++b`, `a + ++b`, and `a + + +b`. See "Expression Side-Effects" in Chapter 5 for more about `++`.
+**Lưu ý:** Một vị trí cực kỳ khó hiểu khác đối với `+` đơn nguyên được sử dụng liền kề với toán tử khác sẽ là toán tử tăng `++` và toán tử giảm `--`. Ví dụ: `a +++b`, `a + ++b` và `a + + +b`. Xem "Tác dụng phụ của biểu thức" trong Chương 5 để biết thêm về `++`.
 
-Remember, we're trying to be explicit and **reduce** confusion, not make it much worse!
+Hãy nhớ rằng chúng tôi đang cố gắng trình bày rõ ràng và **giảm thiểu** sự nhầm lẫn, chứ không làm cho vấn đề trở nên tồi tệ hơn nhiều!
 
 #### `Date` To `number`
 
-Another common usage of the unary `+` operator is to coerce a `Date` object into a `number`, because the result is the unix timestamp (milliseconds elapsed since 1 January 1970 00:00:00 UTC) representation of the date/time value:
+Một cách sử dụng phổ biến khác của toán tử `+` đơn nguyên là ép buộc đối tượng `Date` thành một `number`, bởi vì kết quả là dấu thời gian unix (mili giây đã trôi qua kể từ ngày 1 tháng 1 năm 1970 00:00:00 UTC) biểu thị ngày/ giá trị thời gian:
 
 ```js
 var d = new Date( "Mon, 18 Aug 2014 08:53:06 CDT" );
@@ -508,15 +508,15 @@ var d = new Date( "Mon, 18 Aug 2014 08:53:06 CDT" );
 +d; // 1408369986000
 ```
 
-The most common usage of this idiom is to get the current *now* moment as a timestamp, such as:
+Cách sử dụng phổ biến nhất của thành ngữ này là lấy khoảnh khắc *bây giờ* hiện tại làm timestamp (dấu thời gian), chẳng hạn như:
 
 ```js
 var timestamp = +new Date();
 ```
 
-**Note:** Some developers are aware of a peculiar syntactic "trick" in JavaScript, which is that the `()` set on a constructor call (a function called with `new`) is *optional* if there are no arguments to pass. So you may run across the `var timestamp = +new Date;` form. However, not all developers agree that omitting the `()` improves readability, as it's an uncommon syntax exception that only applies to the `new fn()` call form and not the regular `fn()` call form.
+**Lưu ý:** Một số nhà phát triển biết về một "thủ thuật" cú pháp đặc biệt trong JavaScript, đó là `()` được đặt trong một lệnh gọi hàm tạo (một hàm được gọi với `new`) là *tùy chọn* nếu không có đối số để vượt qua. Vì vậy, bạn có thể chạy qua biểu mẫu `var timestamp = +new Date;`. Tuy nhiên, không phải tất cả các nhà phát triển đều đồng ý rằng việc bỏ qua `()` sẽ cải thiện khả năng đọc, vì đây là một ngoại lệ cú pháp không phổ biến chỉ áp dụng cho biểu mẫu cuộc gọi `new fn()` chứ không phải biểu mẫu cuộc gọi `fn()` thông thường.
 
-But coercion is not the only way to get the timestamp out of a `Date` object. A noncoercion approach is perhaps even preferable, as it's even more explicit:
+Nhưng coercion không phải là cách duy nhất để lấy timestamp ra khỏi object `Date`. Cách tiếp cận không ép kiểu thậm chí còn được ưa chuộng hơn, vì nó thậm chí còn rõ ràng hơn:
 
 ```js
 var timestamp = new Date().getTime();
@@ -524,13 +524,13 @@ var timestamp = new Date().getTime();
 // var timestamp = (new Date).getTime();
 ```
 
-But an *even more* preferable noncoercion option is to use the ES5 added `Date.now()` static function:
+Nhưng một tùy chọn không ép buộc *thậm chí nhiều hơn* thích hợp hơn là sử dụng hàm tĩnh `Date.now()` đã thêm vào ES5:
 
 ```js
 var timestamp = Date.now();
 ```
 
-And if you want to polyfill `Date.now()` into older browsers, it's pretty simple:
+Và nếu bạn muốn polyfill `Date.now()` vào các trình duyệt cũ hơn, thì khá đơn giản:
 
 ```js
 if (!Date.now) {
@@ -540,19 +540,19 @@ if (!Date.now) {
 }
 ```
 
-I'd recommend skipping the coercion forms related to dates. Use `Date.now()` for current *now* timestamps, and `new Date( .. ).getTime()` for getting a timestamp of a specific *non-now* date/time that you need to specify.
+Tôi khuyên bạn nên bỏ qua các hình thức coercion liên quan đến ngày tháng. Sử dụng `Date.now()` cho timestamp *bây giờ* hiện tại và `new Date( .. ).getTime()` để nhận timestamp của ngày/giờ *không phải bây giờ* cụ thể mà bạn cần chỉ định.
 
 #### The Curious Case of the `~`
 
-One coercive JS operator that is often overlooked and usually very confused is the tilde `~` operator (aka "bitwise NOT"). Many of those who even understand what it does will often times still want to avoid it. But sticking to the spirit of our approach in this book and series, let's dig into it to find out if `~` has anything useful to give us.
+Một toán tử JS cưỡng chế thường bị bỏ qua và thường rất dễ nhầm lẫn là toán tử dấu ngã `~` (hay còn gọi là "bitwise NOT"). Nhiều người thậm chí hiểu những gì nó làm sẽ thường xuyên muốn tránh nó. Nhưng theo tinh thần của cách tiếp cận của chúng ta trong cuốn sách và bộ sách này, chúng ta hãy đào sâu vào nó để tìm hiểu xem `~` có bất kỳ điều gì hữu ích để cung cấp cho chúng ta hay không.
 
-In the "32-bit (Signed) Integers" section of Chapter 2, we covered how bitwise operators in JS are defined only for 32-bit operations, which means they force their operands to conform to 32-bit value representations. The rules for how this happens are controlled by the `ToInt32` abstract operation (ES5 spec, section 9.5).
+Trong phần "Số nguyên 32-bit (Có dấu)" của Chương 2, chúng ta đã đề cập đến cách các toán tử theo chiều bit trong JS được định nghĩa chỉ cho các hoạt động 32-bit, nghĩa là chúng buộc các toán hạng của chúng tuân theo các biểu diễn giá trị 32-bit. Các quy tắc về cách điều này xảy ra được kiểm soát bởi thao tác trừu tượng `ToInt32` (thông số ES5, phần 9.5).
 
-`ToInt32` first does a `ToNumber` coercion, which means if the value is `"123"`, it's going to first become `123` before the `ToInt32` rules are applied.
+`ToInt32` trước tiên thực hiện ép buộc `ToNumber`, có nghĩa là nếu giá trị là `"123"`, thì trước tiên giá trị đó sẽ trở thành `123` trước khi áp dụng quy tắc `ToInt32`.
 
-While not *technically* coercion itself (since the type doesn't change!), using bitwise operators (like `|` or `~`) with certain special `number` values produces a coercive effect that results in a different `number` value.
+Mặc dù bản thân nó không *về mặt kỹ thuật* ép buộc (vì loại không thay đổi!), nhưng việc sử dụng các toán tử bitwise (như `|` hoặc `~`) với các giá trị `number` đặc biệt nhất định sẽ tạo ra hiệu ứng ép buộc dẫn đến một `number` khác giá trị.
 
-For example, let's first consider the `|` "bitwise OR" operator used in the otherwise no-op idiom `0 | x`, which (as Chapter 2 showed) essentially only does the `ToInt32` conversion:
+Ví dụ: trước tiên chúng ta hãy xem xét toán tử `|` "bitwise OR" được sử dụng trong thành ngữ no-op khác `0 | x`, mà (như Chương 2 đã trình bày) về cơ bản chỉ thực hiện chuyển đổi `ToInt32`:
 
 ```js
 0 | -0;			// 0
@@ -561,35 +561,35 @@ For example, let's first consider the `|` "bitwise OR" operator used in the othe
 0 | -Infinity;	// 0
 ```
 
-These special numbers aren't 32-bit representable (since they come from the 64-bit IEEE 754 standard -- see Chapter 2), so `ToInt32` just specifies `0` as the result from these values.
+Các số đặc biệt này không thể biểu diễn 32 bit (vì chúng đến từ tiêu chuẩn IEEE 754 64 bit -- xem Chương 2), vì vậy `ToInt32` chỉ xác định `0` là kết quả từ các giá trị này.
 
-It's debatable if `0 | __` is an *explicit* form of this coercive `ToInt32` operation or if it's more *implicit*. From the spec perspective, it's unquestionably *explicit*, but if you don't understand bitwise operations at this level, it can seem a bit more *implicitly* magical. Nevertheless, consistent with other assertions in this chapter, we will call it *explicit*.
+Nó gây tranh cãi nếu `0 | __` là một dạng *explicit* của thao tác `ToInt32` cưỡng chế này hoặc nếu nó *implicit* hơn. Từ góc độ thông số kỹ thuật, chắc chắn đó là *explicit*, nhưng nếu bạn không hiểu các hoạt động bitwise ở cấp độ này, thì nó có vẻ kỳ diệu *implicit* hơn một chút. Tuy nhiên, phù hợp với các khẳng định khác trong chương này, chúng tôi sẽ gọi nó là *explicit*.
 
-So, let's turn our attention back to `~`. The `~` operator first "coerces" to a 32-bit `number` value, and then performs a bitwise negation (flipping each bit's parity).
+Vì vậy, hãy chuyển sự chú ý của chúng ta trở lại `~`. Trước tiên, toán tử `~` "ép buộc" giá trị `number` 32 bit, sau đó thực hiện phép phủ định theo bit (lật tính chẵn lẻ của từng bit).
 
-**Note:** This is very similar to how `!` not only coerces its value to `boolean` but also flips its parity (see discussion of the "unary `!`" later).
+**Lưu ý:** Điều này rất giống với cách `!` không chỉ ép buộc giá trị của nó thành `boolean` mà còn đảo ngược tính chẵn lẻ của nó (xem phần thảo luận về "đơn vị `!`" sau).
 
-But... what!? Why do we care about bits being flipped? That's some pretty specialized, nuanced stuff. It's pretty rare for JS developers to need to reason about individual bits.
+Nhưng cái gì!? Tại sao chúng ta quan tâm đến việc các bit bị lật? Đó là một số thứ khá chuyên biệt, sắc thái. Rất hiếm khi các nhà phát triển JS cần suy luận về các bit riêng lẻ.
 
-Another way of thinking about the definition of `~` comes from old-school computer science/discrete Mathematics: `~` performs two's-complement. Great, thanks, that's totally clearer!
+Một cách suy nghĩ khác về định nghĩa của `~` xuất phát từ khoa học máy tính/Toán học rời rạc kiểu cũ: `~` thực hiện phần bù hai. Tuyệt vời, cảm ơn, điều đó hoàn toàn rõ ràng hơn!
 
-Let's try again: `~x` is roughly the same as `-(x+1)`. That's weird, but slightly easier to reason about. So:
+Hãy thử lại: `~x` gần giống với `-(x+1)`. Điều đó thật kỳ lạ, nhưng dễ giải thích hơn một chút. Vì thế:
 
 ```js
 ~42;	// -(42+1) ==> -43
 ```
 
-You're probably still wondering what the heck all this `~` stuff is about, or why it really matters for a coercion discussion. Let's quickly get to the point.
+Có lẽ bạn vẫn đang tự hỏi tất cả những thứ `~` này là về cái quái gì, hoặc tại sao nó thực sự quan trọng đối với một cuộc thảo luận cưỡng chế. Hãy nhanh chóng đi vào vấn đề.
 
-Consider `-(x+1)`. What's the only value that you can perform that operation on that will produce a `0` (or `-0` technically!) result? `-1`. In other words, `~` used with a range of `number` values will produce a falsy (easily coercible to `false`) `0` value for the `-1` input value, and any other truthy `number` otherwise.
+Xét `-(x+1)`. Giá trị duy nhất mà bạn có thể thực hiện thao tác đó sẽ tạo ra kết quả `0` (hoặc `-0` về mặt kỹ thuật!) là gì? `-1`. Nói cách khác, `~` được sử dụng với một phạm vi giá trị `number` sẽ tạo ra giá trị `0` falsy (dễ bị ép buộc thành `false`) cho giá trị đầu vào `-1` và bất kỳ `number` truthy nào khác nếu không.
 
-Why is that relevant?
+Tại sao điều đó có liên quan?
 
-`-1` is commonly called a "sentinel value," which basically means a value that's given an arbitrary semantic meaning within the greater set of values of its same type (`number`s). The C-language uses `-1` sentinel values for many functions that return `>= 0` values for "success" and `-1` for "failure."
+`-1` thường được gọi là "sentinel value", về cơ bản có nghĩa là một giá trị được cung cấp một ý nghĩa ngữ nghĩa tùy ý trong tập hợp lớn hơn các giá trị cùng loại của nó (`number`). Ngôn ngữ C sử dụng sentinel value `-1` cho nhiều hàm trả về giá trị `>= 0` cho "thành công" và `-1` cho "thất bại".
 
-JavaScript adopted this precedent when defining the `string` operation `indexOf(..)`, which searches for a substring and if found returns its zero-based index position, or `-1` if not found.
+JavaScript đã áp dụng tiền lệ này khi xác định thao tác `string` `indexOf(..)`, tìm kiếm một chuỗi con và nếu tìm thấy sẽ trả về vị trí chỉ mục dựa trên 0 của nó hoặc `-1` nếu không tìm thấy.
 
-It's pretty common to try to use `indexOf(..)` not just as an operation to get the position, but as a `boolean` check of presence/absence of a substring in another `string`. Here's how developers usually perform such checks:
+Việc cố gắng sử dụng `indexOf(..)` không chỉ như một thao tác để lấy vị trí, mà còn như một cách kiểm tra `boolean` về sự hiện diện/vắng mặt của một chuỗi con trong một `string` khác là khá phổ biến. Đây là cách các nhà phát triển thường thực hiện kiểm tra như vậy:
 
 ```js
 var a = "Hello World";
@@ -609,9 +609,9 @@ if (a.indexOf( "ol" ) == -1) {	// true
 }
 ```
 
-I find it kind of gross to look at `>= 0` or `== -1`. It's basically a "leaky abstraction," in that it's leaking underlying implementation behavior -- the usage of sentinel `-1` for "failure" -- into my code. I would prefer to hide such a detail.
+Tôi thấy hơi thô thiển khi nhìn vào `>= 0` hoặc `== -1`. Về cơ bản, đó là một "sự trừu tượng bị rò rỉ", trong đó nó đang rò rỉ hành vi triển khai cơ bản -- việc sử dụng sentinel `-1` cho "lỗi" -- vào mã của tôi. Tôi muốn ẩn một chi tiết như vậy.
 
-And now, finally, we see why `~` could help us! Using `~` with `indexOf()` "coerces" (actually just transforms) the value **to be appropriately `boolean`-coercible**:
+Và bây giờ, cuối cùng, chúng ta đã hiểu tại sao `~` có thể giúp chúng ta! Sử dụng `~` với `indexOf()` "ép buộc" (thực ra chỉ biến đổi) giá trị **thành `boolean`-coercible** một cách thích hợp:
 
 ```js
 var a = "Hello World";
@@ -630,32 +630,32 @@ if (!~a.indexOf( "ol" )) {	// true
 }
 ```
 
-`~` takes the return value of `indexOf(..)` and transforms it: for the "failure" `-1` we get the falsy `0`, and every other value is truthy.
+`~` lấy giá trị trả về của `indexOf(..)` và biến đổi nó: đối với "lỗi" `-1`, chúng tôi nhận được `0` falsy và mọi giá trị khác là trusthy.
 
-**Note:** The `-(x+1)` pseudo-algorithm for `~` would imply that `~-1` is `-0`, but actually it produces `0` because the underlying operation is actually bitwise, not mathematic.
+**Lưu ý:** Thuật toán giả `-(x+1)` cho `~` sẽ ngụ ý rằng `~-1` là `-0`, nhưng trên thực tế nó tạo ra `0` vì hoạt động cơ bản thực sự là theo bit , không phải toán học.
 
-Technically, `if (~a.indexOf(..))` is still relying on *implicit* coercion of its resultant `0` to `false` or nonzero to `true`. But overall, `~` still feels to me more like an *explicit* coercion mechanism, as long as you know what it's intended to do in this idiom.
+Về mặt kỹ thuật, `if (~a.indexOf(..))` vẫn dựa vào sự ép buộc *implicit* của kết quả `0` thành `false` hoặc khác 0 thành `true`. Nhưng nhìn chung, `~` đối với tôi vẫn giống như một cơ chế ép buộc *explicit* hơn, miễn là bạn biết ý định của nó trong thành ngữ này là gì.
 
-I find this to be cleaner code than the previous `>= 0` / `== -1` clutter.
+Tôi thấy code này sạch hơn code `>= 0` / `== -1` trước đó.
 
-##### Truncating Bits
+##### Truncating Bits (Cắt bớt bit)
 
-There's one more place `~` may show up in code you run across: some developers use the double tilde `~~` to truncate the decimal part of a `number` (i.e., "coerce" it to a whole number "integer"). It's commonly (though mistakingly) said this is the same result as calling `Math.floor(..)`.
+Còn một vị trí nữa `~` có thể xuất hiện trong mã mà bạn chạy qua: một số nhà phát triển sử dụng dấu ngã kép `~~` để cắt bớt phần thập phân của một `số` (nghĩa là "ép buộc" nó thành một số nguyên "số nguyên" ). Người ta thường (mặc dù nhầm lẫn) cho rằng đây là kết quả giống như việc gọi `Math.floor(..)`.
 
-How `~~` works is that the first `~` applies the `ToInt32` "coercion" and does the bitwise flip, and then the second `~` does another bitwise flip, flipping all the bits back to the original state. The end result is just the `ToInt32` "coercion" (aka truncation).
+Cách `~~` hoạt động là `~` đầu tiên áp dụng "coercion" `ToInt32` và thực hiện lật bit, sau đó `~` thứ hai thực hiện lật bit khác, lật tất cả các bit trở lại trạng thái ban đầu. Kết quả cuối cùng chỉ là "coercion" `ToInt32` (còn gọi là truncation - cắt ngắn).
 
-**Note:** The bitwise double-flip of `~~` is very similar to the parity double-negate `!!` behavior, explained in the "Explicitly: * --> Boolean" section later.
+**Lưu ý:** Thao tác lật hai lần theo bit của `~~` rất giống với hành vi `!!` phủ định kép chẵn lẻ, được giải thích trong phần "Rõ ràng: * -> Boolean" sau này.
 
-However, `~~` needs some caution/clarification. First, it only works reliably on 32-bit values. But more importantly, it doesn't work the same on negative numbers as `Math.floor(..)` does!
+Tuy nhiên, `~~` cần thận trọng/làm rõ. Đầu tiên, nó chỉ hoạt động đáng tin cậy trên các giá trị 32 bit. Nhưng quan trọng hơn, nó không hoạt động giống như `Math.floor(..)` trên các số âm!
 
 ```js
 Math.floor( -49.6 );	// -50
 ~~-49.6;				// -49
 ```
 
-Setting the `Math.floor(..)` difference aside, `~~x` can truncate to a (32-bit) integer. But so does `x | 0`, and seemingly with (slightly) *less effort*.
+Đặt chênh lệch `Math.floor(..)` sang một bên, `~~x` có thể cắt ngắn thành số nguyên (32 bit). Nhưng `x | 0`, và dường như với (hơi) *ít nỗ lực hơn*.
 
-So, why might you choose `~~x` over `x | 0`, then? Operator precedence (see Chapter 5):
+Vì vậy, tại sao bạn có thể chọn `~~x` thay vì `x | 0` thì sao? Toán tử ưu tiên (xem Chương 5):
 
 ```js
 ~~1E20 / 10;		// 166199296
@@ -664,13 +664,13 @@ So, why might you choose `~~x` over `x | 0`, then? Operator precedence (see Chap
 (1E20 | 0) / 10;	// 166199296
 ```
 
-Just as with all other advice here, use `~` and `~~` as explicit mechanisms for "coercion" and value transformation only if everyone who reads/writes such code is properly aware of how these operators work!
+Cũng giống như tất cả các lời khuyên khác ở đây, chỉ sử dụng `~` và `~~` làm cơ chế rõ ràng để "coercion" và chuyển đổi giá trị nếu tất cả những người đọc/viết code như vậy đều nhận thức đúng về cách thức hoạt động của các toán tử này!
 
-### Explicitly: Parsing Numeric Strings
+### Explicitly: Parsing Numeric Strings (Rõ ràng: Phân tích chuỗi số)
 
-A similar outcome to coercing a `string` to a `number` can be achieved by parsing a `number` out of a `string`'s character contents. There are, however, distinct differences between this parsing and the type conversion we examined above.
+Có thể đạt được kết quả tương tự đối với việc ép `string` thành `number` bằng cách phân tích cú pháp `number` từ nội dung ký tự của `string`. Tuy nhiên, có sự khác biệt rõ ràng giữa phân tích cú pháp này và chuyển đổi loại mà chúng tôi đã kiểm tra ở trên.
 
-Consider:
+Xem xét:
 
 ```js
 var a = "42";
@@ -683,21 +683,21 @@ Number( b );	// NaN
 parseInt( b );	// 42
 ```
 
-Parsing a numeric value out of a string is *tolerant* of non-numeric characters -- it just stops parsing left-to-right when encountered -- whereas coercion is *not tolerant* and fails resulting in the `NaN` value.
+Parsing (phân tích cú pháp) một giá trị number từ một string *bỏ qua* các ký tự không phải là number -- nó chỉ dừng phân tích cú pháp từ trái sang phải khi gặp phải -- trong khi tính năng coercion (cưỡng chế) *không cho phép* và dẫn đến giá trị `NaN`.
 
-Parsing should not be seen as a substitute for coercion. These two tasks, while similar, have different purposes. Parse a `string` as a `number` when you don't know/care what other non-numeric characters there may be on the right-hand side. Coerce a `string` (to a `number`) when the only acceptable values are numeric and something like `"42px"` should be rejected as a `number`.
+Parsing (Phân tích cú pháp) không nên được coi là một sự thay thế cho coercion (sự ép buộc). Hai nhiệm vụ này, trong khi giống nhau, có mục đích khác nhau. Parse (phân tích cú pháp) `string` dưới dạng `number` khi bạn không biết/quan tâm đến những ký tự không phải số nào khác có thể có ở phía bên tay phải. Coercion (ép buộc) `string` (thành `number`) khi các giá trị duy nhất được chấp nhận là số và giá trị nào đó như `"42px"` nên bị từ chối dưới dạng `number`.
 
-**Tip:** `parseInt(..)` has a twin, `parseFloat(..)`, which (as it sounds) pulls out a floating-point number from a string.
+**Mẹo:** `parseInt(..)` có một cặp song sinh, `parseFloat(..)`, mà (như cách gọi của nó) lấy ra một số dấu phẩy động từ một string.
 
-Don't forget that `parseInt(..)` operates on `string` values. It makes absolutely no sense to pass a `number` value to `parseInt(..)`. Nor would it make sense to pass any other type of value, like `true`, `function(){..}` or `[1,2,3]`.
+Đừng quên rằng `parseInt(..)` hoạt động trên các giá trị `string`. Hoàn toàn vô nghĩa khi chuyển một giá trị `number` cho `parseInt(..)`. Cũng không hợp lý khi chuyển bất kỳ loại giá trị nào khác, chẳng hạn như `true`, `function(){..}` hoặc `[1,2,3]`.
 
-If you pass a non-`string`, the value you pass will automatically be coerced to a `string` first (see "`ToString`" earlier), which would clearly be a kind of hidden *implicit* coercion. It's a really bad idea to rely upon such a behavior in your program, so never use `parseInt(..)` with a non-`string` value.
+Nếu bạn chuyển một giá trị không phải là `string`, thì giá trị bạn chuyển sẽ tự động bị ép thành `string` trước (xem "`ToString`" trước đó), đây rõ ràng là một loại ép buộc *implicit (ngầm)* ẩn. Việc dựa vào một hành vi như vậy trong chương trình của bạn thực sự là một ý tưởng tồi, vì vậy đừng bao giờ sử dụng `parseInt(..)` với giá trị không phải là `string`.
 
-Prior to ES5, another gotcha existed with `parseInt(..)`, which was the source of many JS programs' bugs. If you didn't pass a second argument to indicate which numeric base (aka radix) to use for interpreting the numeric `string` contents, `parseInt(..)` would look at the beginning character(s) to make a guess.
+Trước ES5, một gotcha khác đã tồn tại với `parseInt(..)`, đây là nguồn gốc của nhiều lỗi chương trình JS. Nếu bạn không chuyển đối số thứ hai để cho biết cơ số (còn gọi là cơ số) nào sẽ được sử dụng để diễn giải nội dung `string` số, `parseInt(..)` sẽ xem xét (các) ký tự bắt đầu để đoán.
 
-If the first two characters were `"0x"` or `"0X"`, the guess (by convention) was that you wanted to interpret the `string` as a hexadecimal (base-16) `number`. Otherwise, if the first character was `"0"`, the guess (again, by convention) was that you wanted to interpret the `string` as an octal (base-8) `number`.
+Nếu hai ký tự đầu tiên là `"0x"` hoặc `"0X"`, thì phỏng đoán (theo quy ước) là bạn muốn diễn giải `string` dưới dạng `number` thập lục phân (cơ số 16). Mặt khác, nếu ký tự đầu tiên là `"0"`, thì phỏng đoán (một lần nữa, theo quy ước) là bạn muốn diễn giải `string` dưới dạng một `number` bát phân (cơ số 8).
 
-Hexadecimal `string`s (with the leading `0x` or `0X`) aren't terribly easy to get mixed up. But the octal number guessing proved devilishly common. For example:
+Các `string` thập lục phân (với `0x` hoặc `0X` đứng đầu) không dễ bị lẫn lộn lắm. Nhưng việc đoán số bát phân tỏ ra phổ biến một cách quỷ quyệt. Ví dụ:
 
 ```js
 var hour = parseInt( selectedHour.value );
@@ -706,42 +706,42 @@ var minute = parseInt( selectedMinute.value );
 console.log( "The time you selected was: " + hour + ":" + minute);
 ```
 
-Seems harmless, right? Try selecting `08` for the hour and `09` for the minute. You'll get `0:0`. Why? because neither `8` nor `9` are valid characters in octal base-8.
+Có vẻ như vô hại, phải không? Thử chọn `08` cho giờ và `09` cho phút. Bạn sẽ nhận được `0:0`. Tại sao? bởi vì cả `8` và `9` đều không phải là ký tự hợp lệ trong cơ số bát phân-8.
 
-The pre-ES5 fix was simple, but so easy to forget: **always pass `10` as the second argument**. This was totally safe:
+Bản sửa lỗi trước ES5 rất đơn giản nhưng rất dễ quên: **luôn truyền `10` làm đối số thứ hai**. Điều này hoàn toàn an toàn:
 
 ```js
 var hour = parseInt( selectedHour.value, 10 );
 var minute = parseInt( selectedMiniute.value, 10 );
 ```
 
-As of ES5, `parseInt(..)` no longer guesses octal. Unless you say otherwise, it assumes base-10 (or base-16 for `"0x"` prefixes). That's much nicer. Just be careful if your code has to run in pre-ES5 environments, in which case you still need to pass `10` for the radix.
+Kể từ ES5, `parseInt(..)` không còn đoán bát phân nữa. Trừ khi bạn nói khác, nó giả định cơ sở-10 (hoặc cơ sở-16 cho các tiền tố `"0x"`). Điều đó đẹp hơn nhiều. Chỉ cần cẩn thận nếu mã của bạn phải chạy trong môi trường trước ES5, trong trường hợp đó, bạn vẫn cần truyền `10` cho cơ số.
 
 #### Parsing Non-Strings
 
-One somewhat infamous example of `parseInt(..)`'s behavior is highlighted in a sarcastic joke post a few years ago, poking fun at this JS behavior:
+Một ví dụ hơi tai tiếng về hành vi của `parseInt(..)` được nêu bật trong một bài đăng đùa châm biếm cách đây vài năm, chế nhạo hành vi JS này:
 
 ```js
 parseInt( 1/0, 19 ); // 18
 ```
 
-The assumptive (but totally invalid) assertion was, "If I pass in Infinity, and parse an integer out of that, I should get Infinity back, not 18." Surely, JS must be crazy for this outcome, right?
+Khẳng định giả định (nhưng hoàn toàn không hợp lệ) là, "Nếu tôi vượt qua Infinity và phân tích một số nguyên từ đó, tôi sẽ lấy lại Infinity chứ không phải 18." Chắc hẳn JS phải phát điên lên vì kết cục này đúng không?
 
-Though this example is obviously contrived and unreal, let's indulge the madness for a moment and examine whether JS really is that crazy.
+Mặc dù ví dụ này rõ ràng là giả tạo và không thực tế, nhưng chúng ta hãy tận hưởng sự điên rồ trong giây lát và kiểm tra xem liệu JS có thực sự điên rồ đến thế không.
 
-First off, the most obvious sin committed here is to pass a non-`string` to `parseInt(..)`. That's a no-no. Do it and you're asking for trouble. But even if you do, JS politely coerces what you pass in into a `string` that it can try to parse.
+Trước hết, lỗi rõ ràng nhất đã phạm phải ở đây là truyền một non-`string` vào `parseInt(..)`. Đó là một không-không. Làm điều đó và bạn đang yêu cầu rắc rối. Nhưng ngay cả khi bạn làm như vậy, JS vẫn lịch sự ép buộc những gì bạn truyền vào thành một `string` mà nó có thể cố phân tích cú pháp.
 
-Some would argue that this is unreasonable behavior, and that `parseInt(..)` should refuse to operate on a non-`string` value. Should it perhaps throw an error? That would be very Java-like, frankly. I shudder at thinking JS should start throwing errors all over the place so that `try..catch` is needed around almost every line.
+Một số người sẽ lập luận rằng đây là hành vi không hợp lý và `parseInt(..)` nên từ chối hoạt động trên một giá trị non-`string`. Có lẽ nó nên ném một lỗi? Thành thật mà nói, điều đó sẽ rất giống Java. Tôi rùng mình khi nghĩ rằng JS nên bắt đầu ném lỗi khắp nơi để `try..catch` là cần thiết ở hầu hết mọi dòng.
 
-Should it return `NaN`? Maybe. But... what about:
+Nó có nên trả lại `NaN` không? Có lẽ. Nhưng... còn:
 
 ```js
 parseInt( new String( "42") );
 ```
 
-Should that fail, too? It's a non-`string` value. If you want that `String` object wrapper to be unboxed to `"42"`, then is it really so unusual for `42` to first become `"42"` so that `42` can be parsed back out?
+Điều đó cũng nên thất bại? Đó là một giá trị không phải là `chuỗi`. Nếu bạn muốn object wrapper `String` đó được mở hộp thành `"42"`, thì việc `42` đầu tiên trở thành `"42"` để `42` có thể được phân tích cú pháp trở lại có thực sự bất thường không?
 
-I would argue that this half-*explicit*, half-*implicit* coercion that can occur can often be a very helpful thing. For example:
+Tôi cho rằng sự ép buộc nửa *explicit*, nửa *implicit* này có thể xảy ra thường có thể là một điều rất hữu ích. Ví dụ:
 
 ```js
 var a = {
@@ -752,19 +752,19 @@ var a = {
 parseInt( a ); // 42
 ```
 
-The fact that `parseInt(..)` forcibly coerces its value to a `string` to perform the parse on is quite sensible. If you pass in garbage, and you get garbage back out, don't blame the trash can -- it just did its job faithfully.
+Thực tế là `parseInt(..)` ép buộc giá trị của nó thành `string` để thực hiện phân tích cú pháp là khá hợp lý. Nếu bạn bỏ rác vào và bạn lấy lại được rác, đừng đổ lỗi cho thùng rác -- nó chỉ làm công việc của mình một cách trung thực.
 
-So, if you pass in a value like `Infinity` (the result of `1 / 0` obviously), what sort of `string` representation would make the most sense for its coercion? Only two reasonable choices come to mind: `"Infinity"` and `"∞"`. JS chose `"Infinity"`. I'm glad it did.
+Vì vậy, nếu bạn chuyển vào một giá trị như `Infinity` (rõ ràng là kết quả của `1 / 0`), thì kiểu biểu diễn `string` nào sẽ có ý nghĩa nhất đối với sự ép buộc của nó? Bạn chỉ nghĩ đến hai lựa chọn hợp lý: `"Infinity"` và `"∞"`. JS đã chọn `"Infinity"`. Tôi rất vui vì nó đã làm.
 
-I think it's a good thing that **all values** in JS have some sort of default `string` representation, so that they aren't mysterious black boxes that we can't debug and reason about.
+Tôi nghĩ thật tốt khi **tất cả các giá trị** trong JS có một số loại biểu diễn `string` mặc định, do đó chúng không phải là những hộp đen bí ẩn mà chúng ta không thể gỡ lỗi và suy luận.
 
-Now, what about base-19? Obviously, completely bogus and contrived. No real JS programs use base-19. It's absurd. But again, let's indulge the ridiculousness. In base-19, the valid numeric characters are `0` - `9` and `a` - `i` (case insensitive).
+Bây giờ, còn cơ sở 19 thì sao? Rõ ràng, hoàn toàn không có thật và giả tạo. Không có chương trình JS nào sử dụng base-19. Thật vô lý. Nhưng một lần nữa, hãy thưởng thức sự lố bịch. Trong cơ số 19, các ký tự số hợp lệ là `0` - `9` và `a` - `i` (không phân biệt chữ hoa chữ thường).
 
-So, back to our `parseInt( 1/0, 19 )` example. It's essentially `parseInt( "Infinity", 19 )`. How does it parse? The first character is `"I"`, which is value `18` in the silly base-19. The second character `"n"` is not in the valid set of numeric characters, and as such the parsing simply politely stops, just like when it ran across `"p"` in `"42px"`.
+Vì vậy, hãy quay lại ví dụ `parseInt( 1/0, 19 )` của chúng ta. Về cơ bản, nó là `parseInt("Infinity", 19 )`. Làm thế nào để nó phân tích cú pháp? Ký tự đầu tiên là `"I"`, là giá trị `18` trong cơ sở ngớ ngẩn-19. Ký tự thứ hai `"n"` không nằm trong tập hợp các ký tự số hợp lệ và do đó, quá trình phân tích cú pháp chỉ dừng lại một cách lịch sự, giống như khi nó chạy qua `"p"` trong `"42px"`.
 
-The result? `18`. Exactly like it sensibly should be. The behaviors involved to get us there, and not to an error or to `Infinity` itself, are **very important** to JS, and should not be so easily discarded.
+Kết quả? `18`. Chính xác như nó hợp lý nên được. Các hành vi liên quan để đưa chúng ta đến đó, chứ không phải lỗi hay bản thân `Infinity`, là **rất quan trọng** đối với JS và không nên dễ dàng loại bỏ.
 
-Other examples of this behavior with `parseInt(..)` that may be surprising but are quite sensible include:
+Các ví dụ khác về hành vi này với `parseInt(..)` có thể gây ngạc nhiên nhưng khá hợp lý bao gồm:
 
 ```js
 parseInt( 0.000008 );		// 0   ("0" from "0.000008")
@@ -776,13 +776,13 @@ parseInt( "0x10" );			// 16
 parseInt( "103", 2 );		// 2
 ```
 
-`parseInt(..)` is actually pretty predictable and consistent in its behavior. If you use it correctly, you'll get sensible results. If you use it incorrectly, the crazy results you get are not the fault of JavaScript.
+`parseInt(..)` thực sự khá dễ đoán và nhất quán trong hành vi của nó. Nếu bạn sử dụng nó một cách chính xác, bạn sẽ nhận được kết quả hợp lý. Nếu bạn sử dụng nó không đúng cách, kết quả điên rồ mà bạn nhận được không phải là lỗi của JavaScript.
 
 ### Explicitly: * --> Boolean
 
-Now, let's examine coercing from any non-`boolean` value to a `boolean`.
+Bây giờ, hãy kiểm tra việc ép kiểu từ bất kỳ giá trị không phải `boolean` nào thành `boolean`.
 
-Just like with `String(..)` and `Number(..)` above, `Boolean(..)` (without the `new`, of course!) is an explicit way of forcing the `ToBoolean` coercion:
+Cũng giống như với `String(..)` và `Number(..)` ở trên, `Boolean(..)` (tất nhiên là không có `new`!) là một cách rõ ràng để ép kiểu `ToBoolean`:
 
 ```js
 var a = "0";
@@ -804,9 +804,9 @@ Boolean( f ); // false
 Boolean( g ); // false
 ```
 
-While `Boolean(..)` is clearly explicit, it's not at all common or idiomatic.
+Mặc dù `Boolean(..)` rõ ràng là rõ ràng, nhưng nó hoàn toàn không phổ biến hoặc thành ngữ.
 
-Just like the unary `+` operator coerces a value to a `number` (see above), the unary `!` negate operator explicitly coerces a value to a `boolean`. The *problem* is that it also flips the value from truthy to falsy or vice versa. So, the most common way JS developers explicitly coerce to `boolean` is to use the `!!` double-negate operator, because the second `!` will flip the parity back to the original:
+Cũng giống như toán tử đơn nguyên `+` ép buộc một giá trị thành `number` (xem ở trên), toán tử phủ định `!` đơn nguyên ép buộc một giá trị thành `boolean` một cách rõ ràng. *Vấn đề* là nó cũng chuyển giá trị từ truthy sang falsy hoặc ngược lại. Vì vậy, cách phổ biến nhất mà các nhà phát triển JS buộc phải sử dụng `boolean` một cách rõ ràng là sử dụng toán tử phủ định kép `!!`, bởi vì `!` thứ hai sẽ lật tính chẵn lẻ trở lại ban đầu:
 
 ```js
 var a = "0";
@@ -828,9 +828,9 @@ var g;
 !!g;	// false
 ```
 
-Any of these `ToBoolean` coercions would happen *implicitly* without the `Boolean(..)` or `!!`, if used in a `boolean` context such as an `if (..) ..` statement. But the goal here is to explicitly force the value to a `boolean` to make it clearer that the `ToBoolean` coercion is intended.
+Bất kỳ sự ép buộc `ToBoolean` nào trong số này sẽ xảy ra *ngầm định* mà không có `Boolean(..)` hoặc `!!`, nếu được sử dụng trong ngữ cảnh `boolean`, chẳng hạn như câu lệnh `if (..) ..`. Nhưng mục tiêu ở đây là ép buộc giá trị thành `boolean` một cách rõ ràng để làm rõ ràng hơn rằng mục đích ép buộc `ToBoolean` là có ý định.
 
-Another example use-case for explicit `ToBoolean` coercion is if you want to force a `true`/`false` value coercion in the JSON serialization of a data structure:
+Một trường hợp sử dụng ví dụ khác cho cưỡng chế `ToBoolean` rõ ràng là nếu bạn muốn cưỡng chế giá trị `true`/`false` trong tuần tự hóa JSON của cấu trúc dữ liệu:
 
 ```js
 var a = [
@@ -854,7 +854,7 @@ JSON.stringify( a, function(key,val){
 // "[1,true,2,true]"
 ```
 
-If you come to JavaScript from Java, you may recognize this idiom:
+Nếu bạn đến với JavaScript từ Java, bạn có thể nhận ra cú pháp này:
 
 ```js
 var a = 42;
@@ -862,69 +862,69 @@ var a = 42;
 var b = a ? true : false;
 ```
 
-The `? :` ternary operator will test `a` for truthiness, and based on that test will either assign `true` or `false` to `b`, accordingly.
+`? :` Toán tử ba ngôi sẽ kiểm tra tính đúng đắn của `a` và dựa trên kiểm tra đó sẽ gán `true` hoặc `false` cho `b`, tương ứng.
 
-On its surface, this idiom looks like a form of *explicit* `ToBoolean`-type coercion, since it's obvious that only either `true` or `false` come out of the operation.
+Nhìn bề ngoài, cú pháp này trông giống như một dạng ép kiểu *explicit(tường minh)* `ToBoolean`, vì rõ ràng là chỉ có `true` hoặc `false` xuất hiện trong phép toán.
 
-However, there's a hidden *implicit* coercion, in that the `a` expression has to first be coerced to `boolean` to perform the truthiness test. I'd call this idiom "explicitly implicit." Furthermore, I'd suggest **you should avoid this idiom completely** in JavaScript. It offers no real benefit, and worse, masquerades as something it's not.
+Tuy nhiên, có một sự ép kiểu *implicit (ngầm)* ẩn, trong đó biểu thức `a` trước tiên phải được ép kiểu thành `boolean` để thực hiện kiểm tra tính đúng đắn. Tôi muốn gọi biểu thức này là "rõ ràng ngầm hiểu." Hơn nữa, tôi đề nghị **bạn nên tránh hoàn toàn thành ngữ này** trong JavaScript. Nó không mang lại lợi ích thực sự nào, và tệ hơn, nó giả dạng thành một thứ không phải.
 
-`Boolean(a)` and `!!a` are far better as *explicit* coercion options.
+`Boolean(a)` và `!!a` là các tùy chọn ép kiểu *rõ ràng* tốt hơn nhiều.
 
-## Implicit Coercion
+## Implicit Coercion (Ép kiểu ngầm)
 
-*Implicit* coercion refers to type conversions that are hidden, with non-obvious side-effects that implicitly occur from other actions. In other words, *implicit coercions* are any type conversions that aren't obvious (to you).
+*Implicit* coercion đề cập đến các chuyển đổi loại bị ẩn, với các non-obvious side-effects (tác dụng phụ không rõ ràng) xảy ra ngầm từ các hành động khác. Nói cách khác, *implicit coercions* là bất kỳ loại chuyển đổi nào không rõ ràng (đối với bạn).
 
-While it's clear what the goal of *explicit* coercion is (making code explicit and more understandable), it might be *too* obvious that *implicit* coercion has the opposite goal: making code harder to understand.
+Mặc dù rõ ràng mục tiêu của *explicit* coercion là (làm cho mã rõ ràng và dễ hiểu hơn), nhưng có thể *quá* rõ ràng rằng *implicit* coercion có mục tiêu ngược lại: làm cho code khó hiểu hơn.
 
-Taken at face value, I believe that's where much of the ire towards coercion comes from. The majority of complaints about "JavaScript coercion" are actually aimed (whether they realize it or not) at *implicit* coercion.
+Xét theo giá trị bề ngoài, tôi tin rằng đó là lý do bắt nguồn phần lớn sự phẫn nộ đối với sự ép kiểu. Phần lớn các khiếu nại về "JavaScript coercion" thực sự nhằm vào (dù họ có nhận ra hay không) vào sự *implicit* coercion.
 
-**Note:** Douglas Crockford, author of *"JavaScript: The Good Parts"*, has claimed in many conference talks and writings that JavaScript coercion should be avoided. But what he seems to mean is that *implicit* coercion is bad (in his opinion). However, if you read his own code, you'll find plenty of examples of coercion, both *implicit* and *explicit*! In truth, his angst seems to primarily be directed at the `==` operation, but as you'll see in this chapter, that's only part of the coercion mechanism.
+**Lưu ý:** Douglas Crockford, tác giả của *"JavaScript: The Good Part"*, đã tuyên bố trong nhiều bài viết và bài nói chuyện tại hội nghị rằng nên tránh sử dụng tính cưỡng chế của JavaScript. Nhưng ý của anh ấy dường như là sự *implicit* coercion là xấu (theo ý kiến của anh ấy). Tuy nhiên, nếu bạn đọc code của chính anh ấy, bạn sẽ tìm thấy rất nhiều ví dụ về sự ép buộc, cả *ngầm* và *rõ ràng*! Trên thực tế, sự tức giận của anh ấy dường như chủ yếu nhắm vào thao tác `==`, nhưng như bạn sẽ thấy trong chương này, đó chỉ là một phần của cơ chế ép buộc.
 
-So, **is implicit coercion** evil? Is it dangerous? Is it a flaw in JavaScript's design? Should we avoid it at all costs?
+Vì vậy, **cưỡng chế ngầm** có xấu xa không? Nó có nguy hiểm không? Đây có phải là một lỗ hổng trong thiết kế của JavaScript không? Chúng ta có nên tránh nó bằng mọi giá?
 
-I bet most of you readers are inclined to enthusiastically cheer, "Yes!"
+Tôi cá là hầu hết các bạn độc giả đều có xu hướng cổ vũ nhiệt tình, "Vâng!"
 
-**Not so fast.** Hear me out.
+**Không quá nhanh.** Hãy nghe tôi nói.
 
-Let's take a different perspective on what *implicit* coercion is, and can be, than just that it's "the opposite of the good explicit kind of coercion." That's far too narrow and misses an important nuance.
+Chúng ta hãy có một góc nhìn khác về *implicit* coercion (sự ép buộc/kiểu *ngầm*) là gì, và có thể là gì, hơn là việc nó "đối lập với hình thức ép buộc rõ ràng tốt." Điều đó quá hẹp và bỏ lỡ một sắc thái quan trọng.
 
-Let's define the goal of *implicit* coercion as: to reduce verbosity, boilerplate, and/or unnecessary implementation detail that clutters up our code with noise that distracts from the more important intent.
+Hãy xác định mục tiêu của *implicit* coercion là: để giảm mức độ dài dòng, bản tóm tắt và/hoặc chi tiết triển khai không cần thiết làm lộn xộn code của chúng ta bằng tiếng ồn làm xao nhãng ý định quan trọng hơn.
 
 ### Simplifying Implicitly
 
-Before we even get to JavaScript, let me suggest something pseudo-code'ish from some theoretical strongly typed language to illustrate:
+Trước khi chúng ta bắt đầu với JavaScript, hãy để tôi đề xuất một thứ gì đó psudo-code (giả mã) từ một số ngôn ngữ ràng buộc kiểu chặt chẽ về mặt lý thuyết để minh họa:
 
 ```js
 SomeType x = SomeType( AnotherType( y ) )
 ```
 
-In this example, I have some arbitrary type of value in `y` that I want to convert to the `SomeType` type. The problem is, this language can't go directly from whatever `y` currently is to `SomeType`. It needs an intermediate step, where it first converts to `AnotherType`, and then from `AnotherType` to `SomeType`.
+Trong ví dụ này, tôi có một số loại giá trị tùy ý trong `y` mà tôi muốn chuyển đổi thành loại `SomeType`. Vấn đề là, ngôn ngữ này không thể chuyển trực tiếp từ `y` hiện tại sang `SomeType`. Nó cần một bước trung gian, trong đó đầu tiên nó chuyển đổi thành `AnotherType`, sau đó từ `AnotherType` thành `SomeType`.
 
-Now, what if that language (or definition you could create yourself with the language) *did* just let you say:
+Bây giờ, điều gì sẽ xảy ra nếu ngôn ngữ đó (hoặc định nghĩa mà bạn có thể tự tạo bằng ngôn ngữ đó) *đã làm* chỉ để bạn nói:
 
 ```js
 SomeType x = SomeType( y )
 ```
 
-Wouldn't you generally agree that we simplified the type conversion here to reduce the unnecessary "noise" of the intermediate conversion step? I mean, is it *really* all that important, right here at this point in the code, to see and deal with the fact that `y` goes to `AnotherType` first before then going to `SomeType`?
+Nhìn chung, bạn có đồng ý rằng chúng tôi đã đơn giản hóa việc chuyển đổi loại ở đây để giảm bớt "nhũng nhiễu" không cần thiết của bước chuyển đổi trung gian không? Ý tôi là, điều đó có *thực sự* quan trọng đến vậy không, ngay tại thời điểm này trong mã, để xem và xử lý thực tế là `y` đi đến `AnotherType` trước rồi mới đến `SomeType`?
 
-Some would argue, at least in some circumstances, yes. But I think an equal argument can be made of many other circumstances that here, the simplification **actually aids in the readability of the code** by abstracting or hiding away such details, either in the language itself or in our own abstractions.
+Một số sẽ tranh luận, ít nhất là trong một số trường hợp, vâng. Nhưng tôi nghĩ có thể đưa ra một lập luận bình đẳng về nhiều trường hợp khác mà ở đây, sự đơn giản hóa **thực sự hỗ trợ khả năng đọc mã** bằng cách trừu tượng hóa hoặc ẩn đi các chi tiết đó, trong chính ngôn ngữ đó hoặc trong sự trừu tượng hóa của chính chúng ta.
 
-Undoubtedly, behind the scenes, somewhere, the intermediate conversion step is still happening. But if that detail is hidden from view here, we can just reason about getting `y` to type `SomeType` as a generic operation and hide the messy details.
+Không còn nghi ngờ gì nữa, đằng sau hậu trường, ở đâu đó, bước chuyển đổi trung gian vẫn đang diễn ra. Nhưng nếu chi tiết đó bị ẩn khỏi chế độ xem ở đây, chúng ta có thể lập luận về việc sử dụng `y` để nhập `SomeType` như một thao tác chung và ẩn các chi tiết lộn xộn.
 
-While not a perfect analogy, what I'm going to argue throughout the rest of this chapter is that JS *implicit* coercion can be thought of as providing a similar aid to your code.
+Mặc dù không phải là một phép loại suy hoàn hảo, nhưng điều tôi sẽ tranh luận trong suốt phần còn lại của chương này là *implicit* coercion của JS có thể được coi là cung cấp một trợ giúp tương tự cho code của bạn.
 
-But, **and this is very important**, that is not an unbounded, absolute statement. There are definitely plenty of *evils* lurking around *implicit* coercion, that will harm your code much more than any potential readability improvements. Clearly, we have to learn how to avoid such constructs so we don't poison our code with all manner of bugs.
+Nhưng, **và điều này rất quan trọng**, đó không phải là một tuyên bố tuyệt đối, vô giới hạn. Chắc chắn có rất nhiều *tệ nạn* ẩn nấp xung quanh *implicit* coercion, điều đó sẽ gây hại cho code của bạn nhiều hơn bất kỳ cải tiến tiềm năng nào về khả năng đọc. Rõ ràng, chúng ta phải học cách tránh những cấu trúc như vậy để chúng ta không đầu độc code của mình bằng đủ loại lỗi.
 
-Many developers believe that if a mechanism can do some useful thing **A** but can also be abused or misused to do some awful thing **Z**, then we should throw out that mechanism altogether, just to be safe.
+Nhiều nhà phát triển tin rằng nếu một cơ chế có thể thực hiện một số điều hữu ích **A** nhưng cũng có thể bị lạm dụng hoặc lạm dụng để thực hiện một số điều tồi tệ **Z**, thì chúng ta nên loại bỏ hoàn toàn cơ chế đó, để đảm bảo an toàn.
 
-My encouragement to you is: don't settle for that. Don't "throw the baby out with the bathwater." Don't assume *implicit* coercion is all bad because all you think you've ever seen is its "bad parts." I think there are "good parts" here, and I want to help and inspire more of you to find and embrace them!
+Lời động viên của tôi dành cho bạn là: đừng chấp nhận điều đó. Don't "throw the baby out with the bathwater." (idom trong tiếng anh hàm ý cái tốt bị loại bỏ khi bỏ một cái xấu) Đừng cho rằng sự *implicit* coercion là hoàn toàn xấu vì tất cả những gì bạn nghĩ bạn từng thấy là "phần xấu" của nó. Tôi nghĩ rằng có những "phần tốt" ở đây và tôi muốn giúp đỡ cũng như truyền cảm hứng cho nhiều bạn hơn để tìm và nắm lấy chúng!
 
 ### Implicitly: Strings <--> Numbers
 
-Earlier in this chapter, we explored *explicitly* coercing between `string` and `number` values. Now, let's explore the same task but with *implicit* coercion approaches. But before we do, we have to examine some nuances of operations that will *implicitly* force coercion.
+Trước đó trong chương này, chúng ta đã khám phá sự ép buộc *rõ ràng* giữa các giá trị `string` và `number`. Bây giờ, hãy cùng khám phá nhiệm vụ tương tự nhưng với cách tiếp cận *implicit* coercion. Nhưng trước khi làm, chúng ta phải xem xét một số sắc thái của các hoạt động sẽ *ngầm* cưỡng chế.
 
-The `+` operator is overloaded to serve the purposes of both `number` addition and `string` concatenation. So how does JS know which type of operation you want to use? Consider:
+Toán tử `+` bị quá tải để phục vụ mục đích của cả phép cộng `số` và phép nối `chuỗi`. Vậy làm cách nào để JS biết loại hoạt động nào bạn muốn sử dụng? Xem xét:
 
 ```js
 var a = "42";
@@ -937,9 +937,9 @@ a + b; // "420"
 c + d; // 42
 ```
 
-What's different that causes `"420"` vs `42`? It's a common misconception that the difference is whether one or both of the operands is a `string`, as that means `+` will assume `string` concatenation. While that's partially true, it's more complicated than that.
+Điều gì khác biệt gây ra `"420"` so với `42`? Đó là một quan niệm sai lầm phổ biến rằng sự khác biệt là liệu một hoặc cả hai toán hạng có phải là một `string` hay không, vì điều đó có nghĩa là `+` sẽ đảm nhận phép nối `string`. Mặc dù điều đó đúng một phần, nhưng nó phức tạp hơn thế.
 
-Consider:
+Xem xét:
 
 ```js
 var a = [1,2];
@@ -948,25 +948,25 @@ var b = [3,4];
 a + b; // "1,23,4"
 ```
 
-Neither of these operands is a `string`, but clearly they were both coerced to `string`s and then the `string` concatenation kicked in. So what's really going on?
+Cả hai toán hạng này đều không phải là `string`, nhưng rõ ràng cả hai đều bị ép buộc thành `string` và sau đó phép nối `string` bắt đầu hoạt động. Vậy điều gì đang thực sự xảy ra?
 
-(**Warning:** deeply nitty gritty spec-speak coming, so skip the next two paragraphs if that intimidates you!)
-
------
-
-According to ES5 spec section 11.6.1, the `+` algorithm (when an `object` value is an operand) will concatenate if either operand is either already a `string`, or if the following steps produce a `string` representation. So, when `+` receives an `object` (including `array`) for either operand, it first calls the `ToPrimitive` abstract operation (section 9.1) on the value, which then calls the `[[DefaultValue]]` algorithm (section 8.12.8) with a context hint of `number`.
-
-If you're paying close attention, you'll notice that this operation is now identical to how the `ToNumber` abstract operation handles `object`s (see the "`ToNumber`"" section earlier). The `valueOf()` operation on the `array` will fail to produce a simple primitive, so it then falls to a `toString()` representation. The two `array`s thus become `"1,2"` and `"3,4"`, respectively. Now, `+` concatenates the two `string`s as you'd normally expect: `"1,23,4"`.
+(**Cảnh báo:** Sắp có bài phát biểu cụ thể gay gắt sâu sắc, vì vậy hãy bỏ qua hai đoạn tiếp theo nếu điều đó khiến bạn sợ hãi!)
 
 -----
 
-Let's set aside those messy details and go back to an earlier, simplified explanation: if either operand to `+` is a `string` (or becomes one with the above steps!), the operation will be `string` concatenation. Otherwise, it's always numeric addition.
+Theo phần đặc tả ES5 11.6.1, thuật toán `+` (khi giá trị `đối tượng` là một toán hạng) sẽ nối nếu một trong hai toán hạng đã là một `string` hoặc nếu các bước sau tạo ra một biểu diễn `string`. Vì vậy, khi `+` nhận được một `string` (bao gồm `array`) cho một trong hai toán hạng, trước tiên, nó gọi thao tác trừu tượng `ToPrimitive` (phần 9.1) trên giá trị, sau đó gọi thuật toán `[[DefaultValue]]` (phần 8.12.8) với gợi ý ngữ cảnh là `number`.
 
-**Note:** A commonly cited coercion gotcha is `[] + {}` vs. `{} + []`, as those two expressions result, respectively, in `"[object Object]"` and `0`. There's more to it, though, and we cover those details in "Blocks" in Chapter 5.
+Nếu để ý kỹ, bạn sẽ nhận thấy rằng thao tác này hiện giống hệt với cách thao tác trừu tượng `ToNumber` xử lý `object` (xem phần "`ToNumber`"" trước đó). `valueOf()` hoạt động trên `array` sẽ không thể tạo ra một nguyên hàm đơn giản, do đó, nó sẽ chuyển thành biểu diễn `toString()`. Do đó, hai `array` trở thành `"1,2"` và `"3,4"` , tương ứng. Bây giờ, `+` nối hai `string` như bạn thường mong đợi: `"1,23,4"`.
 
-What's that mean for *implicit* coercion?
+-----
 
-You can coerce a `number` to a `string` simply by "adding" the `number` and the `""` empty `string`:
+Hãy tạm gác những chi tiết lộn xộn đó sang một bên và quay trở lại phần giải thích đơn giản, trước đó: nếu toán hạng của `+` là một `string` (hoặc trở thành một với các bước trên!), thao tác sẽ là phép nối `string`. Mặt khác, nó luôn là phép cộng số.
+
+**Lưu ý:** Một coercion gotcha thường được trích dẫn là `[] + {}` so với `{} + []`, vì hai biểu thức đó dẫn đến kết quả tương ứng là `"[đối tượng đối tượng]"` và `0` . Tuy nhiên, còn nhiều điều nữa và chúng tôi sẽ đề cập đến những chi tiết đó trong "Blocks" ở Chương 5.
+
+Điều đó có ý nghĩa gì đối với *implicit* coercion?
+
+Bạn có thể ép buộc `number` thành `string` chỉ bằng cách "thêm" `number` và `""` empty `string`:
 
 ```js
 var a = 42;
@@ -975,17 +975,17 @@ var b = a + "";
 b; // "42"
 ```
 
-**Tip:** Numeric addition with the `+` operator is commutative, which means `2 + 3` is the same as `3 + 2`. String concatenation with `+` is obviously not generally commutative, **but** with the specific case of `""`, it's effectively commutative, as `a + ""` and `"" + a` will produce the same result.
+**Mẹo:** Phép cộng số với toán tử `+` có tính chất giao hoán, có nghĩa là `2 + 3` giống như `3 + 2`. Nối chuỗi với `+` rõ ràng không phải là giao hoán, **nhưng** với trường hợp cụ thể của `""`, nó có tính giao hoán hiệu quả, vì `a + ""` và `"" + a` sẽ tạo ra kết quả tương tự .
 
-It's extremely common/idiomatic to (*implicitly*) coerce `number` to `string` with a `+ ""` operation. In fact, interestingly, even some of the most vocal critics of *implicit* coercion still use that approach in their own code, instead of one of its *explicit* alternatives.
+Việc (*ngầm*) ép buộc `number` thành `string` bằng thao tác `+ ""` là cực kỳ phổ biến/thành ngữ. Trên thực tế, thật thú vị, ngay cả một số người chỉ trích mạnh mẽ nhất về sự ép buộc *ngầm* vẫn sử dụng cách tiếp cận đó trong code của riêng họ, thay vì một trong những lựa chọn thay thế *rõ ràng* của nó.
 
-**I think this is a great example** of a useful form in *implicit* coercion, despite how frequently the mechanism gets criticized!
+**Tôi nghĩ đây là một ví dụ tuyệt vời** về một hình thức hữu ích trong *implicit* coercion, bất chấp tần suất cơ chế này bị chỉ trích!
 
-Comparing this *implicit* coercion of `a + ""` to our earlier example of `String(a)` *explicit* coercion, there's one additional quirk to be aware of. Because of how the `ToPrimitive` abstract operation works, `a + ""` invokes `valueOf()` on the `a` value, whose return value is then finally converted to a `string` via the internal `ToString` abstract operation. But `String(a)` just invokes `toString()` directly.
+So sánh *implicit* coercion này của `a + ""` với ví dụ trước đây của chúng ta về sự ép buộc `String(a)` *rõ ràng*, có một vấn đề bổ sung cần lưu ý. Do cách hoạt động của thao tác trừu tượng `ToPrimitive`, `a + ""` gọi `valueOf()` trên giá trị `a`, giá trị trả về của nó sau đó cuối cùng được chuyển đổi thành `string` thông qua thao tác trừu tượng `ToString` bên trong . Nhưng `String(a)` chỉ gọi trực tiếp `toString()`.
 
-Both approaches ultimately result in a `string`, but if you're using an `object` instead of a regular primitive `number` value, you may not necessarily get the *same* `string` value!
+Cả hai cách tiếp cận cuối cùng đều dẫn đến một `string`, nhưng nếu bạn đang sử dụng một `object` thay vì một giá trị `number` nguyên thủy thông thường, bạn có thể không nhất thiết phải nhận được giá trị *giống nhau* `string`!
 
-Consider:
+Xem xét:
 
 ```js
 var a = {
@@ -998,9 +998,9 @@ a + "";			// "42"
 String( a );	// "4"
 ```
 
-Generally, this sort of gotcha won't bite you unless you're really trying to create confusing data structures and operations, but you should be careful if you're defining both your own `valueOf()` and `toString()` methods for some `object`, as how you coerce the value could affect the outcome.
+Nói chung, loại gotcha này sẽ không cắn bạn trừ khi bạn thực sự đang cố gắng tạo các cấu trúc dữ liệu và hoạt động khó hiểu, nhưng bạn nên cẩn thận nếu bạn đang xác định cả hai phương thức `valueOf()` và `toString()` của riêng mình đối với một số `object`, vì cách bạn ép buộc giá trị có thể ảnh hưởng đến kết quả.
 
-What about the other direction? How can we *implicitly coerce* from `string` to `number`?
+Còn hướng khác thì sao? Làm cách nào chúng ta có thể *ngầm ép buộc* từ `string` thành `number`?
 
 ```js
 var a = "3.14";
@@ -1009,9 +1009,9 @@ var b = a - 0;
 b; // 3.14
 ```
 
-The `-` operator is defined only for numeric subtraction, so `a - 0` forces `a`'s value to be coerced to a `number`. While far less common, `a * 1` or `a / 1` would accomplish the same result, as those operators are also only defined for numeric operations.
+Toán tử `-` chỉ được xác định cho phép trừ số, do đó, `a - 0` buộc giá trị của `a` thành một `số`. Mặc dù ít phổ biến hơn nhiều, nhưng `a * 1` hoặc `a / 1` sẽ cho kết quả tương tự, vì các toán tử đó cũng chỉ được xác định cho các phép toán số.
 
-What about `object` values with the `-` operator? Similar story as for `+` above:
+Còn các giá trị `đối tượng` với toán tử `-` thì sao? Câu chuyện tương tự như đối với `+` ở trên:
 
 ```js
 var a = [3];
@@ -1020,17 +1020,17 @@ var b = [1];
 a - b; // 2
 ```
 
-Both `array` values have to become `number`s, but they end up first being coerced to `strings` (using the expected `toString()` serialization), and then are coerced to `number`s, for the `-` subtraction to perform on.
+Cả hai giá trị `array` phải trở thành `number`, nhưng cuối cùng chúng bị ép thành `string` (sử dụng cách sắp xếp theo thứ tự `toString()` dự kiến), sau đó được ép thành `number`, cho `- ` phép trừ để thực hiện trên.
 
-So, is *implicit* coercion of `string` and `number` values the ugly evil you've always heard horror stories about? I don't personally think so.
+Vì vậy, có phải sự ép buộc *ngầm* của các giá trị `string` và `number` là ác quỷ xấu xí mà bạn luôn nghe những câu chuyện kinh dị? Cá nhân tôi không nghĩ như vậy.
 
-Compare `b = String(a)` (*explicit*) to `b = a + ""` (*implicit*). I think cases can be made for both approaches being useful in your code. Certainly `b = a + ""` is quite a bit more common in JS programs, proving its own utility regardless of *feelings* about the merits or hazards of *implicit* coercion in general.
+So sánh `b = String(a)` (*rõ ràng*) với `b = a + ""` (*ngầm*). Tôi nghĩ rằng các trường hợp có thể được thực hiện cho cả hai cách tiếp cận hữu ích trong mã của bạn. Chắc chắn `b = a + ""` khá phổ biến hơn một chút trong các chương trình JS, chứng minh tiện ích của chính nó bất kể *cảm xúc* về giá trị hay mối nguy hiểm của sự ép buộc *ngầm* nói chung.
 
 ### Implicitly: Booleans --> Numbers
 
-I think a case where *implicit* coercion can really shine is in simplifying certain types of complicated `boolean` logic into simple numeric addition. Of course, this is not a general-purpose technique, but a specific solution for specific cases.
+Tôi nghĩ rằng một trường hợp mà sự ép buộc *ngầm* có thể thực sự tỏa sáng là đơn giản hóa một số loại logic `boolean` phức tạp thành phép cộng số đơn giản. Tất nhiên, đây không phải là một kỹ thuật có mục đích chung, mà là một giải pháp cụ thể cho các trường hợp cụ thể.
 
-Consider:
+Xem xét:
 
 ```js
 function onlyOne(a,b,c) {
@@ -1047,11 +1047,11 @@ onlyOne( b, a, b );	// true
 onlyOne( a, b, a );	// false
 ```
 
-This `onlyOne(..)` utility should only return `true` if exactly one of the arguments is `true` / truthy. It's using *implicit* coercion on the truthy checks and *explicit* coercion on the others, including the final return value.
+Tiện ích `onlyOne(..)` này chỉ nên trả về `true` nếu chính xác một trong các đối số là `true` / sự thật. Đó là sử dụng cưỡng chế *ngầm* đối với các lần kiểm tra truthy và cưỡng chế *rõ ràng* đối với các kiểm tra khác, bao gồm cả giá trị trả về cuối cùng.
 
-But what if we needed that utility to be able to handle four, five, or twenty flags in the same way? It's pretty difficult to imagine implementing code that would handle all those permutations of comparisons.
+Nhưng nếu chúng ta cần utility (tiện ích) đó để có thể xử lý bốn, năm hoặc hai mươi cờ theo cùng một cách thì sao? Thật khó để tưởng tượng việc triển khai mã sẽ xử lý tất cả các hoán vị so sánh đó.
 
-But here's where coercing the `boolean` values to `number`s (`0` or `1`, obviously) can greatly help:
+Nhưng đây là nơi việc ép buộc các giá trị `boolean` thành `number` (rõ ràng là `0` hoặc `1`) có thể giúp ích rất nhiều:
 
 ```js
 function onlyOne() {
@@ -1076,11 +1076,11 @@ onlyOne( b, b );		// false
 onlyOne( b, a, b, b, b, a );	// false
 ```
 
-**Note:** Of course, instead of the `for` loop in `onlyOne(..)`, you could more tersely use the ES5 `reduce(..)` utility, but I didn't want to obscure the concepts.
+**Lưu ý:** Tất nhiên, thay vì vòng lặp `for` trong `onlyOne(..)`, bạn có thể sử dụng tiện ích `reduce(..)` của ES5 một cách ngắn gọn hơn, nhưng tôi không muốn che khuất các khái niệm.
 
-What we're doing here is relying on the `1` for `true`/truthy coercions, and numerically adding them all up. `sum += arguments[i]` uses *implicit* coercion to make that happen. If one and only one value in the `arguments` list is `true`, then the numeric sum will be `1`, otherwise the sum will not be `1` and thus the desired condition is not met.
+Những gì chúng tôi đang làm ở đây là dựa vào `1` cho các cưỡng chế `true`/truthy và cộng tất cả chúng lại bằng số. `sum += arguments[i]` sử dụng cưỡng chế *ngầm* để thực hiện điều đó. Nếu một và chỉ một giá trị trong danh sách `arguments` là `true`, thì tổng số sẽ là `1`, nếu không thì tổng sẽ không phải là `1` và do đó điều kiện mong muốn không được đáp ứng.
 
-We could of course do this with *explicit* coercion instead:
+Tất nhiên, chúng ta có thể làm điều này bằng cách ép buộc *rõ ràng*:
 
 ```js
 function onlyOne() {
@@ -1092,33 +1092,33 @@ function onlyOne() {
 }
 ```
 
-We first use `!!arguments[i]` to force the coercion of the value to `true` or `false`. That's so you could pass non-`boolean` values in, like `onlyOne( "42", 0 )`, and it would still work as expected (otherwise you'd end up with `string` concatenation and the logic would be incorrect).
+Trước tiên, chúng tôi sử dụng `!!arguments[i]` để ép buộc giá trị thành `true` hoặc `false`. Đó là để bạn có thể chuyển các giá trị không phải `boolean` vào, chẳng hạn như `onlyOne( "42", 0 )`, và nó vẫn hoạt động như mong đợi (nếu không, bạn sẽ kết thúc với phép nối `string` và logic sẽ không chính xác ).
 
-Once we're sure it's a `boolean`, we do another *explicit* coercion with `Number(..)` to make sure the value is `0` or `1`.
+Khi chúng tôi chắc chắn đó là `boolean`, chúng tôi thực hiện một phép cưỡng chế *rõ ràng* khác với `Number(..)` để đảm bảo giá trị là `0` hoặc `1`.
 
-Is the *explicit* coercion form of this utility "better"? It does avoid the `NaN` trap as explained in the code comments. But, ultimately, it depends on your needs. I personally think the former version, relying on *implicit* coercion is more elegant (if you won't be passing `undefined` or `NaN`), and the *explicit* version is needlessly more verbose.
+Hình thức cưỡng chế *rõ ràng* của utility này có "tốt hơn" không? Nó tránh bẫy `NaN` như được giải thích trong các nhận xét về code. Nhưng, cuối cùng, nó phụ thuộc vào nhu cầu của bạn. Cá nhân tôi nghĩ rằng phiên bản cũ, dựa vào sự ép buộc *ngầm* sẽ tao nhã hơn (nếu bạn không chuyển `undefined` hoặc `NaN`) và phiên bản *rõ ràng* dài dòng hơn một cách không cần thiết.
 
-But as with almost everything we're discussing here, it's a judgment call.
+Nhưng cũng giống như hầu hết mọi thứ chúng ta đang thảo luận ở đây, đó là một lời kêu gọi phán xét.
 
-**Note:** Regardless of *implicit* or *explicit* approaches, you could easily make `onlyTwo(..)` or `onlyFive(..)` variations by simply changing the final comparison from `1`, to `2` or `5`, respectively. That's drastically easier than adding a bunch of `&&` and `||` expressions. So, generally, coercion is very helpful in this case.
+**Lưu ý:** Bất kể cách tiếp cận *ngầm* hay *rõ ràng*, bạn có thể dễ dàng tạo các biến thể `onlyTwo(..)` hoặc `onlyFive(..)` bằng cách chỉ cần thay đổi phép so sánh cuối cùng từ `1` thành ` 2` hoặc `5`, tương ứng. Điều đó dễ dàng hơn rất nhiều so với việc thêm một loạt các biểu thức `&&` và `||`. Vì vậy, nói chung, cưỡng chế là rất hữu ích trong trường hợp này.
 
 ### Implicitly: * --> Boolean
 
-Now, let's turn our attention to *implicit* coercion to `boolean` values, as it's by far the most common and also by far the most potentially troublesome.
+Bây giờ, chúng ta hãy chuyển sự chú ý của chúng ta sang sự ép buộc *ngầm* đối với các giá trị `boolean`, vì cho đến nay nó là phổ biến nhất và cũng có khả năng gây rắc rối nhất.
 
-Remember, *implicit* coercion is what kicks in when you use a value in such a way that it forces the value to be converted. For numeric and `string` operations, it's fairly easy to see how the coercions can occur.
+Hãy nhớ rằng, cưỡng chế *ngầm* là những gì bắt đầu khi bạn sử dụng một giá trị theo cách mà nó buộc giá trị phải được chuyển đổi. Đối với các phép toán số và `string`, khá dễ dàng để biết cách thức cưỡng chế có thể xảy ra.
 
-But, what sort of expression operations require/force (*implicitly*) a `boolean` coercion?
+Tuy nhiên, loại thao tác biểu thức nào yêu cầu/buộc (*ngầm*) một phép cưỡng chế `boolean`?
 
-1. The test expression in an `if (..)` statement.
-2. The test expression (second clause) in a `for ( .. ; .. ; .. )` header.
-3. The test expression in `while (..)` and `do..while(..)` loops.
-4. The test expression (first clause) in `? :` ternary expressions.
-5. The left-hand operand (which serves as a test expression -- see below!) to the `||` ("logical or") and `&&` ("logical and") operators.
+1. Biểu thức kiểm tra trong câu lệnh `if (..)`.
+2. Biểu thức kiểm tra (mệnh đề thứ hai) trong cú pháp `for ( .. ; .. ; .. )`.
+3. Biểu thức kiểm tra trong các vòng lặp `while (..)` và `do..while(..)`.
+4. Biểu thức kiểm tra (mệnh đề đầu tiên) trong `? :` biểu thức bậc ba.
+5. Toán hạng bên trái (đóng vai trò là biểu thức kiểm tra -- xem bên dưới!) cho toán tử `||` ("logic hoặc") và `&&` ("logic và").
 
-Any value used in these contexts that is not already a `boolean` will be *implicitly* coerced to a `boolean` using the rules of the `ToBoolean` abstract operation covered earlier in this chapter.
+Bất kỳ giá trị nào được sử dụng trong các ngữ cảnh này mà chưa phải là `boolean` sẽ bị *ngầm* ép buộc thành `boolean` bằng cách sử dụng các quy tắc của thao tác trừu tượng `ToBoolean` được trình bày trước đó trong chương này.
 
-Let's look at some examples:
+Hãy xem xét một số ví dụ:
 
 ```js
 var a = 42;
@@ -1142,25 +1142,25 @@ if ((a && d) || c) {
 }
 ```
 
-In all these contexts, the non-`boolean` values are *implicitly coerced* to their `boolean` equivalents to make the test decisions.
+Trong tất cả các ngữ cảnh này, các giá trị không phải `boolean` được *ngầm ép buộc* với các giá trị `boolean` tương đương của chúng để đưa ra các quyết định thử nghiệm.
 
 ### Operators `||` and `&&`
 
-It's quite likely that you have seen the `||` ("logical or") and `&&` ("logical and") operators in most or all other languages you've used. So it'd be natural to assume that they work basically the same in JavaScript as in other similar languages.
+Rất có thể bạn đã thấy các toán tử `||` ("logic hoặc") và `&&` ("logic và") trong hầu hết hoặc tất cả các ngôn ngữ khác mà bạn đã sử dụng. Vì vậy, thật tự nhiên khi cho rằng chúng hoạt động cơ bản giống nhau trong JavaScript cũng như trong các ngôn ngữ tương tự khác.
 
-There's some very little known, but very important, nuance here.
+Có một số sắc thái rất ít được biết đến, nhưng rất quan trọng ở đây.
 
-In fact, I would argue these operators shouldn't even be called "logical ___ operators", as that name is incomplete in describing what they do. If I were to give them a more accurate (if more clumsy) name, I'd call them "selector operators," or more completely, "operand selector operators."
+Trên thực tế, tôi cho rằng các toán tử này thậm chí không nên được gọi là "toán tử ___ logic", vì tên đó không đầy đủ trong việc mô tả những gì chúng làm. Nếu tôi đặt cho chúng một cái tên chính xác hơn (nếu vụng về hơn), tôi sẽ gọi chúng là "toán tử bộ chọn" hoặc đầy đủ hơn là "toán tử bộ chọn toán hạng".
 
-Why? Because they don't actually result in a *logic* value (aka `boolean`) in JavaScript, as they do in some other languages.
+Tại sao? Bởi vì chúng không thực sự dẫn đến giá trị *logic* (hay còn gọi là `boolean`) trong JavaScript, như chúng làm trong một số ngôn ngữ khác.
 
-So what *do* they result in? They result in the value of one (and only one) of their two operands. In other words, **they select one of the two operand's values**.
+Vì vậy, những gì *làm* họ dẫn đến? Chúng dẫn đến giá trị của một (và chỉ một) trong hai toán hạng của chúng. Nói cách khác, **họ chọn một trong hai giá trị của toán hạng**.
 
-Quoting the ES5 spec from section 11.11:
+Trích dẫn thông số ES5 từ phần 11.11:
 
-> The value produced by a && or || operator is not necessarily of type Boolean. The value produced will always be the value of one of the two operand expressions.
+> Giá trị được tạo bởi && hoặc || toán tử không nhất thiết phải thuộc kiểu Boolean. Giá trị được tạo ra sẽ luôn là giá trị của một trong hai biểu thức toán hạng.
 
-Let's illustrate:
+Hãy minh họa:
 
 ```js
 var a = 42;
@@ -1174,19 +1174,19 @@ c || b;		// "abc"
 c && b;		// null
 ```
 
-**Wait, what!?** Think about that. In languages like C and PHP, those expressions result in `true` or `false`, but in JS (and Python and Ruby, for that matter!), the result comes from the values themselves.
+**Đợi đã, cái gì!?** Hãy nghĩ về điều đó. Trong các ngôn ngữ như C và PHP, những biểu thức đó dẫn đến `true` hoặc `false`, nhưng trong JS (và Python và Ruby, đối với vấn đề đó!), kết quả đến từ chính các giá trị đó.
 
-Both `||` and `&&` operators perform a `boolean` test on the **first operand** (`a` or `c`). If the operand is not already `boolean` (as it's not, here), a normal `ToBoolean` coercion occurs, so that the test can be performed.
+Cả toán tử `||` và `&&` đều thực hiện kiểm tra `boolean` trên **toán hạng đầu tiên** (`a` hoặc `c`). Nếu toán hạng chưa phải là `boolean` (vì nó không phải ở đây), thì một sự ép buộc `ToBoolean` bình thường sẽ xảy ra để có thể thực hiện kiểm tra.
 
-For the `||` operator, if the test is `true`, the `||` expression results in the value of the *first operand* (`a` or `c`). If the test is `false`, the `||` expression results in the value of the *second operand* (`b`).
+Đối với toán tử `||`, nếu phép kiểm tra là `true`, thì biểu thức `||` sẽ trả về giá trị của *toán hạng đầu tiên* (`a` hoặc `c`). Nếu kiểm tra là `false`, thì biểu thức `||` dẫn đến giá trị của *toán hạng thứ hai* (`b`).
 
-Inversely, for the `&&` operator, if the test is `true`, the `&&` expression results in the value of the *second operand* (`b`). If the test is `false`, the `&&` expression results in the value of the *first operand* (`a` or `c`).
+Ngược lại, đối với toán tử `&&`, nếu kiểm tra là `true`, thì biểu thức `&&` sẽ trả về giá trị của toán hạng *thứ hai* (`b`). Nếu kiểm tra là `false`, thì biểu thức `&&` sẽ trả về giá trị của *toán hạng đầu tiên* (`a` hoặc `c`).
 
-The result of a `||` or `&&` expression is always the underlying value of one of the operands, **not** the (possibly coerced) result of the test. In `c && b`, `c` is `null`, and thus falsy. But the `&&` expression itself results in `null` (the value in `c`), not in the coerced `false` used in the test.
+Kết quả của biểu thức `||` hoặc `&&` luôn là giá trị cơ bản của một trong các toán hạng, **chứ không phải** kết quả (có thể bị ép buộc) của phép thử. Trong `c && b`, `c` là `null`, và do đó sai. Nhưng bản thân biểu thức `&&` dẫn đến `null` (giá trị trong `c`), chứ không phải `false` bị ép buộc được sử dụng trong thử nghiệm.
 
-Do you see how these operators act as "operand selectors", now?
+Bây giờ bạn có thấy các toán tử này hoạt động như "bộ chọn toán hạng" không?
 
-Another way of thinking about these operators:
+Một cách suy nghĩ khác về các toán tử này:
 
 ```js
 a || b;
@@ -1198,9 +1198,9 @@ a && b;
 a ? b : a;
 ```
 
-**Note:** I call `a || b` "roughly equivalent" to `a ? a : b` because the outcome is identical, but there's a nuanced difference. In `a ? a : b`, if `a` was a more complex expression (like for instance one that might have side effects like calling a `function`, etc.), then the `a` expression would possibly be evaluated twice (if the first evaluation was truthy). By contrast, for `a || b`, the `a` expression is evaluated only once, and that value is used both for the coercive test as well as the result value (if appropriate). The same nuance applies to the `a && b` and `a ? b : a` expressions.
+**Lưu ý:** Tôi gọi `a || b` "gần tương đương" với `a ? a : b` vì kết quả giống hệt nhau, nhưng có một sự khác biệt về sắc thái. Trong `a ? a : b`, nếu `a` là một biểu thức phức tạp hơn (chẳng hạn như biểu thức có thể có side effect như gọi một `function`, v.v.), thì biểu thức `a` có thể được tính toán hai lần (nếu biểu thức đầu tiên đánh giá truthy). Ngược lại, đối với `a || b`, biểu thức `a` chỉ được ước tính một lần và giá trị đó được sử dụng cho cả phép thử cưỡng chế cũng như giá trị kết quả (nếu thích hợp). Sắc thái tương tự áp dụng cho `a && b` và `a ? biểu thức b : a`.
 
-An extremely common and helpful usage of this behavior, which there's a good chance you may have used before and not fully understood, is:
+Một cách sử dụng hành vi này cực kỳ phổ biến và hữu ích, rất có thể bạn đã từng sử dụng trước đây và chưa hiểu rõ, đó là:
 
 ```js
 function foo(a,b) {
@@ -1214,23 +1214,23 @@ foo();					// "hello world"
 foo( "yeah", "yeah!" );	// "yeah yeah!"
 ```
 
-The `a = a || "hello"` idiom (sometimes said to be JavaScript's version of the C# "null coalescing operator") acts to test `a` and if it has no value (or only an undesired falsy value), provides a backup default value (`"hello"`).
+Biểu thức `a = a || "hello"` (đôi khi được cho là JavaScript's version of the C# "null coalescing operator") hoạt động để kiểm tra `a` và nếu nó không có giá trị (hoặc chỉ là giá trị giả không mong muốn), thì sẽ cung cấp giá trị mặc định dự phòng (`"hello"`).
 
-**Be careful**, though!
+**Hãy cẩn thận**, mặc dù!
 
 ```js
 foo( "That's it!", "" ); // "That's it! world" <-- Oops!
 ```
 
-See the problem? `""` as the second argument is a falsy value (see `ToBoolean` earlier in this chapter), so the `b = b || "world"` test fails, and the `"world"` default value is substituted, even though the intent probably was to have the explicitly passed `""` be the value assigned to `b`.
+Thấy vấn đề? `""` vì đối số thứ hai là một giá trị falsy (xem `ToBoolean` trước đó trong chương này), vì vậy `b = b || "world"` không thành công và giá trị mặc định `"world"` được thay thế, mặc dù mục đích có thể là để `""` được thông qua rõ ràng là giá trị được gán cho `b`.
 
-This `||` idiom is extremely common, and quite helpful, but you have to use it only in cases where *all falsy values* should be skipped. Otherwise, you'll need to be more explicit in your test, and probably use a `? :` ternary instead.
+Biểu thức `||` này cực kỳ phổ biến và khá hữu ích, nhưng bạn chỉ phải sử dụng nó trong những trường hợp nên bỏ qua *tất cả các giá trị falsy*. Nếu không, bạn sẽ cần phải rõ ràng hơn trong bài kiểm tra của mình và có thể sử dụng toán tử ba ngôi `? :` thay thế.
 
-This *default value assignment* idiom is so common (and useful!) that even those who publicly and vehemently decry JavaScript coercion often use it in their own code!
+Biểu thức *gán giá trị mặc định* này rất phổ biến (và hữu ích!) đến nỗi ngay cả những người công khai và kịch liệt chỉ trích sự ép buộc của JavaScript cũng thường sử dụng nó trong mã của họ!
 
-What about `&&`?
+Còn `&&` thì sao?
 
-There's another idiom that is quite a bit less commonly authored manually, but which is used by JS minifiers frequently. The `&&` operator "selects" the second operand if and only if the first operand tests as truthy, and this usage is sometimes called the "guard operator" (also see "Short Circuited" in Chapter 5) -- the first expression test "guards" the second expression:
+Có một biểu thức khác ít được viết thủ công hơn một chút, nhưng lại được các công cụ JS minifier sử dụng thường xuyên. Toán tử `&&` "chọn" toán hạng thứ hai khi và chỉ khi toán hạng thứ nhất kiểm tra tính truthy và cách sử dụng này đôi khi được gọi là "toán tử bảo vệ" (cũng xem "Short Circuited (đoản mạch)" trong Chương 5) -- phép kiểm tra biểu thức đầu tiên "bảo vệ" biểu thức thứ hai:
 
 ```js
 function foo() {
@@ -1242,19 +1242,19 @@ var a = 42;
 a && foo(); // 42
 ```
 
-`foo()` gets called only because `a` tests as truthy. If that test failed, this `a && foo()` expression statement would just silently stop -- this is known as "short circuiting" -- and never call `foo()`.
+`foo()` được gọi chỉ vì `a` kiểm tra truthy. Nếu kiểm tra đó không thành công, câu lệnh biểu thức `a && foo()` này sẽ dừng âm thầm -- điều này được gọi là "short circuited" -- và không bao giờ gọi `foo()`.
 
-Again, it's not nearly as common for people to author such things. Usually, they'd do `if (a) { foo(); }` instead. But JS minifiers choose `a && foo()` because it's much shorter. So, now, if you ever have to decipher such code, you'll know what it's doing and why.
+Một lần nữa, việc mọi người viết ra những thứ như vậy gần như không phổ biến. Thông thường, họ sẽ làm `if (a) { foo(); }` thay vào đó. Nhưng các công cụ khai thác JS chọn `a && foo()` vì nó ngắn hơn nhiều. Vì vậy, bây giờ, nếu bạn phải giải mã mã như vậy, bạn sẽ biết nó đang làm gì và tại sao.
 
-OK, so `||` and `&&` have some neat tricks up their sleeve, as long as you're willing to allow the *implicit* coercion into the mix.
+OK, vì vậy `||` và `&&` có một số thủ thuật tinh vi, miễn là bạn sẵn sàng cho phép *implicit* coercion vào trộn lẫn.
 
-**Note:** Both the `a = b || "something"` and `a && b()` idioms rely on short circuiting behavior, which we cover in more detail in Chapter 5.
+**Lưu ý:** Cả `a = b || Các thành ngữ "something"` và `a && b()` dựa trên hành vi short circuiting (đoản mạch) mà chúng tôi sẽ đề cập chi tiết hơn trong Chương 5.
 
-The fact that these operators don't actually result in `true` and `false` is possibly messing with your head a little bit by now. You're probably wondering how all your `if` statements and `for` loops have been working, if they've included compound logical expressions like `a && (b || c)`.
+Thực tế là những toán tử này không thực sự dẫn đến `true` và `false` có thể khiến đầu óc bạn hơi rối bời. Có lẽ bạn đang thắc mắc tất cả các câu lệnh `if` và các vòng lặp `for` của bạn đã hoạt động như thế nào, nếu chúng bao gồm các biểu thức logic phức hợp như `a && (b || c)`.
 
-Don't worry! The sky is not falling. Your code is (probably) just fine. It's just that you probably never realized before that there was an *implicit* coercion to `boolean` going on **after** the compound expression was evaluated.
+Đừng lo lắng! Bầu trời không rơi xuống. Code của bạn (có lẽ) vẫn ổn. Chỉ là trước đây bạn có thể chưa bao giờ nhận ra rằng có một sự ép buộc *ngầm* đối với `boolean` đang diễn ra **sau** biểu thức ghép được đánh giá.
 
-Consider:
+Xem xét:
 
 ```js
 var a = 42;
@@ -1266,11 +1266,11 @@ if (a && (b || c)) {
 }
 ```
 
-This code still works the way you always thought it did, except for one subtle extra detail. The `a && (b || c)` expression *actually* results in `"foo"`, not `true`. So, the `if` statement *then* forces the `"foo"` value to coerce to a `boolean`, which of course will be `true`.
+Đoạn code này vẫn hoạt động theo cách bạn vẫn nghĩ, ngoại trừ một chi tiết bổ sung tinh tế. Biểu thức `a && (b || c)` *thực sự* dẫn đến `"foo"`, không phải `true`. Vì vậy, câu lệnh `if` *sau đó* buộc giá trị `"foo"` buộc thành `boolean`, tất nhiên giá trị này sẽ là `true`.
 
-See? No reason to panic. Your code is probably still safe. But now you know more about how it does what it does.
+Hiểu chứ? Không có lý do để hoảng sợ. Mã của bạn có thể vẫn an toàn. Nhưng bây giờ bạn biết nhiều hơn về cách nó làm những gì nó làm.
 
-And now you also realize that such code is using *implicit* coercion. If you're in the "avoid (implicit) coercion camp" still, you're going to need to go back and make all of those tests *explicit*:
+Và bây giờ bạn cũng nhận ra rằng đoạn mã đó đang sử dụng sự ép buộc *ngầm*. Nếu bạn vẫn đang ở trong "trại tránh (ngầm) cưỡng chế", bạn sẽ cần phải quay lại và thực hiện tất cả các bài kiểm tra đó *rõ ràng*:
 
 ```js
 if (!!a && (!!b || !!c)) {
@@ -1278,15 +1278,15 @@ if (!!a && (!!b || !!c)) {
 }
 ```
 
-Good luck with that! ... Sorry, just teasing.
+Chúc may mắn với điều đó! ... Xin lỗi, chỉ trêu chọc thôi.
 
 ### Symbol Coercion
 
-Up to this point, there's been almost no observable outcome difference between *explicit* and *implicit* coercion -- only the readability of code has been at stake.
+Cho đến thời điểm này, hầu như không có sự khác biệt về kết quả có thể quan sát được giữa *explicit* và *implicit* coercion -- chỉ có khả năng đọc code bị đe dọa.
 
-But ES6 Symbols introduce a gotcha into the coercion system that we need to discuss briefly. For reasons that go well beyond the scope of what we'll discuss in this book, *explicit* coercion of a `symbol` to a `string` is allowed, but *implicit* coercion of the same is disallowed and throws an error.
+Nhưng ES6 Symbols giới thiệu một điều mới vào coercion system mà chúng ta cần thảo luận ngắn gọn. Vì những lý do vượt xa phạm vi những gì chúng ta sẽ thảo luận trong cuốn sách này, việc *explicit* coercion một `symbol` thành một `string` được cho phép, nhưng việc *implicit* coercion như vậy là không được phép và gây ra lỗi.
 
-Consider:
+Xem xét:
 
 ```js
 var s1 = Symbol( "cool" );
@@ -1296,60 +1296,60 @@ var s2 = Symbol( "not cool" );
 s2 + "";						// TypeError
 ```
 
-`symbol` values cannot coerce to `number` at all (throws an error either way), but strangely they can both *explicitly* and *implicitly* coerce to `boolean` (always `true`).
+Giá trị `symbol` hoàn toàn không thể ép buộc đối với `number` (dẫn đến lỗi), nhưng kỳ lạ là chúng có thể *rõ ràng* và *ngầm* ép buộc đối với `boolean` (luôn luôn là `true`).
 
-Consistency is always easier to learn, and exceptions are never fun to deal with, but we just need to be careful around the new ES6 `symbol` values and how we coerce them.
+Tính nhất quán luôn dễ học hơn và các ngoại lệ không bao giờ thú vị để giải quyết, nhưng chúng ta chỉ cần cẩn thận với các giá trị `symbol` ES6 mới và cách chúng ta ép buộc chúng.
 
-The good news: it's probably going to be exceedingly rare for you to need to coerce a `symbol` value. The way they're typically used (see Chapter 3) will probably not call for coercion on a normal basis.
+Tin tốt: có lẽ sẽ cực kỳ hiếm khi bạn cần ép buộc một giá trị `symbol`. Cách chúng thường được sử dụng (xem Chương 3) có thể sẽ không đòi hỏi sự ép buộc trên cơ sở bình thường.
 
 ## Loose Equals vs. Strict Equals
 
-Loose equals is the `==` operator, and strict equals is the `===` operator. Both operators are used for comparing two values for "equality," but the "loose" vs. "strict" indicates a **very important** difference in behavior between the two, specifically in how they decide "equality."
+Bằng lỏng lẻo là toán tử `==` và bằng nghiêm ngặt là toán tử `===`. Cả hai toán tử đều được sử dụng để so sánh hai giá trị cho "bình đẳng", nhưng "lỏng lẻo" so với "nghiêm ngặt" biểu thị sự khác biệt **rất quan trọng** trong hành vi giữa hai giá trị, cụ thể là cách chúng quyết định "bình đẳng".
 
-A very common misconception about these two operators is: "`==` checks values for equality and `===` checks both values and types for equality." While that sounds nice and reasonable, it's inaccurate. Countless well-respected JavaScript books and blogs have said exactly that, but unfortunately they're all *wrong*.
+Một quan niệm sai lầm rất phổ biến về hai toán tử này là: "`==` kiểm tra giá trị bằng nhau và `===` kiểm tra cả giá trị và kiểu cho bằng nhau." Mặc dù điều đó nghe có vẻ hay và hợp lý, nhưng nó không chính xác. Vô số sách và blog về JavaScript có uy tín đã nói chính xác điều đó, nhưng tiếc là chúng đều *sai*.
 
-The correct description is: "`==` allows coercion in the equality comparison and `===` disallows coercion."
+Mô tả chính xác là: "`==` cho phép coercion trong so sánh bình đẳng và `===` không cho phép coercion."
 
 ### Equality Performance
 
-Stop and think about the difference between the first (inaccurate) explanation and this second (accurate) one.
+Hãy dừng lại và suy nghĩ về sự khác biệt giữa cách giải thích đầu tiên (không chính xác) và cách giải thích thứ hai (chính xác) này.
 
-In the first explanation, it seems obvious that `===` is *doing more work* than `==`, because it has to *also* check the type. In the second explanation, `==` is the one *doing more work* because it has to follow through the steps of coercion if the types are different.
+Trong phần giải thích đầu tiên, có vẻ như `===` đang *làm nhiều việc hơn* hơn `==`, bởi vì nó *cũng* phải kiểm tra kiểu. Trong cách giải thích thứ hai, `==` là cách *làm nhiều việc hơn* vì nó phải tuân theo các bước cưỡng chế nếu các loại khác nhau.
 
-Don't fall into the trap, as many have, of thinking this has anything to do with performance, though, as if `==` is going to be slower than `===` in any relevant way. While it's measurable that coercion does take *a little bit* of processing time, it's mere microseconds (yes, that's millionths of a second!).
+Tuy nhiên, đừng rơi vào cái bẫy khi nghĩ rằng điều này có liên quan gì đến hiệu suất, như thể `==` sẽ chậm hơn `===` theo bất kỳ cách nào có liên quan. Mặc dù có thể đo lường được rằng việc cưỡng chế mất *một chút* thời gian xử lý, nhưng nó chỉ tính bằng phần triệu giây (vâng, đó là một phần triệu giây!).
 
-If you're comparing two values of the same types, `==` and `===` use the identical algorithm, and so other than minor differences in engine implementation, they should do the same work.
+Nếu bạn đang so sánh hai giá trị cùng loại, thì `==` và `===` sử dụng cùng một thuật toán và do đó, ngoài những khác biệt nhỏ trong triển khai công cụ, chúng sẽ thực hiện cùng một công việc.
 
-If you're comparing two values of different types, the performance isn't the important factor. What you should be asking yourself is: when comparing these two values, do I want coercion or not?
+Nếu bạn đang so sánh hai giá trị thuộc các loại khác nhau, thì hiệu suất không phải là yếu tố quan trọng. Điều bạn nên tự hỏi mình là: khi so sánh hai giá trị này, tôi có muốn bị coercion hay không?
 
-If you want coercion, use `==` loose equality, but if you don't want coercion, use `===` strict equality.
+Nếu bạn muốn coercion, hãy sử dụng `==` bình đẳng lỏng lẻo, nhưng nếu bạn không muốn coercion, hãy sử dụng `===` bình đẳng nghiêm ngặt.
 
-**Note:** The implication here then is that both `==` and `===` check the types of their operands. The difference is in how they respond if the types don't match.
+**Lưu ý:** Hàm ý ở đây là cả `==` và `===` đều kiểm tra các loại toán hạng của chúng. Sự khác biệt là cách họ phản hồi nếu các loại không khớp.
 
 ### Abstract Equality
 
-The `==` operator's behavior is defined as "The Abstract Equality Comparison Algorithm" in section 11.9.3 of the ES5 spec. What's listed there is a comprehensive but simple algorithm that explicitly states every possible combination of types, and how the coercions (if necessary) should happen for each combination.
+Hành vi của toán tử `==` được định nghĩa là "Thuật toán so sánh bình đẳng trừu tượng" trong phần 11.9.3 của thông số ES5. Những gì được liệt kê ở đó là một thuật toán toàn diện nhưng đơn giản, nêu rõ mọi kết hợp có thể có của các loại và cách thức cưỡng chế (nếu cần) sẽ xảy ra đối với mỗi kết hợp.
 
-**Warning:** When (*implicit*) coercion is maligned as being too complicated and too flawed to be a *useful good part*, it is these rules of "abstract equality" that are being condemned. Generally, they are said to be too complex and too unintuitive for developers to practically learn and use, and that they are prone more to causing bugs in JS programs than to enabling greater code readability. I believe this is a flawed premise -- that you readers are competent developers who write (and read and understand!) algorithms (aka code) all day long. So, what follows is a plain exposition of the "abstract equality" in simple terms. But I implore you to also read the ES5 spec section 11.9.3. I think you'll be surprised at just how reasonable it is.
+**Cảnh báo:** Khi sự (*implicit*) coercion bị coi là quá phức tạp và quá thiếu sót để trở thành một *phần tốt hữu ích*, thì chính các quy tắc "bình đẳng trừu tượng" này đang bị lên án. Nói chung, chúng được cho là quá phức tạp và quá không trực quan để các nhà phát triển học và sử dụng trên thực tế, đồng thời chúng dễ gây ra lỗi trong các chương trình JS hơn là giúp mã dễ đọc hơn. Tôi tin rằng đây là một tiền đề thiếu sót -- rằng độc giả của bạn là những nhà phát triển có năng lực, những người viết (và đọc và hiểu!) thuật toán (hay còn gọi là mã) suốt cả ngày. Vì vậy, những gì tiếp theo là một giải thích rõ ràng về "sự bình đẳng trừu tượng" trong các thuật ngữ đơn giản. Nhưng tôi khuyên bạn cũng nên đọc phần thông số kỹ thuật ES5 11.9.3. Tôi nghĩ bạn sẽ ngạc nhiên về mức độ hợp lý của nó.
 
-Basically, the first clause (11.9.3.1) says, if the two values being compared are of the same type, they are simply and naturally compared via Identity as you'd expect. For example, `42` is only equal to `42`, and `"abc"` is only equal to `"abc"`.
+Về cơ bản, mệnh đề đầu tiên (11.9.3.1) cho biết, nếu hai giá trị được so sánh thuộc cùng một loại, thì chúng được so sánh đơn giản và tự nhiên thông qua Danh tính như bạn mong đợi. Ví dụ: `42` chỉ bằng `42` và `"abc"` chỉ bằng `"abc"`.
 
-Some minor exceptions to normal expectation to be aware of:
+Một số ngoại lệ nhỏ đối với kỳ vọng bình thường cần lưu ý:
 
-* `NaN` is never equal to itself (see Chapter 2)
-* `+0` and `-0` are equal to each other (see Chapter 2)
+* `NaN` không bao giờ bằng chính nó (xem Chương 2)
+* `+0` và `-0` bằng nhau (xem Chương 2)
 
-The final provision in clause 11.9.3.1 is for `==` loose equality comparison with `object`s (including `function`s and `array`s). Two such values are only *equal* if they are both references to *the exact same value*. No coercion occurs here.
+Điều khoản cuối cùng trong điều khoản 11.9.3.1 dành cho `==` so sánh bình đẳng lỏng lẻo với `object` (bao gồm cả `array` và `function`). Hai giá trị như vậy chỉ *bằng nhau* nếu cả hai đều tham chiếu đến *chính xác cùng một giá trị*. Không có sự ép buộc xảy ra ở đây.
 
-**Note:** The `===` strict equality comparison is defined identically to 11.9.3.1, including the provision about two `object` values. It's a very little known fact that **`==` and `===` behave identically** in the case where two `object`s are being compared!
+**Lưu ý:** Phép so sánh đẳng thức nghiêm ngặt `===` được định nghĩa giống hệt với 11.9.3.1, bao gồm điều khoản về hai giá trị `object`. Một thực tế rất ít được biết đến là **`==` và `===` hoạt động giống hệt nhau** trong trường hợp hai `object` đang được so sánh!
 
-The rest of the algorithm in 11.9.3 specifies that if you use `==` loose equality to compare two values of different types, one or both of the values will need to be *implicitly* coerced. This coercion happens so that both values eventually end up as the same type, which can then directly be compared for equality using simple value Identity.
+Phần còn lại của thuật toán trong 11.9.3 chỉ định rằng nếu bạn sử dụng `==` đẳng thức lỏng lẻo để so sánh hai giá trị thuộc các loại khác nhau, thì một hoặc cả hai giá trị sẽ cần được *ngầm* ép buộc. Sự ép buộc này xảy ra sao cho cả hai giá trị cuối cùng đều có cùng loại, sau đó có thể so sánh trực tiếp về sự bình đẳng bằng cách sử dụng Giá trị đơn giản Nhận dạng.
 
-**Note:** The `!=` loose not-equality operation is defined exactly as you'd expect, in that it's literally the `==` operation comparison performed in its entirety, then the negation of the result. The same goes for the `!==` strict not-equality operation.
+**Lưu ý:** Phép toán lỏng lẻo không bình đẳng `!=` được định nghĩa chính xác như bạn mong đợi, theo nghĩa đen là phép so sánh `==` được thực hiện toàn bộ, sau đó là phủ định kết quả. Điều tương tự cũng xảy ra với hoạt động không bình đẳng nghiêm ngặt `!==`.
 
 #### Comparing: `string`s to `number`s
 
-To illustrate `==` coercion, let's first build off the `string` and `number` examples earlier in this chapter:
+Để minh họa sự ép buộc `==`, trước tiên chúng ta hãy xây dựng các ví dụ `string` và `number` trước đó trong chương này:
 
 ```js
 var a = 42;
@@ -1359,28 +1359,28 @@ a === b;	// false
 a == b;		// true
 ```
 
-As we'd expect, `a === b` fails, because no coercion is allowed, and indeed the `42` and `"42"` values are different.
+Như chúng ta mong đợi, `a === b` không thành công vì không cho phép ép buộc và thực tế là các giá trị `42` và `"42"` là khác nhau.
 
-However, the second comparison `a == b` uses loose equality, which means that if the types happen to be different, the comparison algorithm will perform *implicit* coercion on one or both values.
+Tuy nhiên, so sánh thứ hai `a == b` sử dụng đẳng thức lỏng lẻo, có nghĩa là nếu các loại xảy ra khác nhau, thuật toán so sánh sẽ thực hiện ép buộc *ngầm* trên một hoặc cả hai giá trị.
 
-But exactly what kind of coercion happens here? Does the `a` value of `42` become a `string`, or does the `b` value of `"42"` become a `number`?
+Nhưng chính xác thì kiểu ép buộc nào xảy ra ở đây? Giá trị `a` của `42` trở thành `string` hay giá trị `b` của `"42"` trở thành `number`?
 
-In the ES5 spec, clauses 11.9.3.4-5 say:
+Trong thông số ES5, các điều khoản 11.9.3.4-5 nói:
 
 > 4. If Type(x) is Number and Type(y) is String,
 >    return the result of the comparison x == ToNumber(y).
 > 5. If Type(x) is String and Type(y) is Number,
 >    return the result of the comparison ToNumber(x) == y.
 
-**Warning:** The spec uses `Number` and `String` as the formal names for the types, while this book prefers `number` and `string` for the primitive types. Do not let the capitalization of `Number` in the spec confuse you for the `Number()` native function. For our purposes, the capitalization of the type name is irrelevant -- they have basically the same meaning.
+**Cảnh báo:** Thông số kỹ thuật sử dụng `Number` và `String` làm tên chính thức cho các loại, trong khi cuốn sách này ưu tiên `number` và `string` cho các loại nguyên thủy. Đừng để cách viết hoa của `Number` trong thông số kỹ thuật khiến bạn nhầm lẫn với hàm gốc `Number()`. Đối với mục đích của chúng tôi, việc viết hoa tên loại là không liên quan -- về cơ bản chúng có cùng ý nghĩa.
 
-Clearly, the spec says the `"42"` value is coerced to a `number` for the comparison. The *how* of that coercion has already been covered earlier, specifically with the `ToNumber` abstract operation. In this case, it's quite obvious then that the resulting two `42` values are equal.
+Rõ ràng, thông số kỹ thuật cho biết giá trị `"42"` bị ép thành một `số` để so sánh. *Cách thức* của sự ép buộc đó đã được đề cập trước đó, cụ thể là với thao tác trừu tượng `ToNumber`. Trong trường hợp này, rõ ràng là hai giá trị `42` kết quả là bằng nhau.
 
-#### Comparing: anything to `boolean`
+#### So sánh: bất cứ thứ gì với `boolean`
 
-One of the biggest gotchas with the *implicit* coercion of `==` loose equality pops up when you try to compare a value directly to `true` or `false`.
+Một trong những vấn đề lớn nhất với *implicit* coercion của `==` đẳng thức lỏng lẻo xuất hiện khi bạn cố gắng so sánh trực tiếp một giá trị với `true` hoặc `false`.
 
-Consider:
+Xem xét:
 
 ```js
 var a = "42";
@@ -1389,18 +1389,18 @@ var b = true;
 a == b;	// false
 ```
 
-Wait, what happened here!? We know that `"42"` is a truthy value (see earlier in this chapter). So, how come it's not `==` loose equal to `true`?
+Đợi đã, chuyện gì đã xảy ra ở đây vậy!? Chúng tôi biết rằng `"42"` là một giá trị truthy (xem phần đầu của chương này). Vì vậy, tại sao nó không `==` lỏng lẻo bằng `true`?
 
-The reason is both simple and deceptively tricky. It's so easy to misunderstand, many JS developers never pay close enough attention to fully grasp it.
+Lý do vừa đơn giản vừa phức tạp. Nó rất dễ gây hiểu lầm, nhiều nhà phát triển JS không bao giờ chú ý đủ để nắm bắt nó một cách đầy đủ.
 
-Let's again quote the spec, clauses 11.9.3.6-7:
+Hãy trích dẫn lại thông số kỹ thuật, điều khoản 11.9.3.6-7:
 
 > 6. If Type(x) is Boolean,
 >    return the result of the comparison ToNumber(x) == y.
 > 7. If Type(y) is Boolean,
 >    return the result of the comparison x == ToNumber(y).
 
-Let's break that down. First:
+Hãy phân tích nó. Đầu tiên:
 
 ```js
 var x = true;
@@ -1409,9 +1409,9 @@ var y = "42";
 x == y; // false
 ```
 
-The `Type(x)` is indeed `Boolean`, so it performs `ToNumber(x)`, which coerces `true` to `1`. Now, `1 == "42"` is evaluated. The types are still different, so (essentially recursively) we reconsult the algorithm, which just as above will coerce `"42"` to `42`, and `1 == 42` is clearly `false`.
+`Type(x)` thực sự là `Boolean`, do đó, nó thực hiện `ToNumber(x)`, buộc `true` thành `1`. Bây giờ, `1 == "42"` được đánh giá. Các loại vẫn khác nhau, vì vậy (về cơ bản là đệ quy), chúng tôi xem xét lại thuật toán, như trên sẽ ép buộc `"42"` thành `42` và `1 == 42` rõ ràng là `false`.
 
-Reverse it, and we still get the same outcome:
+Đảo ngược nó và chúng tôi vẫn nhận được kết quả tương tự:
 
 ```js
 var x = "42";
@@ -1420,23 +1420,23 @@ var y = false;
 x == y; // false
 ```
 
-The `Type(y)` is `Boolean` this time, so `ToNumber(y)` yields `0`. `"42" == 0` recursively becomes `42 == 0`, which is of course `false`.
+`Type(y)` lần này là `Boolean`, vì vậy `ToNumber(y)` mang lại `0`. `"42" == 0` theo cách đệ quy trở thành `42 == 0`, tất nhiên là `false`.
 
-In other words, **the value `"42"` is neither `== true` nor `== false`.** At first, that statement might seem crazy. How can a value be neither truthy nor falsy?
+Nói cách khác, **giá trị `"42"` không phải là `== true` cũng không phải `== false`.** Lúc đầu, tuyên bố đó có vẻ điên rồ. Làm thế nào một giá trị có thể không phải là truthy cũng không phải là falsy?
 
-But that's the problem! You're asking the wrong question, entirely. It's not your fault, really. Your brain is tricking you.
+Nhưng đó là vấn đề! Bạn đang hỏi sai câu hỏi, hoàn toàn. Đó không phải là lỗi của bạn, thực sự. Bộ não của bạn đang đánh lừa bạn.
 
-`"42"` is indeed truthy, but `"42" == true` **is not performing a boolean test/coercion** at all, no matter what your brain says. `"42"` *is not* being coerced to a `boolean` (`true`), but instead `true` is being coerced to a `1`, and then `"42"` is being coerced to `42`.
+`"42"` thực sự đúng, nhưng `"42" == true` **hoàn toàn không thực hiện kiểm tra/ép buộc boolean**, bất kể bộ não của bạn nói gì. `"42"` *không* bị ép thành `boolean` (`true`), nhưng thay vào đó `true` đang bị ép thành `1`, và sau đó `"42"` bị ép thành `42`.
 
-Whether we like it or not, `ToBoolean` is not even involved here, so the truthiness or falsiness of `"42"` is irrelevant to the `==` operation!
+Cho dù chúng ta có thích hay không, `ToBoolean` thậm chí không liên quan ở đây, vì vậy tính đúng hay sai của `"42"` không liên quan đến thao tác `==` !
 
-What *is* relevant is to understand how the `==` comparison algorithm behaves with all the different type combinations. As it regards a `boolean` value on either side of the `==`, a `boolean` always coerces to a `number` *first*.
+Điều *có liên quan* là hiểu cách thuật toán so sánh `==` hoạt động với tất cả các kết hợp loại khác nhau. Vì nó liên quan đến giá trị `boolean` ở hai bên của `==`, nên `boolean` luôn bắt buộc phải có `số` *đầu tiên*.
 
-If that seems strange to you, you're not alone. I personally would recommend to never, ever, under any circumstances, use `== true` or `== false`. Ever.
+Nếu điều đó có vẻ xa lạ với bạn, bạn không đơn độc. Cá nhân tôi khuyên bạn không bao giờ, trong mọi trường hợp, sử dụng `== true` hoặc `== false`. Bao giờ.
 
-But remember, I'm only talking about `==` here. `=== true` and `=== false` wouldn't allow the coercion, so they're safe from this hidden `ToNumber` coercion.
+Nhưng hãy nhớ rằng, tôi chỉ nói về `==` ở đây. `=== true` và `=== false` sẽ không cho phép ép buộc, vì vậy chúng sẽ an toàn trước sự ép buộc `ToNumber` ẩn này.
 
-Consider:
+Xem xét:
 
 ```js
 var a = "42";
@@ -1467,18 +1467,18 @@ if (Boolean( a )) {
 }
 ```
 
-If you avoid ever using `== true` or `== false` (aka loose equality with `boolean`s) in your code, you'll never have to worry about this truthiness/falsiness mental gotcha.
+Nếu bạn tránh sử dụng `== true` hoặc `== false` (hay còn gọi là đẳng thức lỏng lẻo với `boolean`) trong code của mình, thì bạn sẽ không bao giờ phải lo lắng về nhận thức tinh thần về tính trung thực/giả dối này.
 
 #### Comparing: `null`s to `undefined`s
 
-Another example of *implicit* coercion can be seen with `==` loose equality between `null` and `undefined` values. Yet again quoting the ES5 spec, clauses 11.9.3.2-3:
+Có thể thấy một ví dụ khác về *implicit* coercion với `==` sự bình đẳng lỏng lẻo giữa các giá trị `null` và `undefined`. Tuy nhiên, một lần nữa trích dẫn thông số kỹ thuật ES5, điều khoản 11.9.3.2-3:
 
 > 2. If x is null and y is undefined, return true.
 > 3. If x is undefined and y is null, return true.
 
-`null` and `undefined`, when compared with `==` loose equality, equate to (aka coerce to) each other (as well as themselves, obviously), and no other values in the entire language.
+`null` và `undefined`, khi so sánh với `==` bình đẳng lỏng lẻo, tương đương (hay còn gọi là ép buộc) lẫn nhau (rõ ràng là cũng như chính chúng) và không có giá trị nào khác trong toàn bộ ngôn ngữ.
 
-What this means is that `null` and `undefined` can be treated as indistinguishable for comparison purposes, if you use the `==` loose equality operator to allow their mutual *implicit* coercion.
+Điều này có nghĩa là `null` và `undefined` có thể được coi là không thể phân biệt được cho mục đích so sánh, nếu bạn sử dụng toán tử đẳng thức lỏng lẻo `==` để cho phép ép buộc *ngầm* lẫn nhau của chúng.
 
 ```js
 var a = null;
@@ -1496,9 +1496,9 @@ a == 0;		// false
 b == 0;		// false
 ```
 
-The coercion between `null` and `undefined` is safe and predictable, and no other values can give false positives in such a check. I recommend using this coercion to allow `null` and `undefined` to be indistinguishable and thus treated as the same value.
+Sự ép buộc giữa `null` và `undefined` là an toàn và có thể dự đoán được, đồng thời không có giá trị nào khác có thể đưa ra kết quả dương tính giả trong quá trình kiểm tra như vậy. Tôi khuyên bạn nên sử dụng biện pháp cưỡng chế này để cho phép `null` và `undefined` không thể phân biệt được và do đó được coi là cùng một giá trị.
 
-For example:
+Cho ví dụ:
 
 ```js
 var a = doSomething();
@@ -1508,9 +1508,9 @@ if (a == null) {
 }
 ```
 
-The `a == null` check will pass only if `doSomething()` returns either `null` or `undefined`, and will fail with any other value, even other falsy values like `0`, `false`, and `""`.
+Kiểm tra `a == null` sẽ chỉ vượt qua nếu `doSomething()` trả về `null` hoặc `undefined` và sẽ không thành công với bất kỳ giá trị nào khác, ngay cả các giá trị giả khác như `0`, `false` và ` ""`.
 
-The *explicit* form of the check, which disallows any such coercion, is (I think) unnecessarily much uglier (and perhaps a tiny bit less performant!):
+Hình thức kiểm tra *rõ ràng*, không cho phép bất kỳ sự ép buộc nào như vậy, là (tôi nghĩ) xấu hơn một cách không cần thiết (và có lẽ kém hiệu quả hơn một chút!):
 
 ```js
 var a = doSomething();
@@ -1520,20 +1520,20 @@ if (a === undefined || a === null) {
 }
 ```
 
-In my opinion, the form `a == null` is yet another example where *implicit* coercion improves code readability, but does so in a reliably safe way.
+Theo ý kiến của tôi, biểu mẫu `a == null` là một ví dụ khác trong đó việc *implicit* coercion cải thiện khả năng đọc mã, nhưng làm như vậy theo cách an toàn đáng tin cậy.
 
 #### Comparing: `object`s to non-`object`s
 
-If an `object`/`function`/`array` is compared to a simple scalar primitive (`string`, `number`, or `boolean`), the ES5 spec says in clauses 11.9.3.8-9:
+Nếu một `đối tượng`/`hàm`/`mảng` được so sánh với một simple scalar primitive (nguyên hàm vô hướng đơn giản) (`string`, `number` hoặc `boolean`), thông số kỹ thuật ES5 cho biết trong các điều khoản 11.9.3.8-9:
 
 > 8. If Type(x) is either String or Number and Type(y) is Object,
 >    return the result of the comparison x == ToPrimitive(y).
 > 9. If Type(x) is Object and Type(y) is either String or Number,
 >    return the result of the comparison ToPrimitive(x) == y.
 
-**Note:** You may notice that these clauses only mention `String` and `Number`, but not `Boolean`. That's because, as quoted earlier, clauses 11.9.3.6-7 take care of coercing any `Boolean` operand presented to a `Number` first.
+**Lưu ý:** Bạn có thể nhận thấy rằng các mệnh đề này chỉ đề cập đến `String` và `Number` chứ không đề cập đến `Boolean`. Đó là bởi vì, như được trích dẫn trước đó, các mệnh đề 11.9.3.6-7 đảm nhiệm việc ép buộc bất kỳ toán hạng `Boolean` nào được trình bày trước một `Number`.
 
-Consider:
+Xem xét:
 
 ```js
 var a = 42;
@@ -1542,11 +1542,11 @@ var b = [ 42 ];
 a == b;	// true
 ```
 
-The `[ 42 ]` value has its `ToPrimitive` abstract operation called (see the "Abstract Value Operations" section earlier), which results in the `"42"` value. From there, it's just `42 == "42"`, which as we've already covered becomes `42 == 42`, so `a` and `b` are found to be coercively equal.
+Giá trị `[ 42 ]` có thao tác trừu tượng `ToPrimitive` được gọi là (xem phần "Abstract Value Operations" trước đó), dẫn đến giá trị `"42"`. Từ đó, nó chỉ là `42 == "42"`, như chúng ta đã đề cập, trở thành `42 == 42`, vì vậy `a` và `b` được coi là bằng nhau một cách cưỡng chế.
 
-**Tip:** All the quirks of the `ToPrimitive` abstract operation that we discussed earlier in this chapter (`toString()`, `valueOf()`) apply here as you'd expect. This can be quite useful if you have a complex data structure that you want to define a custom `valueOf()` method on, to provide a simple value for equality comparison purposes.
+**Mẹo:** Tất cả các đặc điểm của thao tác trừu tượng `ToPrimitive` mà chúng ta đã thảo luận trước đó trong chương này (`toString()`, `valueOf()`) đều áp dụng ở đây như bạn mong đợi. Điều này có thể khá hữu ích nếu bạn có cấu trúc dữ liệu phức tạp mà bạn muốn xác định phương thức `valueOf()` tùy chỉnh trên đó, để cung cấp một giá trị đơn giản cho mục đích so sánh đẳng thức.
 
-In Chapter 3, we covered "unboxing," where an `object` wrapper around a primitive value (like from `new String("abc")`, for instance) is unwrapped, and the underlying primitive value (`"abc"`) is returned. This behavior is related to the `ToPrimitive` coercion in the `==` algorithm:
+Trong Chương 3, chúng ta đã đề cập đến "unboxing", trong đó một trình bao bọc `object` bao quanh một giá trị nguyên thủy (ví dụ như từ `new String("abc")`) được mở và giá trị nguyên thủy bên dưới (`"abc"` ) Được trả lại. Hành vi này có liên quan đến cưỡng chế `ToPrimitive` trong thuật toán `==`:
 
 ```js
 var a = "abc";
@@ -1556,9 +1556,9 @@ a === b;				// false
 a == b;					// true
 ```
 
-`a == b` is `true` because `b` is coerced (aka "unboxed," unwrapped) via `ToPrimitive` to its underlying `"abc"` simple scalar primitive value, which is the same as the value in `a`.
+`a == b` là `true` vì `b` bị ép buộc (aka "unboxed," unwrapped) thông qua `ToPrimitive` đối với giá trị nguyên thủy vô hướng đơn giản `"abc"` bên dưới, giống với giá trị trong ` a`.
 
-There are some values where this is not the case, though, because of other overriding rules in the `==` algorithm. Consider:
+Tuy nhiên, có một số giá trị không đúng như vậy do các quy tắc quan trọng khác trong thuật toán `==`. Xem xét:
 
 ```js
 var a = null;
@@ -1574,15 +1574,15 @@ var f = Object( e );	// same as `new Number( e )`
 e == f;					// false
 ```
 
-The `null` and `undefined` values cannot be boxed -- they have no object wrapper equivalent -- so `Object(null)` is just like `Object()` in that both just produce a normal object.
+Không thể đóng hộp các giá trị `null` và `undefined` -- chúng không có trình bao bọc đối tượng tương đương -- vì vậy `Object(null)` giống như `Object()` ở chỗ cả hai chỉ tạo ra một object bình thường.
 
-`NaN` can be boxed to its `Number` object wrapper equivalent, but when `==` causes an unboxing, the `NaN == NaN` comparison fails because `NaN` is never equal to itself (see Chapter 2).
+`NaN` có thể được đóng hộp tương đương với trình bao bọc đối tượng `Number` của nó, nhưng khi `==` gây ra việc mở hộp, phép so sánh `NaN == NaN` không thành công vì `NaN` không bao giờ bằng chính nó (xem Chương 2).
 
 ### Edge Cases
 
-Now that we've thoroughly examined how the *implicit* coercion of `==` loose equality works (in both sensible and surprising ways), let's try to call out the worst, craziest corner cases so we can see what we need to avoid to not get bitten with coercion bugs.
+Bây giờ chúng ta đã xem xét kỹ lưỡng cách thức hoạt động của *implicit* coercion của `==` bình đẳng lỏng lẻo (theo cả cách hợp lý và đáng ngạc nhiên), hãy thử chỉ ra những trường hợp tồi tệ nhất, điên rồ nhất để chúng ta có thể thấy những gì chúng ta cần tránh để không bị bọ cưỡng chế cắn.
 
-First, let's examine how modifying the built-in native prototypes can produce crazy results:
+Đầu tiên, hãy xem xét cách sửa đổi các build-in native prototype có thể tạo ra kết quả điên rồ như thế nào:
 
 #### A Number By Any Other Value Would...
 
@@ -1594,11 +1594,11 @@ Number.prototype.valueOf = function() {
 new Number( 2 ) == 3;	// true
 ```
 
-**Warning:** `2 == 3` would not have fallen into this trap, because neither `2` nor `3` would have invoked the built-in `Number.prototype.valueOf()` method because both are already primitive `number` values and can be compared directly. However, `new Number(2)` must go through the `ToPrimitive` coercion, and thus invoke `valueOf()`.
+**Cảnh báo:** `2 == 3` sẽ không rơi vào cái bẫy này, bởi vì cả `2` và `3` đều không gọi phương thức `Number.prototype.valueOf()` tích hợp vì cả hai đều đã sẵn sàng các giá trị `number` nguyên thủy và có thể được so sánh trực tiếp. Tuy nhiên, `new Number(2)` phải trải qua quá trình ép buộc `ToPrimitive` và do đó gọi `valueOf()`.
 
-Evil, huh? Of course it is. No one should ever do such a thing. The fact that you *can* do this is sometimes used as a criticism of coercion and `==`. But that's misdirected frustration. JavaScript is not *bad* because you can do such things, a developer is *bad* **if they do such things**. Don't fall into the "my programming language should protect me from myself" fallacy.
+Ác nhỉ? Tất nhiên là thế rồi. Không ai nên làm một điều như vậy. Việc bạn *có thể* làm điều này đôi khi được sử dụng như một lời chỉ trích về sự ép buộc và `==`. Nhưng đó là sự thất vọng sai hướng. JavaScript không *xấu* vì bạn có thể làm những việc như vậy, một nhà phát triển là *xấu* **nếu họ làm những việc như vậy**. Đừng rơi vào ngụy biện "ngôn ngữ lập trình của tôi nên bảo vệ tôi khỏi chính tôi".
 
-Next, let's consider another tricky example, which takes the evil from the previous example to another level:
+Tiếp theo, hãy xem xét một ví dụ phức tạp khác, đưa cái ác từ ví dụ trước lên một cấp độ khác:
 
 ```js
 if (a == 2 && a == 3) {
@@ -1606,9 +1606,9 @@ if (a == 2 && a == 3) {
 }
 ```
 
-You might think this would be impossible, because `a` could never be equal to both `2` and `3` *at the same time*. But "at the same time" is inaccurate, since the first expression `a == 2` happens strictly *before* `a == 3`.
+Bạn có thể nghĩ rằng điều này là không thể, bởi vì `a` không bao giờ có thể bằng cả `2` và `3` *đồng thời*. Nhưng "đồng thời" là không chính xác, vì biểu thức đầu tiên `a == 2` xảy ra hoàn toàn *trước* `a == 3`.
 
-So, what if we make `a.valueOf()` have side effects each time it's called, such that the first time it returns `2` and the second time it's called it returns `3`? Pretty easy:
+Vì vậy, điều gì sẽ xảy ra nếu chúng ta làm cho `a.valueOf()` có tác dụng phụ mỗi khi được gọi, chẳng hạn như lần đầu tiên nó trả về `2` và lần thứ hai được gọi, nó trả về `3`? Khá dễ dàng:
 
 ```js
 var i = 2;
@@ -1624,13 +1624,13 @@ if (a == 2 && a == 3) {
 }
 ```
 
-Again, these are evil tricks. Don't do them. But also don't use them as complaints against coercion. Potential abuses of a mechanism are not sufficient evidence to condemn the mechanism. Just avoid these crazy tricks, and stick only with valid and proper usage of coercion.
+Một lần nữa, đây là những thủ đoạn xấu xa. Đừng làm chúng. Nhưng cũng đừng sử dụng chúng như những lời phàn nàn chống lại sự ép buộc. Khả năng lạm dụng một cơ chế không phải là bằng chứng đầy đủ để lên án cơ chế đó. Chỉ cần tránh những mánh khóe điên rồ này và chỉ sử dụng biện pháp cưỡng chế hợp lệ và đúng đắn.
 
 #### False-y Comparisons
 
-The most common complaint against *implicit* coercion in `==` comparisons comes from how falsy values behave surprisingly when compared to each other.
+Khiếu nại phổ biến nhất chống lại *implicit* coercion trong các phép so sánh `==` xuất phát từ cách các giá trị falsy hoạt động một cách đáng ngạc nhiên khi so sánh với nhau.
 
-To illustrate, let's look at a list of the corner-cases around falsy value comparisons, to see which ones are reasonable and which are troublesome:
+Để minh họa, chúng ta hãy xem danh sách các tình huống xung quanh việc so sánh giá trị falsy, để xem trường hợp nào hợp lý và trường hợp nào rắc rối:
 
 ```js
 "0" == null;			// false
@@ -1662,60 +1662,60 @@ false == {};			// false
 0 == {};				// false
 ```
 
-In this list of 24 comparisons, 17 of them are quite reasonable and predictable. For example, we know that `""` and `NaN` are not at all equatable values, and indeed they don't coerce to be loose equals, whereas `"0"` and `0` are reasonably equatable and *do* coerce as loose equals.
+Trong danh sách 24 so sánh này, 17 trong số đó khá hợp lý và dễ đoán. Ví dụ: chúng tôi biết rằng `""` và `NaN` hoàn toàn không phải là các giá trị có thể đánh đồng và thực sự chúng không bắt buộc phải bằng nhau lỏng lẻo, trong khi `"0"` và `0` có thể đánh đồng một cách hợp lý và *do* cưỡng chế như lỏng lẻo bằng.
 
-However, seven of the comparisons are marked with "UH OH!" because as false positives, they are much more likely gotchas that could trip you up. `""` and `0` are definitely distinctly different values, and it's rare you'd want to treat them as equatable, so their mutual coercion is troublesome. Note that there aren't any false negatives here.
+Tuy nhiên, bảy trong số các phép so sánh được đánh dấu bằng "UH OH!" bởi vì là dương tính giả, nhiều khả năng chúng là những vấn đề có thể khiến bạn vấp ngã. `""` và `0` chắc chắn là các giá trị khác nhau rõ ràng và hiếm khi bạn muốn coi chúng là ngang nhau, do đó, sự ép buộc lẫn nhau của chúng rất rắc rối. Lưu ý rằng không có bất kỳ phủ định sai nào ở đây.
 
 #### The Crazy Ones
 
-We don't have to stop there, though. We can keep looking for even more troublesome coercions:
+Tuy nhiên, chúng ta không phải dừng lại ở đó. Chúng ta có thể tiếp tục tìm kiếm những sự ép buộc rắc rối hơn nữa:
 
 ```js
 [] == ![];		// true
 ```
 
-Oooo, that seems at a higher level of crazy, right!? Your brain may likely trick you that you're comparing a truthy to a falsy value, so the `true` result is surprising, as we *know* a value can never be truthy and falsy at the same time!
+Oooo, điều đó có vẻ ở mức độ điên rồ cao hơn, phải không!? Bộ não của bạn có thể đánh lừa bạn rằng bạn đang so sánh một giá trị trung thực với một giá trị giả, vì vậy kết quả `true` thật đáng ngạc nhiên, vì chúng ta *biết* một giá trị không bao giờ có thể vừa trung thực vừa sai cùng một lúc!
 
-But that's not what's actually happening. Let's break it down. What do we know about the `!` unary operator? It explicitly coerces to a `boolean` using the `ToBoolean` rules (and it also flips the parity). So before `[] == ![]` is even processed, it's actually already translated to `[] == false`. We already saw that form in our above list (`false == []`), so its surprise result is *not new* to us.
+Nhưng đó không phải là những gì đang thực sự xảy ra. Hãy chia nhỏ nó ra. Chúng ta biết gì về toán tử đơn nguyên `!`? Nó ép buộc một cách rõ ràng thành `boolean` bằng cách sử dụng các quy tắc `ToBoolean` (và nó cũng đảo ngược tính chẵn lẻ). Vì vậy, trước khi `[] == ![]` thậm chí được xử lý, nó thực sự đã được dịch thành `[] == false`. Chúng tôi đã thấy biểu mẫu đó trong danh sách trên (`false == []`), vì vậy kết quả bất ngờ của nó *không mới* đối với chúng tôi.
 
-How about other corner cases?
+Làm thế nào về các trường hợp góc khác?
 
 ```js
 2 == [2];		// true
 "" == [null];	// true
 ```
 
-As we said earlier in our `ToNumber` discussion, the right-hand side `[2]` and `[null]` values will go through a `ToPrimitive` coercion so they can be more readily compared to the simple primitives (`2` and `""`, respectively) on the left-hand side. Since the `valueOf()` for `array` values just returns the `array` itself, coercion falls to stringifying the `array`.
+Như chúng ta đã nói trước đó trong cuộc thảo luận về `ToNumber`, các giá trị `[2]` và `[null]` bên tay phải sẽ trải qua quá trình cưỡng chế `ToPrimitive` để chúng có thể dễ dàng so sánh hơn với các giá trị nguyên thủy đơn giản (`2 ` và `""`, tương ứng) ở phía bên tay trái. Vì các giá trị `valueOf()` cho `array` chỉ trả về chính `array`, nên việc ép buộc rơi vào việc xâu chuỗi `array`.
 
-`[2]` will become `"2"`, which then is `ToNumber` coerced to `2` for the right-hand side value in the first comparison. `[null]` just straight becomes `""`.
+`[2]` sẽ trở thành `"2"`, sau đó là `ToNumber` bị ép thành `2` cho giá trị bên phải trong so sánh đầu tiên. `[null]` chỉ thẳng trở thành `""`.
 
-So, `2 == 2` and `"" == ""` are completely understandable.
+Vì vậy, `2 == 2` và `"" ==""` là hoàn toàn dễ hiểu.
 
-If your instinct is to still dislike these results, your frustration is not actually with coercion like you probably think it is. It's actually a complaint against the default `array` values' `ToPrimitive` behavior of coercing to a `string` value. More likely, you'd just wish that `[2].toString()` didn't return `"2"`, or that `[null].toString()` didn't return `""`.
+Nếu bản năng của bạn là vẫn không thích những kết quả này, thì sự thất vọng của bạn thực ra không phải do bị ép buộc như bạn có thể nghĩ. Đó thực sự là một lời phàn nàn về hành vi ép buộc giá trị `chuỗi` của các giá trị `mảng` mặc định' `ToPrimitive`. Nhiều khả năng, bạn chỉ ước rằng `[2].toString()` không trả về `"2"`, hoặc `[null].toString()` không trả về `""`.
 
-But what exactly *should* these `string` coercions result in? I can't really think of any other appropriate `string` coercion of `[2]` than `"2"`, except perhaps `"[2]"` -- but that could be very strange in other contexts!
+Nhưng chính xác *nên* những sự ép buộc `string` này dẫn đến kết quả gì? Tôi thực sự không thể nghĩ ra bất kỳ sự ép buộc `string` thích hợp nào khác của `[2]` ngoài `"2"`, có lẽ ngoại trừ `"[2]"` -- nhưng điều đó có thể rất lạ trong các ngữ cảnh khác!
 
-You could rightly make the case that since `String(null)` becomes `"null"`, then `String([null])` should also become `"null"`. That's a reasonable assertion. So, that's the real culprit.
+Bạn hoàn toàn có thể đưa ra trường hợp rằng vì `String(null)` trở thành `"null"`, nên `String([null])` cũng sẽ trở thành `"null"`. Đó là một khẳng định hợp lý. Vì vậy, đó là thủ phạm thực sự.
 
-*Implicit* coercion itself isn't the evil here. Even an *explicit* coercion of `[null]` to a `string` results in `""`. What's at odds is whether it's sensible at all for `array` values to stringify to the equivalent of their contents, and exactly how that happens. So, direct your frustration at the rules for `String( [..] )`, because that's where the craziness stems from. Perhaps there should be no stringification coercion of `array`s at all? But that would have lots of other downsides in other parts of the language.
+Bản thân *implicit* coercion không phải là điều ác ở đây. Ngay cả một *explicit* coercion của `[null]` đối với một `string` cũng dẫn đến `""`. Điều mâu thuẫn là liệu có hợp lý hay không đối với các giá trị `array` để xâu chuỗi thành các giá trị tương đương với nội dung của chúng và chính xác điều đó xảy ra như thế nào. Vì vậy, hãy hướng sự thất vọng của bạn vào các quy tắc dành cho `String([..])`, bởi vì đó là nguồn gốc của sự điên rồ. Có lẽ không nên có sự ép buộc xâu chuỗi hóa `array` nào cả? Nhưng điều đó sẽ có nhiều nhược điểm khác trong các phần khác của ngôn ngữ.
 
-Another famously cited gotcha:
+Một gotcha được trích dẫn nổi tiếng khác:
 
 ```js
 0 == "\n";		// true
 ```
 
-As we discussed earlier with empty `""`, `"\n"` (or `" "` or any other whitespace combination) is coerced via `ToNumber`, and the result is `0`. What other `number` value would you expect whitespace to coerce to? Does it bother you that *explicit* `Number(" ")` yields `0`?
+Như chúng ta đã thảo luận trước đó với `""` trống, `"\n"` (hoặc `" "` hoặc bất kỳ tổ hợp khoảng trắng nào khác) được ép buộc thông qua `ToNumber` và kết quả là `0`. Giá trị `number` nào khác mà bạn muốn khoảng trắng bắt buộc? Bạn có thấy phiền khi *rõ ràng* `Number(" ")` mang lại `0` không?
 
-Really the only other reasonable `number` value that empty strings or whitespace strings could coerce to is the `NaN`. But would that *really* be better? The comparison `" " == NaN` would of course fail, but it's unclear that we'd have really *fixed* any of the underlying concerns.
+Thực sự, giá trị `number` hợp lý duy nhất khác mà các chuỗi rỗng hoặc chuỗi khoảng trắng có thể ép buộc là `NaN`. Nhưng điều đó *thực sự* sẽ tốt hơn? Việc so sánh `" " == NaN` tất nhiên sẽ thất bại, nhưng không rõ là chúng tôi đã thực sự *khắc phục* bất kỳ mối lo ngại tiềm ẩn nào chưa.
 
-The chances that a real-world JS program fails because `0 == "\n"` are awfully rare, and such corner cases are easy to avoid.
+Khả năng một chương trình JS trong thế giới thực không thành công vì `0 == "\n"` là cực kỳ hiếm và các trường hợp góc như vậy rất dễ tránh.
 
-Type conversions **always** have corner cases, in any language -- nothing specific to coercion. The issues here are about second-guessing a certain set of corner cases (and perhaps rightly so!?), but that's not a salient argument against the overall coercion mechanism.
+Chuyển kiểu **luôn** có corner cases (trường hợp góc), trong bất kỳ ngôn ngữ nào -- không có gì cụ thể để ép buộc. Các vấn đề ở đây là về việc đoán lần thứ hai một tập hợp các trường hợp góc nhất định (và có lẽ đúng như vậy!?), nhưng đó không phải là một lập luận nổi bật chống lại cơ chế cưỡng chế tổng thể.
 
-Bottom line: almost any crazy coercion between *normal values* that you're likely to run into (aside from intentionally tricky `valueOf()` or `toString()` hacks as earlier) will boil down to the short seven-item list of gotcha coercions we've identified above.
+Điểm mấu chốt: hầu hết mọi sự ép buộc điên rồ giữa *giá trị bình thường* mà bạn có khả năng gặp phải (ngoài các thủ đoạn hack `valueOf()` hoặc `toString()` có chủ ý thủ đoạn như trước đó) sẽ được rút gọn thành danh sách bảy mục ngắn gọn về sự ép buộc gotcha mà chúng tôi đã xác định ở trên.
 
-To contrast against these 24 likely suspects for coercion gotchas, consider another list like this:
+Để đối chiếu với 24 đối tượng có khả năng bị tình nghi cưỡng bức này, hãy xem xét một danh sách khác như sau:
 
 ```js
 42 == "43";							// false
@@ -1726,21 +1726,21 @@ To contrast against these 24 likely suspects for coercion gotchas, consider anot
 "foo" == [ "foo" ];					// true
 ```
 
-In these nonfalsy, noncorner cases (and there are literally an infinite number of comparisons we could put on this list), the coercion results are totally safe, reasonable, and explainable.
+Trong những trường hợp không nonfalsy, không nghiêm túc này (và thực sự có vô số phép so sánh mà chúng tôi có thể đưa vào danh sách này), kết quả cưỡng chế là hoàn toàn an toàn, hợp lý và có thể giải thích được.
 
 #### Sanity Check
 
-OK, we've definitely found some crazy stuff when we've looked deeply into *implicit* coercion. No wonder that most developers claim coercion is evil and should be avoided, right!?
+OK, chúng tôi chắc chắn đã tìm thấy một số thứ điên rồ khi chúng tôi xem xét sâu về *implicit* coercion. Không có gì ngạc nhiên khi hầu hết các nhà phát triển cho rằng cưỡng chế là xấu xa và nên tránh, phải không!?
 
-But let's take a step back and do a sanity check.
+Nhưng hãy lùi lại một bước và sanity check.
 
-By way of magnitude comparison, we have *a list* of seven troublesome gotcha coercions, but we have *another list* of (at least 17, but actually infinite) coercions that are totally sane and explainable.
+Bằng cách so sánh mức độ, chúng tôi có *một danh sách* gồm bảy sự ép buộc rắc rối, nhưng chúng tôi có *một danh sách khác* gồm (ít nhất 17, nhưng thực sự là vô hạn) những sự ép buộc hoàn toàn lành mạnh và có thể giải thích được.
 
-If you're looking for a textbook example of "throwing the baby out with the bathwater," this is it: discarding the entirety of coercion (the infinitely large list of safe and useful behaviors) because of a list of literally just seven gotchas.
+Nếu bạn đang tìm kiếm một ví dụ trong sách giáo khoa về việc "throwing the baby out with the bathwater", thì đây chính là: loại bỏ toàn bộ hành vi ép buộc (danh sách vô số các hành vi an toàn và hữu ích) vì một danh sách đúng nghĩa chỉ có bảy vấn đề.
 
-The more prudent reaction would be to ask, "how can I use the countless *good parts* of coercion, but avoid the few *bad parts*?"
+Phản ứng khôn ngoan hơn sẽ là hỏi, "làm thế nào tôi có thể sử dụng vô số *phần tốt* của sự ép buộc, nhưng tránh một số *phần xấu*?"
 
-Let's look again at the *bad* list:
+Hãy xem lại danh sách *xấu*:
 
 ```js
 "0" == false;			// true -- UH OH!
@@ -1752,9 +1752,9 @@ false == [];			// true -- UH OH!
 0 == [];				// true -- UH OH!
 ```
 
-Four of the seven items on this list involve `== false` comparison, which we said earlier you should **always, always** avoid. That's a pretty easy rule to remember.
+Bốn trong số bảy mục trong danh sách này liên quan đến so sánh `== false`, mà chúng tôi đã nói trước đó bạn nên **luôn luôn** tránh. Đó là một quy tắc khá dễ nhớ.
 
-Now the list is down to three.
+Bây giờ danh sách giảm xuống còn ba.
 
 ```js
 "" == 0;				// true -- UH OH!
@@ -1762,9 +1762,9 @@ Now the list is down to three.
 0 == [];				// true -- UH OH!
 ```
 
-Are these reasonable coercions you'd do in a normal JavaScript program? Under what conditions would they really happen?
+Đây có phải là những sự ép buộc hợp lý mà bạn sẽ thực hiện trong một chương trình JavaScript bình thường không? Trong những điều kiện nào chúng sẽ thực sự xảy ra?
 
-I don't think it's terribly likely that you'd literally use `== []` in a `boolean` test in your program, at least not if you know what you're doing. You'd probably instead be doing `== ""` or `== 0`, like:
+Tôi không nghĩ rằng rất có thể bạn sẽ sử dụng `== []` theo nghĩa đen trong một bài kiểm tra `boolean` trong chương trình của mình, ít nhất là không nếu bạn biết mình đang làm gì. Thay vào đó, bạn có thể đang thực hiện `== ""` hoặc `== 0`, chẳng hạn như:
 
 ```js
 function doSomething(a) {
@@ -1774,7 +1774,7 @@ function doSomething(a) {
 }
 ```
 
-You'd have an oops if you accidentally called `doSomething(0)` or `doSomething([])`. Another scenario:
+Bạn sẽ rất tiếc nếu vô tình gọi `doSomething(0)` hoặc `doSomething([])`. Một kịch bản khác:
 
 ```js
 function doSomething(a,b) {
@@ -1784,34 +1784,34 @@ function doSomething(a,b) {
 }
 ```
 
-Again, this could break if you did something like `doSomething("",0)` or `doSomething([],"")`.
+Một lần nữa, điều này có thể bị hỏng nếu bạn làm điều gì đó như `doSomething("",0)` hoặc `doSomething([],"")`.
 
-So, while the situations *can* exist where these coercions will bite you, and you'll want to be careful around them, they're probably not super common on the whole of your code base.
+Vì vậy, trong khi các tình huống *có thể* tồn tại trong đó những sự ép buộc này sẽ cắn bạn và bạn sẽ muốn cẩn thận với chúng, thì chúng có thể không quá phổ biến trên toàn bộ code base của bạn.
 
 #### Safely Using Implicit Coercion
 
-The most important advice I can give you: examine your program and reason about what values can show up on either side of an `==` comparison. To effectively avoid issues with such comparisons, here's some heuristic rules to follow:
+Lời khuyên quan trọng nhất mà tôi có thể đưa ra cho bạn: kiểm tra chương trình của bạn và suy luận về những giá trị nào có thể hiển thị ở hai bên của phép so sánh `==`. Để tránh một cách hiệu quả các vấn đề với những so sánh như vậy, đây là một số quy tắc heuristic cần tuân theo:
 
-1. If either side of the comparison can have `true` or `false` values, don't ever, EVER use `==`.
-2. If either side of the comparison can have `[]`, `""`, or `0` values, seriously consider not using `==`.
+1. Nếu một trong hai bên của phép so sánh có thể có giá trị `true` hoặc `false`, thì KHÔNG BAO GIỜ, BAO GIỜ sử dụng `==`.
+2. Nếu một trong hai bên của phép so sánh có thể có các giá trị `[]`, `""` hoặc `0`, hãy cân nhắc nghiêm túc việc không sử dụng `==`.
 
-In these scenarios, it's almost certainly better to use `===` instead of `==`, to avoid unwanted coercion. Follow those two simple rules and pretty much all the coercion gotchas that could reasonably hurt you will effectively be avoided.
+Trong những trường hợp này, gần như chắc chắn tốt hơn là sử dụng `===` thay vì `==`, để tránh bị ép buộc không mong muốn. Hãy tuân theo hai quy tắc đơn giản đó và hầu như tất cả các vấn đề về cưỡng chế có thể gây tổn thương cho bạn một cách hợp lý sẽ được tránh một cách hiệu quả.
 
-**Being more explicit/verbose in these cases will save you from a lot of headaches.**
+**Trở nên rõ ràng/dài dòng hơn trong những trường hợp này sẽ giúp bạn không phải đau đầu.**
 
-The question of `==` vs. `===` is really appropriately framed as: should you allow coercion for a comparison or not?
+Câu hỏi về `==` so với `===` thực sự được đóng khung một cách thích hợp là: bạn có nên cho phép sự ép buộc để so sánh hay không?
 
-There's lots of cases where such coercion can be helpful, allowing you to more tersely express some comparison logic (like with `null` and `undefined`, for example).
+Có rất nhiều trường hợp mà sự ép buộc như vậy có thể hữu ích, cho phép bạn diễn đạt một số logic so sánh một cách ngắn gọn hơn (ví dụ như với `null` và `undefined`).
 
-In the overall scheme of things, there's relatively few cases where *implicit* coercion is truly dangerous. But in those places, for safety sake, definitely use `===`.
+Trong sơ đồ tổng thể của mọi thứ, có tương đối ít trường hợp ép buộc *ngầm* thực sự nguy hiểm. Nhưng ở những nơi đó, để đảm bảo an toàn, hãy chắc chắn sử dụng `===`.
 
-**Tip:** Another place where coercion is guaranteed *not* to bite you is with the `typeof` operator. `typeof` is always going to return you one of seven strings (see Chapter 1), and none of them are the empty `""` string. As such, there's no case where checking the type of some value is going to run afoul of *implicit* coercion. `typeof x == "function"` is 100% as safe and reliable as `typeof x === "function"`. Literally, the spec says the algorithm will be identical in this situation. So, don't just blindly use `===` everywhere simply because that's what your code tools tell you to do, or (worst of all) because you've been told in some book to **not think about it**. You own the quality of your code.
+**Mẹo:** Một nơi khác mà tính năng ép buộc được đảm bảo *không* cắn bạn là toán tử `typeof`. `typeof` sẽ luôn trả về cho bạn một trong bảy chuỗi (xem Chương 1), và không có chuỗi nào là chuỗi `""` trống. Như vậy, không có trường hợp nào việc kiểm tra loại của một số giá trị sẽ dẫn đến sự ép buộc *ngầm*. `typeof x == "function"` an toàn và đáng tin cậy 100% như `typeof x === "function"`. Theo nghĩa đen, thông số kỹ thuật cho biết thuật toán sẽ giống hệt nhau trong tình huống này. Vì vậy, đừng mù quáng sử dụng `===` ở mọi nơi đơn giản chỉ vì đó là những gì công cụ mã của bạn yêu cầu bạn làm hoặc (tệ nhất là) vì bạn đã được bảo trong một số cuốn sách là **đừng nghĩ về nó** . Bạn sở hữu chất lượng của mã của bạn.
 
-Is *implicit* coercion evil and dangerous? In a few cases, yes, but overwhelmingly, no.
+Ép buộc *ngầm* có xấu xa và nguy hiểm không? Trong một vài trường hợp, có, nhưng phần lớn là không.
 
-Be a responsible and mature developer. Learn how to use the power of coercion (both *explicit* and *implicit*) effectively and safely. And teach those around you to do the same.
+Hãy là một nhà phát triển có trách nhiệm và trưởng thành. Tìm hiểu cách sử dụng sức mạnh của sự ép buộc (cả *explicit* và *implicit*) một cách hiệu quả và an toàn. Và dạy những người xung quanh bạn làm như vậy.
 
-Here's a handy table made by Alex Dorey (@dorey on GitHub) to visualize a variety of comparisons:
+Đây là một bảng tiện dụng được tạo bởi Alex Dorey (@dorey trên GitHub) để trực quan hóa nhiều cách so sánh:
 
 <img src="fig1.png" width="600">
 
@@ -1819,15 +1819,15 @@ Source: https://github.com/dorey/JavaScript-Equality-Table
 
 ## Abstract Relational Comparison
 
-While this part of *implicit* coercion often gets a lot less attention, it's important nonetheless to think about what happens with `a < b` comparisons (similar to how we just examined `a == b` in depth).
+Mặc dù phần ép buộc *ngầm* này thường ít được chú ý hơn, tuy nhiên, điều quan trọng là phải suy nghĩ về điều gì xảy ra với phép so sánh `a < b` (tương tự như cách chúng ta vừa xem xét chi tiết `a == b`).
 
-The "Abstract Relational Comparison" algorithm in ES5 section 11.8.5 essentially divides itself into two parts: what to do if the comparison involves both `string` values (second half), or anything else (first half).
+Thuật toán "Abstract Relational Comparison (So sánh quan hệ trừu tượng)" trong ES5 phần 11.8.5 về cơ bản chia thành hai phần: phải làm gì nếu so sánh liên quan đến cả hai giá trị `string` (nửa sau) hoặc bất kỳ giá trị nào khác (nửa đầu).
 
-**Note:** The algorithm is only defined for `a < b`. So, `a > b` is handled as `b < a`.
+**Lưu ý:** Thuật toán chỉ được xác định cho `a < b`. Vì vậy, `a > b` được xử lý là `b < a`.
 
-The algorithm first calls `ToPrimitive` coercion on both values, and if the return result of either call is not a `string`, then both values are coerced to `number` values using the `ToNumber` operation rules, and compared numerically.
+Trước tiên, thuật toán gọi cưỡng chế `ToPrimitive` trên cả hai giá trị và nếu kết quả trả về của một trong hai lệnh gọi không phải là `string`, thì cả hai giá trị đều bị cưỡng chế thành giá trị `number` bằng cách sử dụng quy tắc hoạt động `ToNumber` và được so sánh bằng số.
 
-For example:
+Ví dụ:
 
 ```js
 var a = [ 42 ];
@@ -1837,9 +1837,9 @@ a < b;	// true
 b < a;	// false
 ```
 
-**Note:** Similar caveats for `-0` and `NaN` apply here as they did in the `==` algorithm discussed earlier.
+**Lưu ý:** Những lưu ý tương tự đối với `-0` và `NaN` áp dụng ở đây giống như trong thuật toán `==` đã thảo luận trước đó.
 
-However, if both values are `string`s for the `<` comparison, simple lexicographic (natural alphabetic) comparison on the characters is performed:
+Tuy nhiên, nếu cả hai giá trị đều là `string` để so sánh `<`, phép so sánh từ điển đơn giản (chữ cái tự nhiên) trên các ký tự được thực hiện:
 
 ```js
 var a = [ "42" ];
@@ -1848,9 +1848,9 @@ var b = [ "043" ];
 a < b;	// false
 ```
 
-`a` and `b` are *not* coerced to `number`s, because both of them end up as `string`s after the `ToPrimitive` coercion on the two `array`s. So, `"42"` is compared character by character to `"043"`, starting with the first characters `"4"` and `"0"`, respectively. Since `"0"` is lexicographically *less than* than `"4"`, the comparison returns `false`.
+`a` và `b` *không* bị ép buộc thành `số`, bởi vì cả hai đều kết thúc dưới dạng `string` sau khi ép buộc `ToPrimitive` trên hai `array`. Vì vậy, `"42"` được so sánh từng ký tự với `"043"`, bắt đầu với các ký tự đầu tiên tương ứng là `"4"` và `"0"`. Vì `"0"` về mặt từ điển *nhỏ hơn* so với `"4"`, phép so sánh trả về `false`.
 
-The exact same behavior and reasoning goes for:
+Chính xác cùng một hành vi và lý luận dành cho:
 
 ```js
 var a = [ 4, 2 ];
@@ -1859,9 +1859,9 @@ var b = [ 0, 4, 3 ];
 a < b;	// false
 ```
 
-Here, `a` becomes `"4,2"` and `b` becomes `"0,4,3"`, and those lexicographically compare identically to the previous snippet.
+Ở đây, `a` trở thành `"4,2"` và `b` trở thành `"0,4,3"` và những từ vựng này so sánh giống hệt với đoạn code trước đó.
 
-What about:
+Thế còn:
 
 ```js
 var a = { b: 42 };
@@ -1870,9 +1870,9 @@ var b = { b: 43 };
 a < b;	// ??
 ```
 
-`a < b` is also `false`, because `a` becomes `[object Object]` and `b` becomes `[object Object]`, and so clearly `a` is not lexicographically less than `b`.
+`a < b` cũng là `false`, vì `a` trở thành `[object Object]` và `b` trở thành `[object Object]`, và do đó rõ ràng `a` không nhỏ hơn `b` về mặt từ điển.
 
-But strangely:
+Nhưng lạ thay:
 
 ```js
 var a = { b: 42 };
@@ -1886,17 +1886,17 @@ a <= b;	// true
 a >= b;	// true
 ```
 
-Why is `a == b` not `true`? They're the same `string` value (`"[object Object]"`), so it seems they should be equal, right? Nope. Recall the previous discussion about how `==` works with `object` references.
+Tại sao `a == b` không phải là `true`? Chúng có cùng giá trị `string` (`"[object Object]"`), vì vậy có vẻ như chúng phải bằng nhau, phải không? Không. Nhớ lại cuộc thảo luận trước đây về cách `==` hoạt động với các tham chiếu `object`.
 
-But then how are `a <= b` and `a >= b` resulting in `true`, if `a < b` **and** `a == b` **and** `a > b` are all `false`?
+Nhưng sau đó làm thế nào để `a <= b` và `a >= b` dẫn đến `true`, nếu `a < b` **và** `a == b` **và** `a > b` tất cả đều là `false`?
 
-Because the spec says for `a <= b`, it will actually evaluate `b < a` first, and then negate that result. Since `b < a` is *also* `false`, the result of `a <= b` is `true`.
+Bởi vì thông số kỹ thuật cho biết `a <= b`, nên nó thực sự sẽ đánh giá `b < a` trước, sau đó phủ nhận kết quả đó. Vì `b < a` *cũng* `false` nên kết quả của `a <= b` là `true`.
 
-That's probably awfully contrary to how you might have explained what `<=` does up to now, which would likely have been the literal: "less than *or* equal to." JS more accurately considers `<=` as "not greater than" (`!(a > b)`, which JS treats as `!(b < a)`). Moreover, `a >= b` is explained by first considering it as `b <= a`, and then applying the same reasoning.
+Điều đó có lẽ hoàn toàn trái ngược với cách bạn có thể đã giải thích những gì `<=` làm cho đến bây giờ, vốn có thể là nghĩa đen: "nhỏ hơn *hoặc* bằng." JS coi `<=` là "không lớn hơn" (`!(a > b)`, mà JS coi là `!(b < a)`). Ngoài ra, `a >= b` được giải thích bằng cách trước tiên coi nó là `b <= a`, sau đó áp dụng lý luận tương tự.
 
-Unfortunately, there is no "strict relational comparison" as there is for equality. In other words, there's no way to prevent *implicit* coercion from occurring with relational comparisons like `a < b`, other than to ensure that `a` and `b` are of the same type explicitly before making the comparison.
+Thật không may, không có "so sánh quan hệ chặt chẽ" như có cho bình đẳng. Nói cách khác, không có cách nào để ngăn sự ép buộc *ngầm* xảy ra với các phép so sánh quan hệ như `a < b`, ngoài việc đảm bảo rằng `a` và `b` cùng loại một cách rõ ràng trước khi thực hiện phép so sánh.
 
-Use the same reasoning from our earlier `==` vs. `===` sanity check discussion. If coercion is helpful and reasonably safe, like in a `42 < "43"` comparison, **use it**. On the other hand, if you need to be safe about a relational comparison, *explicitly coerce* the values first, before using `<` (or its counterparts).
+Sử dụng lý do tương tự từ cuộc thảo luận kiểm tra tình trạng `==` so với `===` trước đó của chúng tôi. Nếu tính năng cưỡng chế hữu ích và an toàn ở mức độ hợp lý, chẳng hạn như trong phép so sánh `42 < "43"`, **hãy sử dụng tính năng này**. Mặt khác, nếu bạn cần an toàn về so sánh quan hệ, *rõ ràng ép buộc* các giá trị trước, trước khi sử dụng `<` (hoặc các giá trị tương ứng của nó).
 
 ```js
 var a = [ 42 ];
@@ -1908,12 +1908,12 @@ Number( a ) < Number( b );	// true -- number comparison!
 
 ## Review
 
-In this chapter, we turned our attention to how JavaScript type conversions happen, called **coercion**, which can be characterized as either *explicit* or *implicit*.
+Trong chương này, chúng ta đã chú ý đến cách các chuyển đổi kiểu JavaScript xảy ra, được gọi là **coercion (ép buộc)**, có thể được mô tả là *explicit (rõ ràng)* hoặc *implicit (ngầm)*.
 
-Coercion gets a bad rap, but it's actually quite useful in many cases. An important task for the responsible JS developer is to take the time to learn all the ins and outs of coercion to decide which parts will help improve their code, and which parts they really should avoid.
+Sự ép buộc bị mang tiếng xấu, nhưng nó thực sự khá hữu ích trong nhiều trường hợp. Một nhiệm vụ quan trọng đối với nhà phát triển JS có trách nhiệm là dành thời gian tìm hiểu tất cả thông tin chi tiết về sự ép buộc để quyết định phần nào sẽ giúp cải thiện code của họ và phần nào họ thực sự nên tránh.
 
-*Explicit* coercion is code which is obvious that the intent is to convert a value from one type to another. The benefit is improvement in readability and maintainability of code by reducing confusion.
+*Explicit* coercion là code hiển nhiên rằng mục đích là để chuyển đổi một giá trị từ loại này sang loại khác. Lợi ích là cải thiện khả năng đọc và khả năng bảo trì của code bằng cách giảm nhầm lẫn.
 
-*Implicit* coercion is coercion that is "hidden" as a side-effect of some other operation, where it's not as obvious that the type conversion will occur. While it may seem that *implicit* coercion is the opposite of *explicit* and is thus bad (and indeed, many think so!), actually *implicit* coercion is also about improving the readability of code.
+*Implicit* coercion là ép buộc "ẩn" dưới dạng side effect của một số hoạt động khác, trong đó việc chuyển đổi loại sẽ xảy ra không rõ ràng. Mặc dù có vẻ như việc ép buộc *ngầm* trái ngược với *rõ ràng* và do đó là xấu (và thực tế, nhiều người nghĩ như vậy!), nhưng thực ra, việc ép buộc *ngầm* cũng nhằm cải thiện khả năng đọc code.
 
-Especially for *implicit*, coercion must be used responsibly and consciously. Know why you're writing the code you're writing, and how it works. Strive to write code that others will easily be able to learn from and understand as well.
+Đặc biệt đối với *ngầm*, sự ép buộc phải được sử dụng một cách có trách nhiệm và có ý thức. Biết lý do tại sao bạn viết code bạn đang viết và cách code hoạt động. Cố gắng viết code mà những người khác cũng có thể dễ dàng học hỏi và hiểu được.
