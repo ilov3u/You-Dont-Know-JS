@@ -1,21 +1,21 @@
 # You Don't Know JS: Types & Grammar
 # Chapter 5: Grammar
 
-The last major topic we want to tackle is how JavaScript's language syntax works (aka its grammar). You may think you know how to write JS, but there's an awful lot of nuance to various parts of the language grammar that lead to confusion and misconception, so we want to dive into those parts and clear some things up.
+Chủ đề chính cuối cùng mà chúng tôi muốn giải quyết là cách cú pháp ngôn ngữ của JavaScript hoạt động (hay còn gọi là ngữ pháp của nó). Bạn có thể nghĩ rằng mình biết cách viết JS, nhưng có rất nhiều sắc thái đối với các phần khác nhau của ngữ pháp ngôn ngữ dẫn đến nhầm lẫn và hiểu sai, vì vậy chúng tôi muốn đi sâu vào những phần đó và làm sáng tỏ một số điều.
 
-**Note:** The term "grammar" may be a little less familiar to readers than the term "syntax." In many ways, they are similar terms, describing the *rules* for how the language works. There are nuanced differences, but they mostly don't matter for our discussion here. The grammar for JavaScript is a structured way to describe how the syntax (operators, keywords, etc.) fits together into well-formed, valid programs. In other words, discussing syntax without grammar would leave out a lot of the important details. So our focus here in this chapter is most accurately described as *grammar*, even though the raw syntax of the language is what developers directly interact with.
+**Lưu ý:** Thuật ngữ "gramma (ngữ pháp)" có thể ít quen thuộc hơn với người đọc so với thuật ngữ "syntax (cú pháp)". Theo nhiều cách, chúng là các thuật ngữ tương tự nhau, mô tả *quy tắc* về cách thức hoạt động của ngôn ngữ. Có những khác biệt về sắc thái, nhưng chúng hầu như không quan trọng đối với cuộc thảo luận của chúng ta ở đây. Ngữ pháp cho JavaScript là một cách có cấu trúc để mô tả cách cú pháp (toán tử, từ khóa, v.v.) khớp với nhau thành các chương trình hợp lệ, được định dạng tốt. Nói cách khác, thảo luận về cú pháp mà không có ngữ pháp sẽ bỏ sót rất nhiều chi tiết quan trọng. Vì vậy, trọng tâm của chúng ta ở đây trong chương này được mô tả chính xác nhất là *ngữ pháp*, mặc dù cú pháp thô của ngôn ngữ là thứ mà các nhà phát triển tương tác trực tiếp.
 
 ## Statements & Expressions
 
-It's fairly common for developers to assume that the term "statement" and "expression" are roughly equivalent. But here we need to distinguish between the two, because there are some very important differences in our JS programs.
+Các nhà phát triển thường cho rằng thuật ngữ "câu lệnh (statement)" và "biểu thức (expression)" gần như tương đương nhau. Nhưng ở đây chúng ta cần phân biệt giữa hai loại này, bởi vì có một số khác biệt rất quan trọng trong các chương trình JS của chúng ta.
 
-To draw the distinction, let's borrow from terminology you may be more familiar with: the English language.
+Để phân biệt, chúng ta hãy mượn từ thuật ngữ mà bạn có thể quen thuộc hơn: ngôn ngữ tiếng Anh.
 
-A "sentence" is one complete formation of words that expresses a thought. It's comprised of one or more "phrases," each of which can be connected with punctuation marks or conjunction words ("and," "or," etc). A phrase can itself be made up of smaller phrases. Some phrases are incomplete and don't accomplish much by themselves, while other phrases can stand on their own. These rules are collectively called the *grammar* of the English language.
+Một "sentence (câu)" là một hình thức hoàn chỉnh của các từ diễn đạt một suy nghĩ. Nó bao gồm một hoặc nhiều "phrases (cụm từ)", mỗi cụm từ có thể được kết nối bằng dấu chấm câu hoặc liên từ ("và", "hoặc", v.v.). Bản thân một cụm từ có thể được tạo thành từ các cụm từ nhỏ hơn. Một số cụm từ không đầy đủ và không tự hoàn thành được nhiều việc, trong khi các cụm từ khác có thể tự đứng vững. Những quy tắc này được gọi chung là *ngữ pháp* của tiếng Anh.
 
-And so it goes with JavaScript grammar. Statements are sentences, expressions are phrases, and operators are conjunctions/punctuation.
+Và do đó, nó phù hợp với ngữ pháp JavaScript. Câu lệnh (statement) là câu (sentence), biểu thức (expression) là cụm từ (phrase) và toán tử (operators) là liên từ/dấu chấm câu.
 
-Every expression in JS can be evaluated down to a single, specific value result. For example:
+Mỗi biểu thức trong JS có thể được đánh giá thành một kết quả giá trị cụ thể, duy nhất. Ví dụ:
 
 ```js
 var a = 3 * 6;
@@ -23,11 +23,11 @@ var b = a;
 b;
 ```
 
-In this snippet, `3 * 6` is an expression (evaluates to the value `18`). But `a` on the second line is also an expression, as is `b` on the third line. The `a` and `b` expressions both evaluate to the values stored in those variables at that moment, which also happens to be `18`.
+Trong đoạn code này, `3 * 6` là một biểu thức - expression - (được đánh giá bằng giá trị `18`). Nhưng `a` trên dòng thứ hai cũng là một biểu thức, giống như `b` trên dòng thứ ba. Cả hai biểu thức `a` và `b` đều đánh giá các giá trị được lưu trữ trong các biến đó tại thời điểm đó, cũng là `18`.
 
-Moreover, each of the three lines is a statement containing expressions. `var a = 3 * 6` and `var b = a` are called "declaration statements" because they each declare a variable (and optionally assign a value to it). The `a = 3 * 6` and `b = a` assignments (minus the `var`s) are called assignment expressions.
+Hơn nữa, mỗi dòng trong ba dòng là một câu lệnh chứa các biểu thức. `var a = 3 * 6` và `var b = a` được gọi là "câu lệnh khai báo" vì mỗi câu lệnh khai báo một biến (và tùy ý gán giá trị cho biến đó). Phép gán `a = 3 * 6` và `b = a` (trừ `var`) được gọi là biểu thức gán.
 
-The third line contains just the expression `b`, but it's also a statement all by itself (though not a terribly interesting one!). This is generally referred to as an "expression statement."
+Dòng thứ ba chỉ chứa biểu thức `b`, nhưng bản thân nó cũng là một mệnh đề (mặc dù không phải là một mệnh đề thú vị cho lắm!). Điều này thường được gọi là một "expression statement (tuyên bố biểu thức.)"
 
 ### Statement Completion Values
 
