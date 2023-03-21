@@ -27,19 +27,19 @@ Trong đoạn code này, `3 * 6` là một biểu thức - expression - (đượ
 
 Hơn nữa, mỗi dòng trong ba dòng là một câu lệnh chứa các biểu thức. `var a = 3 * 6` và `var b = a` được gọi là "câu lệnh khai báo" vì mỗi câu lệnh khai báo một biến (và tùy ý gán giá trị cho biến đó). Phép gán `a = 3 * 6` và `b = a` (trừ `var`) được gọi là biểu thức gán.
 
-Dòng thứ ba chỉ chứa biểu thức `b`, nhưng bản thân nó cũng là một mệnh đề (mặc dù không phải là một mệnh đề thú vị cho lắm!). Điều này thường được gọi là một "expression statement (tuyên bố biểu thức.)"
+Dòng thứ ba chỉ chứa biểu thức `b`, nhưng bản thân nó cũng là một mệnh đề (mặc dù không phải là một mệnh đề thú vị cho lắm!). Điều này thường được gọi là một "expression statement (câu lệnh biểu thức.)"
 
 ### Statement Completion Values
 
-It's a fairly little known fact that statements all have completion values (even if that value is just `undefined`).
+Một thực tế khá ít được biết đến là tất cả các câu lệnh đều có giá trị hoàn thành (ngay cả khi giá trị đó chỉ là `undefined`).
 
-How would you even go about seeing the completion value of a statement?
+Làm thế nào bạn thậm chí có thể nhìn thấy giá trị hoàn thành của một statement?
 
-The most obvious answer is to type the statement into your browser's developer console, because when you execute it, the console by default reports the completion value of the most recent statement it executed.
+Câu trả lời rõ ràng nhất là nhập câu lệnh vào console dành cho nhà phát triển của trình duyệt của bạn, bởi vì khi bạn thực thi nó, theo mặc định, bảng console sẽ báo cáo giá trị hoàn thành của câu lệnh gần đây nhất mà nó đã thực thi.
 
-Let's consider `var b = a`. What's the completion value of that statement?
+Hãy xem xét `var b = a`. Giá trị hoàn thành của statement đó là gì?
 
-The `b = a` assignment expression results in the value that was assigned (`18` above), but the `var` statement itself results in `undefined`. Why? Because `var` statements are defined that way in the spec. If you put `var a = 42;` into your console, you'll see `undefined` reported back instead of `42`.
+Biểu thức gán `b = a` dẫn đến giá trị đã được gán (`18` ở trên), nhưng chính câu lệnh `var` lại dẫn đến `undefined`. Tại sao? Bởi vì các câu lệnh `var` được định nghĩa theo cách đó trong thông số kỹ thuật. Nếu bạn đặt `var a = 42;` vào bảng điều khiển của mình, bạn sẽ thấy `undefined` được báo cáo lại thay vì `42`.
 
 **Note:** Technically, it's a little more complex than that. In the ES5 spec, section 12.2 "Variable Statement," the `VariableDeclaration` algorithm actually *does* return a value (a `string` containing the name of the variable declared -- weird, huh!?), but that value is basically swallowed up (except for use by the `for..in` loop) by the `VariableStatement` algorithm, which forces an empty (aka `undefined`) completion value.
 
