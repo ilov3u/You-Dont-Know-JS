@@ -39,19 +39,19 @@ Câu trả lời rõ ràng nhất là nhập câu lệnh vào console dành cho 
 
 Hãy xem xét `var b = a`. Giá trị hoàn thành của statement đó là gì?
 
-Biểu thức gán `b = a` dẫn đến giá trị đã được gán (`18` ở trên), nhưng chính câu lệnh `var` lại dẫn đến `undefined`. Tại sao? Bởi vì các câu lệnh `var` được định nghĩa theo cách đó trong thông số kỹ thuật. Nếu bạn đặt `var a = 42;` vào bảng điều khiển của mình, bạn sẽ thấy `undefined` được báo cáo lại thay vì `42`.
+Biểu thức gán `b = a` dẫn đến giá trị đã được gán (`18` ở trên), nhưng chính câu lệnh `var` lại dẫn đến `undefined`. Tại sao? Bởi vì các câu lệnh `var` được định nghĩa theo cách đó trong thông số kỹ thuật. Nếu bạn đặt `var a = 42;` vào console của mình, bạn sẽ thấy `undefined` được báo cáo lại thay vì `42`.
 
-**Note:** Technically, it's a little more complex than that. In the ES5 spec, section 12.2 "Variable Statement," the `VariableDeclaration` algorithm actually *does* return a value (a `string` containing the name of the variable declared -- weird, huh!?), but that value is basically swallowed up (except for use by the `for..in` loop) by the `VariableStatement` algorithm, which forces an empty (aka `undefined`) completion value.
+**Lưu ý:** Về mặt kỹ thuật, nó phức tạp hơn thế một chút. Trong đặc tả ES5, phần 12.2 "Variable Statement", thuật toán `VariableDeclaration` thực sự *có* trả về một giá trị (`string` chứa tên của biến được khai báo -- lạ nhỉ!?), nhưng giá trị đó về cơ bản là bị thuật toán `VariableStatement` nuốt chửng (ngoại trừ việc vòng lặp `for..in` sử dụng), thuật toán này buộc một giá trị hoàn thành trống (còn gọi là `undefined`).
 
-In fact, if you've done much code experimenting in your console (or in a JavaScript environment REPL -- read/evaluate/print/loop tool), you've probably seen `undefined` reported after many different statements, and perhaps never realized why or what that was. Put simply, the console is just reporting the statement's completion value.
+Trên thực tế, nếu bạn đã thực hiện nhiều thử nghiệm code trong console của mình (hoặc trong môi trường JavaScript REPL -- công cụ read/evaluate/print/loop), bạn có thể đã thấy `undefined` được báo cáo sau nhiều câu lệnh khác nhau và có lẽ chưa bao giờ nhận ra tại sao hoặc đó là gì. Nói một cách đơn giản, console chỉ báo cáo giá trị hoàn thành của câu lệnh.
 
-But what the console prints out for the completion value isn't something we can use inside our program. So how can we capture the completion value?
+Nhưng những gì console in ra cho giá trị hoàn thành không phải là thứ chúng ta có thể sử dụng bên trong chương trình của mình. Vậy làm thế nào chúng ta có thể nắm bắt được giá trị hoàn thành?
 
-That's a much more complicated task. Before we explain *how*, let's explore *why* you would want to do that.
+Đó là một nhiệm vụ phức tạp hơn nhiều. Trước khi chúng tôi giải thích *how (cách thức)*, hãy khám phá *why (tại sao)* bạn muốn làm điều đó.
 
-We need to consider other types of statement completion values. For example, any regular `{ .. }` block has a completion value of the completion value of its last contained statement/expression.
+Chúng ta cần xem xét các loại giá trị hoàn thành câu lệnh khác. Ví dụ: bất kỳ khối `{ .. }` thông thường nào cũng có giá trị hoàn thành của giá trị hoàn thành của câu lệnh/biểu thức chứa cuối cùng của nó.
 
-Consider:
+Xem xét:
 
 ```js
 var b;
@@ -61,13 +61,13 @@ if (true) {
 }
 ```
 
-If you typed that into your console/REPL, you'd probably see `42` reported, since `42` is the completion value of the `if` block, which took on the completion value of its last assignment expression statement `b = 4 + 38`.
+Nếu bạn đã nhập nội dung đó vào console/REPL của mình, bạn có thể thấy `42` được báo cáo, vì `42` là giá trị hoàn thành của khối `if`, khối này nhận giá trị hoàn thành của câu lệnh biểu thức gán cuối cùng của nó `b = 4+38`.
 
-In other words, the completion value of a block is like an *implicit return* of the last statement value in the block.
+Nói cách khác, giá trị hoàn thành của một khối giống như một *implicit return (trả về ngầm định)* của giá trị câu lệnh cuối cùng trong khối.
 
-**Note:** This is conceptually familiar in languages like CoffeeScript, which have implicit `return` values from `function`s that are the same as the last statement value in the function.
+**Lưu ý:** Đây là khái niệm quen thuộc trong các ngôn ngữ như CoffeeScript, có giá trị implicit `return` từ `function` giống với giá trị câu lệnh cuối cùng trong function.
 
-But there's an obvious problem. This kind of code doesn't work:
+Nhưng có một vấn đề rõ ràng. Loại code này không hoạt động:
 
 ```js
 var a, b;
@@ -77,13 +77,13 @@ a = if (true) {
 };
 ```
 
-We can't capture the completion value of a statement and assign it into another variable in any easy syntactic/grammatical way (at least not yet!).
+Chúng ta không thể nắm bắt giá trị hoàn thành của một câu lệnh và gán nó vào một biến khác theo bất kỳ cách ngữ pháp/cú pháp dễ dàng nào (ít nhất là chưa!).
 
-So, what can we do?
+Vậy chúng ta có thể làm gì?
 
-**Warning**: For demo purposes only -- don't actually do the following in your real code!
+**Cảnh báo**: Chỉ dành cho mục đích demo -- không thực sự làm như sau trong code thực của bạn!
 
-We could use the much maligned `eval(..)` (sometimes pronounced "evil") function to capture this completion value.
+Chúng ta có thể sử dụng hàm `eval(..)` (đôi khi được phát âm là "evil (ác)") bị sai nhiều để nắm bắt giá trị hoàn thành này.
 
 ```js
 var a, b;
@@ -93,9 +93,9 @@ a = eval( "if (true) { b = 4 + 38; }" );
 a;	// 42
 ```
 
-Yeeeaaahhhh. That's terribly ugly. But it works! And it illustrates the point that statement completion values are a real thing that can be captured not just in our console but in our programs.
+Yeeeaaahhhh. Điều đó thật tồi tệ. Nhưng nó đã có tác dụng! Và nó minh họa điểm rằng các giá trị hoàn thành câu lệnh là một điều thực tế có thể được nắm bắt không chỉ trong console của chúng tôi mà còn trong các chương trình của chúng tôi.
 
-There's a proposal for ES7 called "do expression." Here's how it might work:
+Có một đề xuất cho ES7 được gọi là "do expression (biểu thức thực hiện)". Đây là cách nó có thể hoạt động:
 
 ```js
 var a, b;
@@ -109,7 +109,7 @@ a = do {
 a;	// 42
 ```
 
-The `do { .. }` expression executes a block (with one or many statements in it), and the final statement completion value inside the block becomes the completion value *of* the `do` expression, which can then be assigned to `a` as shown.
+Biểu thức `do { .. }` thực thi một khối (có một hoặc nhiều câu lệnh trong đó) và giá trị hoàn thành câu lệnh cuối cùng bên trong khối trở thành giá trị hoàn thành *của* biểu thức `do`, sau đó có thể được gán cho `a` như hình.
 
 The general idea is to be able to treat statements as expressions -- they can show up inside other statements -- without needing to wrap them in an inline function expression and perform an explicit `return ..`.
 
