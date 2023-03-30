@@ -111,24 +111,24 @@ a;	// 42
 
 Biểu thức `do { .. }` thực thi một khối (có một hoặc nhiều câu lệnh trong đó) và giá trị hoàn thành câu lệnh cuối cùng bên trong khối trở thành giá trị hoàn thành *của* biểu thức `do`, sau đó có thể được gán cho `a` như hình.
 
-The general idea is to be able to treat statements as expressions -- they can show up inside other statements -- without needing to wrap them in an inline function expression and perform an explicit `return ..`.
+Ý tưởng chung là có thể coi các câu lệnh là các biểu thức -- chúng có thể hiển thị bên trong các câu lệnh khác -- mà không cần gói chúng trong một biểu thức hàm nội tuyến và thực hiện `return ..` rõ ràng.
 
-For now, statement completion values are not much more than trivia. But they're probably going to take on more significance as JS evolves, and hopefully `do { .. }` expressions will reduce the temptation to use stuff like `eval(..)`.
+Hiện tại, các giá trị hoàn thành câu lệnh không nhiều hơn những chuyện vặt vãnh. Nhưng chúng có thể sẽ có nhiều ý nghĩa hơn khi JS phát triển và hy vọng rằng các biểu thức `do { .. }` sẽ làm giảm sự cám dỗ để sử dụng những thứ như `eval(..)`.
 
-**Warning:** Repeating my earlier admonition: avoid `eval(..)`. Seriously. See the *Scope & Closures* title of this series for more explanation.
+**Cảnh báo:** Lặp lại lời khuyên trước đây của tôi: tránh `eval(..)`. Nghiêm túc. Xem tập *Scope & Closure* của bộ sách này để được giải thích thêm.
 
 ### Expression Side Effects
 
-Most expressions don't have side effects. For example:
+Hầu hết các biểu hiện không có side effects. Ví dụ:
 
 ```js
 var a = 2;
 var b = a + 3;
 ```
 
-The expression `a + 3` did not *itself* have a side effect, like for instance changing `a`. It had a result, which is `5`, and that result was assigned to `b` in the statement `b = a + 3`.
+Biểu thức `a + 3` *bản thân nó* không có side effects, ví dụ như thay đổi `a`. Nó có một kết quả là `5` và kết quả đó được gán cho `b` trong câu lệnh `b = a + 3`.
 
-The most common example of an expression with (possible) side effects is a function call expression:
+Ví dụ phổ biến nhất của một biểu thức có (có thể) side effect là một function call expression (biểu thức gọi hàm):
 
 ```js
 function foo() {
@@ -139,14 +139,14 @@ var a = 1;
 foo();		// result: `undefined`, side effect: changed `a`
 ```
 
-There are other side-effecting expressions, though. For example:
+Tuy nhiên, có những biểu hiện side effects khác. Ví dụ:
 
 ```js
 var a = 42;
 var b = a++;
 ```
 
-The expression `a++` has two separate behaviors. *First*, it returns the current value of `a`, which is `42` (which then gets assigned to `b`). But *next*, it changes the value of `a` itself, incrementing it by one.
+Biểu thức `a++` có hai hành vi riêng biệt. *Đầu tiên*, nó trả về giá trị hiện tại của `a`, là `42` (sau đó được gán cho `b`). Nhưng *next*, nó thay đổi giá trị của chính `a`, tăng giá trị đó lên một.
 
 ```js
 var a = 42;
@@ -156,9 +156,9 @@ a;	// 43
 b;	// 42
 ```
 
-Many developers would mistakenly believe that `b` has value `43` just like `a` does. But the confusion comes from not fully considering the *when* of the side effects of the `++` operator.
+Nhiều nhà phát triển sẽ lầm tưởng rằng `b` có giá trị `43` giống như `a`. Nhưng sự nhầm lẫn xuất phát từ việc không xem xét đầy đủ *về* side effects của toán tử `++`.
 
-The `++` increment operator and the `--` decrement operator are both unary operators (see Chapter 4), which can be used in either a postfix ("after") position or prefix ("before") position.
+Toán tử tăng `++` và toán tử giảm `--` đều là toán tử đơn nguyên (xem Chương 4), có thể được sử dụng ở vị trí hậu tố ("sau") hoặc vị trí tiền tố ("trước").
 
 ```js
 var a = 42;
@@ -170,11 +170,11 @@ a;		// 43
 a;		// 44
 ```
 
-When `++` is used in the prefix position as `++a`, its side effect (incrementing `a`) happens *before* the value is returned from the expression, rather than *after* as with `a++`.
+Khi `++` được sử dụng ở vị trí tiền tố là `++a`, side effect của nó (tăng `a`) xảy ra *trước* giá trị được trả về từ biểu thức, thay vì *sau* như với `a++`.
 
-**Note:** Would you think `++a++` was legal syntax? If you try it, you'll get a `ReferenceError` error, but why? Because side-effecting operators **require a variable reference** to target their side effects to. For `++a++`, the `a++` part is evaluated first (because of operator precedence -- see below), which gives back the value of `a` _before_ the increment. But then it tries to evaluate `++42`, which (if you try it) gives the same `ReferenceError` error, since `++` can't have a side effect directly on a value like `42`.
+**Lưu ý:** Bạn có nghĩ `++a++` là cú pháp hợp pháp không? Nếu thử, bạn sẽ gặp lỗi `ReferenceError`, nhưng tại sao? Bởi vì các side-effecting operators **yêu cầu tham chiếu biến** để nhắm mục tiêu các side effects của chúng. Đối với `++a++`, phần `a++` được đánh giá trước (do ưu tiên của toán tử -- xem bên dưới), phần này mang lại giá trị của `a` _trước_ phần tăng. Nhưng sau đó, nó cố gắng đánh giá `++42`, mà (nếu bạn thử nó) đưa ra cùng một lỗi `ReferenceError`, vì `++` không thể có side effects trực tiếp trên một giá trị như `42`.
 
-It is sometimes mistakenly thought that you can encapsulate the *after* side effect of `a++` by wrapping it in a `( )` pair, like:
+Đôi khi người ta lầm tưởng rằng bạn có thể gói gọn side effect *after* của `a++` bằng cách gói nó trong một cặp `( )`, như:
 
 ```js
 var a = 42;
@@ -184,9 +184,9 @@ a;	// 43
 b;	// 42
 ```
 
-Unfortunately, `( )` itself doesn't define a new wrapped expression that would be evaluated *after* the *after side effect* of the `a++` expression, as we might have hoped. In fact, even if it did, `a++` returns `42` first, and unless you have another expression that reevaluates `a` after the side effect of `++`, you're not going to get `43` from that expression, so `b` will not be assigned `43`.
+Thật không may, bản thân `( )` không xác định một biểu thức được bao bọc mới sẽ được đánh giá *sau* *after side effect* của biểu thức `a++`, như chúng ta có thể đã hy vọng. Trên thực tế, ngay cả khi có, `a++` trả về `42` trước và trừ khi bạn có một biểu thức khác đánh giá lại `a` sau side effect của `++`, bạn sẽ không nhận được `43` từ đó biểu thức, vì vậy `b` sẽ không được gán `43`.
 
-There's an option, though: the `,` statement-series comma operator. This operator allows you to string together multiple standalone expression statements into a single statement:
+Tuy nhiên, có một tùy chọn: toán tử dấu phẩy chuỗi câu lệnh `,`. Toán tử này cho phép bạn xâu chuỗi nhiều câu lệnh biểu thức độc lập lại với nhau thành một câu lệnh:
 
 ```js
 var a = 42, b;
@@ -196,11 +196,11 @@ a;	// 43
 b;	// 43
 ```
 
-**Note:** The `( .. )` around `a++, a` is required here. The reason is operator precedence, which we'll cover later in this chapter.
+**Lưu ý:** `( .. )` xung quanh `a++, a` là bắt buộc ở đây. Lý do là quyền ưu tiên của toán tử, mà chúng ta sẽ đề cập sau trong chương này.
 
-The expression `a++, a` means that the second `a` statement expression gets evaluated *after* the *after side effects* of the first `a++` statement expression, which means it returns the `43` value for assignment to `b`.
+Biểu thức `a++, a` có nghĩa là biểu thức câu lệnh `a` thứ hai được ước tính *sau* *after side effects* của biểu thức câu lệnh `a++` đầu tiên, có nghĩa là nó trả về giá trị `43` để gán cho `b `.
 
-Another example of a side-effecting operator is `delete`. As we showed in Chapter 2, `delete` is used to remove a property from an `object` or a slot from an `array`. But it's usually just called as a standalone statement:
+Một ví dụ khác về side-effecting operator là `delete`. Như chúng tôi đã trình bày trong Chương 2, `delete` được sử dụng để xóa thuộc tính khỏi `object` hoặc vị trí khỏi `array`. Nhưng nó thường chỉ được gọi là một tuyên bố độc lập:
 
 ```js
 var obj = {
@@ -212,13 +212,13 @@ delete obj.a;	// true
 obj.a;			// undefined
 ```
 
-The result value of the `delete` operator is `true` if the requested operation is valid/allowable, or `false` otherwise. But the side effect of the operator is that it removes the property (or array slot).
+Giá trị kết quả của toán tử `delete` là `true` nếu thao tác được yêu cầu hợp lệ/được phép hoặc `false` nếu không. Nhưng side effect của toán tử là nó loại bỏ thuộc tính (hoặc vị trí array).
 
-**Note:** What do we mean by valid/allowable? Nonexistent properties, or properties that exist and are configurable (see Chapter 3 of the *this & Object Prototypes* title of this series) will return `true` from the `delete` operator. Otherwise, the result will be `false` or an error.
+**Lưu ý:** Ý nghĩa của từ hợp lệ/được phép là gì? Các thuộc tính không tồn tại hoặc các thuộc tính tồn tại và là configurable (xem Chương 3 của tập *this & Object Prototypes* của bộ sách này) sẽ trả về `true` từ toán tử `delete`. Nếu không, kết quả sẽ là `false` hoặc lỗi.
 
-One last example of a side-effecting operator, which may at once be both obvious and nonobvious, is the `=` assignment operator.
+Một ví dụ cuối cùng về side-effecting operator, có thể vừa rõ ràng vừa không rõ ràng, là toán tử gán `=`.
 
-Consider:
+Xem xét:
 
 ```js
 var a;
@@ -227,11 +227,11 @@ a = 42;		// 42
 a;			// 42
 ```
 
-It may not seem like `=` in `a = 42` is a side-effecting operator for the expression. But if we examine the result value of the `a = 42` statement, it's the value that was just assigned (`42`), so the assignment of that same value into `a` is essentially a side effect.
+Có vẻ như `=` trong `a = 42` không phải là side-effecting operator cho biểu thức. Nhưng nếu chúng ta kiểm tra giá trị kết quả của câu lệnh `a = 42`, thì đó là giá trị vừa được gán (`42`), do đó, việc gán cùng giá trị đó cho `a` về cơ bản là một side effect.
 
-**Tip:** The same reasoning about side effects goes for the compound-assignment operators like `+=`, `-=`, etc. For example, `a = b += 2` is processed first as `b += 2` (which is `b = b + 2`), and the result of *that* `=` assignment is then assigned to `a`.
+**Mẹo:** Lý do tương tự về side effect áp dụng cho các toán tử gán tổ hợp như `+=`, `-=`, v.v. Ví dụ: `a = b += 2` được xử lý trước tiên dưới dạng `b + = 2` (là `b = b + 2`) và kết quả của phép gán *đó* `=` sau đó được gán cho `a`.
 
-This behavior that an assignment expression (or statement) results in the assigned value is primarily useful for chained assignments, such as:
+Hành vi mà một biểu thức gán (hoặc câu lệnh) dẫn đến giá trị được gán chủ yếu hữu ích cho các phép gán theo chuỗi, chẳng hạn như:
 
 ```js
 var a, b, c;
@@ -239,11 +239,11 @@ var a, b, c;
 a = b = c = 42;
 ```
 
-Here, `c = 42` is evaluated to `42` (with the side effect of assigning `42` to `c`), then `b = 42` is evaluated to `42` (with the side effect of assigning `42` to `b`), and finally `a = 42` is evaluated (with the side effect of assigning `42` to `a`).
+Ở đây, `c = 42` được tính thành `42` (với side effect là gán `42` cho `c`), sau đó `b = 42` được tính thành `42` (với side effect là gán `42 ` thành `b`) và cuối cùng `a = 42` được tính (với side effect là gán `42` cho `a`).
 
-**Warning:** A common mistake developers make with chained assignments is like `var a = b = 42`. While this looks like the same thing, it's not. If that statement were to happen without there also being a separate `var b` (somewhere in the scope) to formally declare `b`, then `var a = b = 42` would not declare `b` directly. Depending on `strict` mode, that would either throw an error or create an accidental global (see the *Scope & Closures* title of this series).
+**Cảnh báo:** Một lỗi phổ biến mà các nhà phát triển mắc phải với các phép gán chuỗi giống như `var a = b = 42`. Trong khi điều này trông giống như điều tương tự, nó không phải. Nếu câu lệnh đó xảy ra mà không có `var b` riêng biệt (ở đâu đó trong scope) để chính thức khai báo `b`, thì `var a = b = 42` sẽ không trực tiếp khai báo `b`. Tùy thuộc vào chế độ `strict`, điều đó sẽ gây ra lỗi hoặc tạo ra một accidental global (xem tập *Phạm vi & Đóng cửa* của bộ sách này).
 
-Another scenario to consider:
+Một kịch bản khác để xem xét:
 
 ```js
 function vowels(str) {
@@ -262,7 +262,7 @@ function vowels(str) {
 vowels( "Hello World" ); // ["e","o","o"]
 ```
 
-This works, and many developers prefer such. But using an idiom where we take advantage of the assignment side effect, we can simplify by combining the two `if` statements into one:
+Điều này hoạt động và nhiều nhà phát triển thích như vậy. Nhưng sử dụng một thành ngữ mà chúng ta tận dụng tác dụng phụ của phép gán, chúng ta có thể đơn giản hóa bằng cách kết hợp hai câu lệnh `if` thành một:
 
 ```js
 function vowels(str) {
@@ -277,23 +277,23 @@ function vowels(str) {
 vowels( "Hello World" ); // ["e","o","o"]
 ```
 
-**Note:** The `( .. )` around `matches = str.match..` is required. The reason is operator precedence, which we'll cover in the "Operator Precedence" section later in this chapter.
+**Lưu ý:** `( .. )` xung quanh `matches = str.match..` là bắt buộc. Lý do là thứ tự ưu tiên của toán tử, mà chúng ta sẽ đề cập đến trong phần "Thứ tự ưu tiên của toán tử" ở phần sau của chương này.
 
-I prefer this shorter style, as I think it makes it clearer that the two conditionals are in fact related rather than separate. But as with most stylistic choices in JS, it's purely opinion which one is *better*.
+Tôi thích kiểu viết ngắn hơn này, vì tôi nghĩ nó làm rõ ràng hơn rằng hai điều kiện thực tế có liên quan với nhau hơn là tách biệt. Nhưng như với hầu hết các lựa chọn phong cách trong JS, đó hoàn toàn là ý kiến ​​về cái nào *tốt hơn*.
 
 ### Contextual Rules
 
-There are quite a few places in the JavaScript grammar rules where the same syntax means different things depending on where/how it's used. This kind of thing can, in isolation, cause quite a bit of confusion.
+Có khá nhiều chỗ trong các quy tắc ngữ pháp JavaScript trong đó cùng một cú pháp có nghĩa là những thứ khác nhau tùy thuộc vào vị trí/cách nó được sử dụng. Điều này có thể gây ra khá nhiều nhầm lẫn.
 
-We won't exhaustively list all such cases here, but just call out a few of the common ones.
+Chúng tôi sẽ không liệt kê đầy đủ tất cả các trường hợp như vậy ở đây mà chỉ nêu ra một số trường hợp phổ biến.
 
 #### `{ .. }` Curly Braces
 
-There's two main places (and more coming as JS evolves!) that a pair of `{ .. }` curly braces will show up in your code. Let's take a look at each of them.
+Có hai vị trí chính (và nhiều vị trí khác nữa khi JS phát triển!) mà một cặp dấu ngoặc nhọn `{ .. }` sẽ hiển thị trong mã của bạn. Chúng ta hãy xem xét từng người trong số họ.
 
 ##### Object Literals
 
-First, as an `object` literal:
+Đầu tiên, là một `object` literal:
 
 ```js
 // assume there's a `bar()` function defined
@@ -303,13 +303,13 @@ var a = {
 };
 ```
 
-How do we know this is an `object` literal? Because the `{ .. }` pair is a value that's getting assigned to `a`.
+Làm thế nào để chúng tôi biết đây là một `object` literal? Bởi vì cặp `{ .. }` là một giá trị được gán cho `a`.
 
-**Note:** The `a` reference is called an "l-value" (aka left-hand value) since it's the target of an assignment. The `{ .. }` pair is an "r-value" (aka right-hand value) since it's used *just* as a value (in this case as the source of an assignment).
+**Lưu ý:** Tham chiếu `a` được gọi là "l-value" (còn gọi là giá trị bên trái) vì nó là mục tiêu của một phép gán. Cặp `{ .. }` là một "r-value" (còn gọi là giá trị bên tay phải) vì nó được sử dụng *chỉ* làm giá trị (trong trường hợp này là nguồn của một phép gán).
 
 ##### Labels
 
-What happens if we remove the `var a =` part of the above snippet?
+Điều gì xảy ra nếu chúng ta xóa phần `var a =` của đoạn code trên?
 
 ```js
 // assume there's a `bar()` function defined
@@ -319,19 +319,19 @@ What happens if we remove the `var a =` part of the above snippet?
 }
 ```
 
-A lot of developers assume that the `{ .. }` pair is just a standalone `object` literal that doesn't get assigned anywhere. But it's actually entirely different.
+Rất nhiều nhà phát triển cho rằng cặp `{ .. }` chỉ là một standalone `object` literal (`object` độc lập) không được chỉ định ở bất kỳ đâu. Nhưng nó thực sự hoàn toàn khác nhau.
 
-Here, `{ .. }` is just a regular code block. It's not very idiomatic in JavaScript (much more so in other languages!) to have a standalone `{ .. }` block like that, but it's perfectly valid JS grammar. It can be especially helpful when combined with `let` block-scoping declarations (see the *Scope & Closures* title in this series).
+Ở đây, `{ .. }` chỉ là một khối mã thông thường. Việc có một khối `{ .. }` độc lập như thế không phải là thành ngữ trong JavaScript (còn hơn thế nữa trong các ngôn ngữ khác!), nhưng đó là ngữ pháp JS hoàn toàn hợp lệ. Nó có thể đặc biệt hữu ích khi kết hợp với khai báo phạm vi khối `let` (xem cuốn *Scope & Closure* trong bộ sách này).
 
-The `{ .. }` code block here is functionally pretty much identical to the code block being attached to some statement, like a `for`/`while` loop, `if` conditional, etc.
+Khối mã `{ .. }` ở đây về mặt chức năng khá giống với khối mã được đính kèm với một số câu lệnh, như vòng lặp `for`/`while`, điều kiện `if`, v.v.
 
-But if it's a normal block of code, what's that bizarre looking `foo: bar()` syntax, and how is that legal?
+Nhưng nếu đó là một khối mã bình thường, thì cú pháp `foo: bar()` trông kỳ lạ đó là gì và nó hợp pháp như thế nào?
 
-It's because of a little known (and, frankly, discouraged) feature in JavaScript called "labeled statements." `foo` is a label for the statement `bar()` (which has omitted its trailing `;` -- see "Automatic Semicolons" later in this chapter). But what's the point of a labeled statement?
+Đó là do một tính năng ít được biết đến (và nói thẳng ra là không khuyến khích) trong JavaScript được gọi là "các câu lệnh được gắn label (nhãn)". `foo` là label (nhãn) cho câu lệnh `bar()` (đã bỏ qua dấu `;` -- xem phần "Dấu chấm phẩy tự động" ở phần sau của chương này). Nhưng ý nghĩa của một câu lệnh được dán label (nhãn) là gì?
 
-If JavaScript had a `goto` statement, you'd theoretically be able to say `goto foo` and have execution jump to that location in code. `goto`s are usually considered terrible coding idioms as they make code much harder to understand (aka "spaghetti code"), so it's a *very good thing* that JavaScript doesn't have a general `goto`.
+Nếu JavaScript có câu lệnh `goto`, thì về mặt lý thuyết, bạn có thể nói `goto foo` và thực hiện nhảy tới vị trí đó trong code. `goto` thường được coi là những thành ngữ mã hóa khủng khiếp vì chúng làm cho code khó hiểu hơn nhiều (hay còn gọi là "code spaghetti"), vì vậy *rất tốt* là JavaScript không có `goto`.
 
-However, JS *does* support a limited, special form of `goto`: labeled jumps. Both the `continue` and `break` statements can optionally accept a specified label, in which case the program flow "jumps" kind of like a `goto`. Consider:
+Tuy nhiên, JS *có* hỗ trợ một dạng đặc biệt, giới hạn của `goto`: các bước nhảy có nhãn. Cả hai câu lệnh `continue` và `break` đều có thể tùy chọn chấp nhận một nhãn cụ thể, trong trường hợp đó, luồng chương trình "nhảy" giống như `goto`. Coi như:
 
 ```js
 // `foo` labeled-loop
@@ -360,11 +360,11 @@ foo: for (var i=0; i<4; i++) {
 // 3 2
 ```
 
-**Note:** `continue foo` does not mean "go to the 'foo' labeled position to continue", but rather, "continue the loop that is labeled 'foo' with its next iteration." So, it's not *really* an arbitrary `goto`.
+**Lưu ý:** `continue foo` không có nghĩa là "đi đến vị trí được gắn nhãn 'foo' để tiếp tục", mà là "tiếp tục vòng lặp được gắn nhãn 'foo' với lần lặp tiếp theo." Vì vậy, nó không *thực sự* là một `goto` tùy ý.
 
-As you can see, we skipped over the odd-multiple `3 1` iteration, but the labeled-loop jump also skipped iterations `1 1` and `2 2`.
+Như bạn có thể thấy, chúng tôi đã bỏ qua bước lặp bội số lẻ `3 1`, nhưng bước nhảy vòng lặp có nhãn cũng bỏ qua các lần lặp `1 1` và `2 2`.
 
-Perhaps a slightly more useful form of the labeled jump is with `break __` from inside an inner loop where you want to break out of the outer loop. Without a labeled `break`, this same logic could sometimes be rather awkward to write:
+Có lẽ một hình thức nhảy có nhãn hữu ích hơn một chút là với `break __` từ bên trong vòng lặp bên trong nơi bạn muốn thoát ra khỏi vòng lặp bên ngoài. Nếu không có nhãn `break`, logic tương tự này đôi khi có thể hơi khó viết:
 
 ```js
 // `foo` labeled-loop
@@ -389,11 +389,11 @@ foo: for (var i=0; i<4; i++) {
 // stopping! 1 3
 ```
 
-**Note:** `break foo` does not mean "go to the 'foo' labeled position to continue," but rather, "break out of the loop/block that is labeled 'foo' and continue *after* it." Not exactly a `goto` in the traditional sense, huh?
+**Lưu ý:** `break foo` không có nghĩa là "đi đến vị trí được gắn nhãn 'foo' để tiếp tục", mà là "thoát ra khỏi vòng lặp/khối được gắn nhãn 'foo' và tiếp tục *sau* nó." Không chính xác là `goto` theo nghĩa truyền thống, phải không?
 
-The nonlabeled `break` alternative to the above would probably need to involve one or more functions, shared scope variable access, etc. It would quite likely be more confusing than labeled `break`, so here using a labeled `break` is perhaps the better option.
+Phương án thay thế `break` không được gắn nhãn cho cách trên có thể sẽ cần liên quan đến một hoặc nhiều chức năng, quyền truy cập biến phạm vi được chia sẻ, v.v. Nó có thể sẽ gây nhầm lẫn hơn so với `break` được gắn nhãn, vì vậy ở đây sử dụng `break` có gắn nhãn có lẽ là cách tốt nhất lựa chọn tốt hơn.
 
-A label can apply to a non-loop block, but only `break` can reference such a non-loop label. You can do a labeled `break ___` out of any labeled block, but you cannot `continue ___` a non-loop label, nor can you do a non-labeled `break` out of a block.
+Nhãn có thể áp dụng cho block không vòng lặp, nhưng chỉ `break` mới có thể tham chiếu nhãn không vòng lặp như vậy. Bạn có thể thực hiện `break ___` được gắn nhãn ra khỏi bất kỳ block được gắn nhãn nào, nhưng bạn không thể `continue ___` nhãn không vòng lặp, bạn cũng không thể thực hiện `break` ra khỏi block không được gắn nhãn.
 
 ```js
 function foo() {
@@ -411,36 +411,36 @@ foo();
 // World
 ```
 
-Labeled loops/blocks are extremely uncommon, and often frowned upon. It's best to avoid them if possible; for example using function calls instead of the loop jumps. But there are perhaps some limited cases where they might be useful. If you're going to use a labeled jump, make sure to document what you're doing with plenty of comments!
+Các vòng lặp/block được gắn nhãn là cực kỳ hiếm và thường bị phản đối. Tốt nhất là tránh chúng nếu có thể; ví dụ: sử dụng các lệnh gọi hàm thay vì các bước nhảy vòng lặp. Nhưng có lẽ có một số trường hợp hạn chế mà chúng có thể hữu ích. Nếu bạn định sử dụng bước nhảy có nhãn, hãy đảm bảo ghi lại những gì bạn đang làm với nhiều nhận xét!
 
-It's a very common belief that JSON is a proper subset of JS, so a string of JSON (like `{"a":42}` -- notice the quotes around the property name as JSON requires!) is thought to be a valid JavaScript program. **Not true!** Try putting `{"a":42}` into your JS console, and you'll get an error.
+Mọi người thường tin rằng JSON là một tập hợp con thích hợp của JS, do đó, một chuỗi JSON (như `{"a":42}` -- lưu ý các dấu ngoặc kép xung quanh tên thuộc tính mà JSON yêu cầu!) được cho là hợp lệ chương trình JavaScript. **Không đúng!** Hãy thử đặt `{"a":42}` vào JS console của bạn và bạn sẽ gặp lỗi.
 
-That's because statement labels cannot have quotes around them, so `"a"` is not a valid label, and thus `:` can't come right after it.
+Đó là bởi vì nhãn câu lệnh không thể có dấu ngoặc kép xung quanh chúng, vì vậy `"a"` không phải là nhãn hợp lệ và do đó `:` không thể đứng ngay sau nó.
 
-So, JSON is truly a subset of JS syntax, but JSON is not valid JS grammar by itself.
+Vì vậy, JSON thực sự là một tập hợp con của cú pháp JS, nhưng bản thân JSON không phải là ngữ pháp JS hợp lệ.
 
-One extremely common misconception along these lines is that if you were to load a JS file into a `<script src=..>` tag that only has JSON content in it (like from an API call), the data would be read as valid JavaScript but just be inaccessible to the program. JSON-P (the practice of wrapping the JSON data in a function call, like `foo({"a":42})`) is usually said to solve this inaccessibility by sending the value to one of your program's functions.
+Một quan niệm sai lầm cực kỳ phổ biến dọc theo những dòng này là nếu bạn tải tệp JS vào thẻ `<script src=..>` chỉ có nội dung JSON trong đó (như từ lệnh gọi API), thì dữ liệu sẽ được đọc dưới dạng JavaScript hợp lệ nhưng không thể truy cập được vào chương trình. JSON-P (thực hành gói dữ liệu JSON trong một lệnh gọi hàm, như `foo({"a":42})`) thường được cho là để giải quyết tình trạng không thể truy cập này bằng cách gửi giá trị tới một trong các hàm của chương trình.
 
-**Not true!** The totally valid JSON value `{"a":42}` by itself would actually throw a JS error because it'd be interpreted as a statement block with an invalid label. But `foo({"a":42})` is valid JS because in it, `{"a":42}` is an `object` literal value being passed to `foo(..)`. So, properly said, **JSON-P makes JSON into valid JS grammar!**
+**Không đúng!** Bản thân giá trị JSON hoàn toàn hợp lệ `{"a":42}` sẽ thực sự gây ra lỗi JS vì giá trị này được hiểu là khối câu lệnh có nhãn không hợp lệ. Nhưng `foo({"a":42})` là JS hợp lệ vì trong đó, `{"a":42}` là một giá trị chữ `đối tượng` được truyền cho `foo(..)`. Vì vậy, nói một cách chính xác, **JSON-P biến JSON thành ngữ pháp JS hợp lệ!**
 
 ##### Blocks
 
-Another commonly cited JS gotcha (related to coercion -- see Chapter 4) is:
+Một gotcha JS thường được trích dẫn khác (liên quan đến coercion -- xem Chương 4) là:
 
 ```js
 [] + {}; // "[object Object]"
 {} + []; // 0
 ```
 
-This seems to imply the `+` operator gives different results depending on whether the first operand is the `[]` or the `{}`. But that actually has nothing to do with it!
+Điều này dường như ngụ ý rằng toán tử `+` cho các kết quả khác nhau tùy thuộc vào toán hạng đầu tiên là `[]` hay `{}`. Nhưng điều đó thực sự không có gì để làm với nó!
 
-On the first line, `{}` appears in the `+` operator's expression, and is therefore interpreted as an actual value (an empty `object`). Chapter 4 explained that `[]` is coerced to `""` and thus `{}` is coerced to a `string` value as well: `"[object Object]"`.
+Ở dòng đầu tiên, `{}` xuất hiện trong biểu thức của toán tử `+`, và do đó được hiểu là một giá trị thực (một `object` trống). Chương 4 giải thích rằng `[]` bị ép buộc thành `""` và do đó `{}` cũng bị ép buộc thành một giá trị `string` do đó thành: `"[object Object]"`.
 
-But on the second line, `{}` is interpreted as a standalone `{}` empty block (which does nothing). Blocks don't need semicolons to terminate them, so the lack of one here isn't a problem. Finally, `+ []` is an expression that *explicitly coerces* (see Chapter 4) the `[]` to a `number`, which is the `0` value.
+Nhưng ở dòng thứ hai, `{}` được hiểu là một standalone `{}` empty block (không có tác dụng gì). Các block không cần dấu chấm phẩy để kết thúc chúng, vì vậy việc thiếu một dấu chấm phẩy ở đây không phải là vấn đề. Cuối cùng, `+ []` là một biểu thức *explicitly coerces* (xem Chương 4) `[]` thành một `number`, là giá trị `0`.
 
 ##### Object Destructuring
 
-Starting with ES6, another place that you'll see `{ .. }` pairs showing up is with "destructuring assignments" (see the *ES6 & Beyond* title of this series for more info), specifically `object` destructuring. Consider:
+Bắt đầu với ES6, một vị trí khác mà bạn sẽ thấy các cặp `{ .. }` hiển thị là "destructuring assignments" (xem tập *ES6 & Beyond* của bộ sách này để biết thêm thông tin), cụ thể là destructuring `object`. Xem xét:
 
 ```js
 function getData() {
@@ -456,7 +456,7 @@ var { a, b } = getData();
 console.log( a, b ); // 42 "foo"
 ```
 
-As you can probably tell, `var { a , b } = ..` is a form of ES6 destructuring assignment, which is roughly equivalent to:
+Như bạn có thể biết, `var { a , b } = ..` là một dạng ES6 destructuring assignment, gần tương đương với:
 
 ```js
 var res = getData();
@@ -464,9 +464,9 @@ var a = res.a;
 var b = res.b;
 ```
 
-**Note:** `{ a, b }` is actually ES6 destructuring shorthand for `{ a: a, b: b }`, so either will work, but it's expected that the shorter `{ a, b }` will become the preferred form.
+**Lưu ý:** `{ a, b }` thực ra là viết tắt ES6 destructuring cho `{ a: a, b: b }`, vì vậy một trong hai cách này sẽ hoạt động, nhưng `{ a, b }` ngắn hơn sẽ được mong đợi trở thành hình thức ưa thích.
 
-Object destructuring with a `{ .. }` pair can also be used for named function arguments, which is sugar for this same sort of implicit object property assignment:
+Object destructuring bằng cặp `{ .. }` cũng có thể được sử dụng cho các đối số hàm được đặt tên, đây là đường cho cùng loại gán thuộc tính đối tượng ngầm định này:
 
 ```js
 function foo({ a, b, c }) {
@@ -482,11 +482,11 @@ foo( {
 } );	// 42 "foo" [1, 2, 3]
 ```
 
-So, the context we use `{ .. }` pairs in entirely determines what they mean, which illustrates the difference between syntax and grammar. It's very important to understand these nuances to avoid unexpected interpretations by the JS engine.
+Vì vậy, ngữ cảnh chúng ta sử dụng các cặp `{ .. }` hoàn toàn xác định ý nghĩa của chúng, điều này minh họa sự khác biệt giữa cú pháp và ngữ pháp. Điều rất quan trọng là phải hiểu những sắc thái này để tránh những diễn giải không mong muốn của công cụ JS.
 
 #### `else if` And Optional Blocks
 
-It's a common misconception that JavaScript has an `else if` clause, because you can do:
+Một quan niệm sai lầm phổ biến là JavaScript có mệnh đề `else if`, bởi vì bạn có thể làm:
 
 ```js
 if (a) {
@@ -500,19 +500,19 @@ else {
 }
 ```
 
-But there's a hidden characteristic of the JS grammar here: there is no `else if`. But `if` and `else` statements are allowed to omit the `{ }` around their attached block if they only contain a single statement. You've seen this many times before, undoubtedly:
+Nhưng có một đặc điểm ẩn của ngữ pháp JS ở đây: không có `else if`. Nhưng các câu lệnh `if` và `else` được phép bỏ qua `{ }` xung quanh block đính kèm của chúng nếu chúng chỉ chứa một câu lệnh duy nhất. Chắc chắn bạn đã thấy điều này nhiều lần trước đây:
 
 ```js
 if (a) doSomething( a );
 ```
 
-Many JS style guides will insist that you always use `{ }` around a single statement block, like:
+Nhiều hướng dẫn về phong cách JS sẽ nhấn mạnh rằng bạn luôn sử dụng `{ }` xung quanh một khối câu lệnh, như:
 
 ```js
 if (a) { doSomething( a ); }
 ```
 
-However, the exact same grammar rule applies to the `else` clause, so the `else if` form you've likely always coded is *actually* parsed as:
+Tuy nhiên, quy tắc ngữ pháp chính xác giống như vậy áp dụng cho mệnh đề `else`, do đó, dạng `else if` mà bạn có thể luôn mã hóa được *thực sự* phân tích thành:
 
 ```js
 if (a) {
@@ -528,13 +528,13 @@ else {
 }
 ```
 
-The `if (b) { .. } else { .. }` is a single statement that follows the `else`, so you can either put the surrounding `{ }` in or not. In other words, when you use `else if`, you're technically breaking that common style guide rule and just defining your `else` with a single `if` statement.
+`if (b) { .. } else { .. }` là một câu lệnh đơn theo sau `else`, vì vậy bạn có thể đưa `{ }` xung quanh vào hoặc không. Nói cách khác, khi bạn sử dụng `else if`, về mặt kỹ thuật, bạn đang phá vỡ quy tắc hướng dẫn phong cách phổ biến đó và chỉ xác định `else` của bạn bằng một câu lệnh `if` duy nhất.
 
-Of course, the `else if` idiom is extremely common and results in one less level of indentation, so it's attractive. Whichever way you do it, just call out explicitly in your own style guide/rules and don't assume things like `else if` are direct grammar rules.
+Tất nhiên, thành ngữ `else if` cực kỳ phổ biến và dẫn đến một mức độ thụt đầu dòng ít hơn, vì vậy nó rất hấp dẫn. Cho dù bạn làm theo cách nào, chỉ cần gọi rõ ràng trong hướng dẫn/quy tắc văn phong của riêng bạn và đừng cho rằng những thứ như `else if` là các quy tắc ngữ pháp trực tiếp.
 
 ## Operator Precedence
 
-As we covered in Chapter 4, JavaScript's version of `&&` and `||` are interesting in that they select and return one of their operands, rather than just resulting in `true` or `false`. That's easy to reason about if there are only two operands and one operator.
+Như chúng ta đã đề cập trong Chương 4, phiên bản `&&` và `||` của JavaScript thú vị ở chỗ chúng chọn và trả về một trong các toán hạng của chúng, thay vì chỉ dẫn đến `true` hoặc `false`. Thật dễ dàng để giải thích nếu chỉ có hai toán hạng và một toán tử.
 
 ```js
 var a = 42;
@@ -544,7 +544,7 @@ a && b;	// "foo"
 a || b;	// 42
 ```
 
-But what about when there's two operators involved, and three operands?
+Nhưng còn khi có hai toán tử tham gia và ba toán hạng thì sao?
 
 ```js
 var a = 42;
@@ -555,13 +555,13 @@ a && b || c; // ???
 a || b && c; // ???
 ```
 
-To understand what those expressions result in, we're going to need to understand what rules govern how the operators are processed when there's more than one present in an expression.
+Để hiểu kết quả của những biểu thức đó là gì, chúng ta sẽ cần hiểu quy tắc nào chi phối cách các toán tử được xử lý khi có nhiều hơn một biểu thức xuất hiện trong một biểu thức.
 
-These rules are called "operator precedence."
+Những quy tắc này được gọi là "operator precedence (toán tử ưu tiên)."
 
-I bet most readers feel they have a decent grasp on operator precedence. But as with everything else we've covered in this book series, we're going to poke and prod at that understanding to see just how solid it really is, and hopefully learn a few new things along the way.
+Tôi cá rằng hầu hết độc giả cảm thấy họ nắm bắt được operator precedence. Nhưng cũng như mọi thứ khác mà chúng tôi đã đề cập trong bộ sách này, chúng tôi sẽ tìm hiểu và đánh giá sự hiểu biết đó để xem nó thực sự vững chắc đến mức nào và hy vọng sẽ học được một số điều mới trong quá trình thực hiện.
 
-Recall the example from above:
+Nhớ lại ví dụ trước đó:
 
 ```js
 var a = 42, b;
@@ -571,7 +571,7 @@ a;	// 43
 b;	// 43
 ```
 
-But what would happen if we remove the `( )`?
+Nhưng điều gì sẽ xảy ra nếu chúng ta loại bỏ `( )`?
 
 ```js
 var a = 42, b;
@@ -581,13 +581,13 @@ a;	// 43
 b;	// 42
 ```
 
-Wait! Why did that change the value assigned to `b`?
+Chờ đã! Tại sao điều đó lại thay đổi giá trị được gán cho `b`?
 
-Because the `,` operator has a lower precedence than the `=` operator. So, `b = a++, a` is interpreted as `(b = a++), a`. Because (as we explained earlier) `a++` has *after side effects*, the assigned value to `b` is the value `42` before the `++` changes `a`.
+Vì toán tử `,` có độ ưu tiên thấp hơn toán tử `=`. Vì vậy, `b = a++, a` được hiểu là `(b = a++), a`. Bởi vì (như chúng tôi đã giải thích trước đó) `a++` có *after side effect*, nên giá trị được gán cho `b` là giá trị `42` trước khi `++` thay đổi `a`.
 
-This is just a simple matter of needing to understand operator precedence. If you're going to use `,` as a statement-series operator, it's important to know that it actually has the lowest precedence. Every other operator will more tightly bind than `,` will.
+Đây chỉ là một vấn đề đơn giản cần hiểu về quyền ưu tiên của toán tử. Nếu bạn định sử dụng `,` làm toán tử chuỗi câu lệnh, điều quan trọng cần biết là nó thực sự có mức độ ưu tiên thấp nhất. Mọi toán tử khác sẽ liên kết chặt chẽ hơn `,` sẽ.
 
-Now, recall this example from above:
+Bây giờ, hãy nhớ lại ví dụ này từ trước đó:
 
 ```js
 if (str && (matches = str.match( /[aeiou]/g ))) {
@@ -595,11 +595,11 @@ if (str && (matches = str.match( /[aeiou]/g ))) {
 }
 ```
 
-We said the `( )` around the assignment is required, but why? Because `&&` has higher precedence than `=`, so without the `( )` to force the binding, the expression would instead be treated as `(str && matches) = str.match..`. But this would be an error, because the result of `(str && matches)` isn't going to be a variable, but instead a value (in this case `undefined`), and so it can't be the left-hand side of an `=` assignment!
+Chúng tôi đã nói `( )` xung quanh phép gán là bắt buộc, nhưng tại sao? Bởi vì `&&` có mức độ ưu tiên cao hơn `=`, nên nếu không có `( )` để bắt buộc liên kết, thay vào đó, biểu thức sẽ được coi là `(str &&match) = str.match..`. Nhưng đây sẽ là một lỗi, bởi vì kết quả của `(str && Match)` sẽ không phải là một biến, mà thay vào đó là một giá trị (trong trường hợp này là `undefined`), và do đó, nó không thể là bên trái- mặt trái của một bài tập `=`!
 
-OK, so you probably think you've got this operator precedence thing down.
+OK, vì vậy bạn có thể nghĩ rằng bạn đã hiểu được thứ tự ưu tiên của toán tử này.
 
-Let's move on to a more complex example (which we'll carry throughout the next several sections of this chapter) to *really* test your understanding:
+Hãy chuyển sang một ví dụ phức tạp hơn (mà chúng ta sẽ thực hiện trong suốt các phần tiếp theo của chương này) để *thực sự* kiểm tra sự hiểu biết của bạn:
 
 ```js
 var a = 42;
@@ -611,29 +611,29 @@ var d = a && b || c ? c || b ? a : c && b : a;
 d;		// ??
 ```
 
-OK, evil, I admit it. No one would write a string of expressions like that, right? *Probably* not, but we're going to use it to examine various issues around chaining multiple operators together, which *is* a very common task.
+OK, xấu xa, tôi thừa nhận nó. Sẽ không ai viết một chuỗi các biểu thức như vậy, phải không? *Có thể* là không, nhưng chúng ta sẽ sử dụng nó để kiểm tra các vấn đề khác nhau xung quanh việc xâu chuỗi nhiều toán tử lại với nhau, đây *là* một nhiệm vụ rất phổ biến.
 
-The result above is `42`. But that's not nearly as interesting as how we can figure out that answer without just plugging it into a JS program to let JavaScript sort it out.
+Kết quả ở trên là `42`. Nhưng điều đó gần như không thú vị bằng cách chúng ta có thể tìm ra câu trả lời đó mà không cần cắm nó vào chương trình JS để JavaScript sắp xếp nó.
 
-Let's dig in.
+Nào cùng phân tích.
 
-The first question -- it may not have even occurred to you to ask -- is, does the first part (`a && b || c`) behave like `(a && b) || c` or like `a && (b || c)`? Do you know for certain? Can you even convince yourself they are actually different?
+Câu hỏi đầu tiên -- có thể bạn chưa từng nghĩ đến để hỏi -- là, phần đầu tiên (`a && b || c`) có hoạt động như `(a && b) || c` hay như `a && (b || c)`? Bạn có biết chắc chắn không? Bạn thậm chí có thể thuyết phục bản thân rằng họ thực sự khác nhau không?
 
 ```js
 (false && true) || true;	// true
 false && (true || true);	// false
 ```
 
-So, there's proof they're different. But still, how does `false && true || true` behave? The answer:
+Vì vậy, có bằng chứng họ khác nhau. Tuy nhiên, làm thế nào để `false && true || true` thực hiện? Câu trả lời:
 
 ```js
 false && true || true;		// true
 (false && true) || true;	// true
 ```
 
-So we have our answer. The `&&` operator is evaluated first and the `||` operator is evaluated second.
+Vì vậy, chúng tôi có câu trả lời của chúng tôi. Toán tử `&&` được tính toán đầu tiên và toán tử `||` được toán thứ hai.
 
-But is that just because of left-to-right processing? Let's reverse the order of operators:
+Nhưng đó chỉ là do xử lý từ trái sang phải? Hãy đảo ngược thứ tự của các toán tử:
 
 ```js
 true || false && false;		// true
@@ -642,25 +642,25 @@ true || false && false;		// true
 true || (false && false);	// true -- winner, winner!
 ```
 
-Now we've proved that `&&` is evaluated first and then `||`, and in this case that was actually counter to generally expected left-to-right processing.
+Bây giờ chúng tôi đã chứng minh rằng `&&` được tính toán trước rồi mới đến `||`, và trong trường hợp này, điều đó thực sự trái ngược với quy trình xử lý từ trái sang phải được mong đợi chung.
 
-So what caused the behavior? **Operator precedence**.
+Vậy nguyên nhân của hành vi này là gì? **Operator precedence**.
 
-Every language defines its own operator precedence list. It's dismaying, though, just how uncommon it is that JS developers have read JS's list.
+Mỗi ngôn ngữ xác định danh sách ưu tiên toán tử của riêng mình. Tuy nhiên, thật đáng thất vọng khi các nhà phát triển JS đã đọc danh sách của JS.
 
-If you knew it well, the above examples wouldn't have tripped you up in the slightest, because you'd already know that `&&` is more precedent than `||`. But I bet a fair amount of readers had to think about it a little bit.
+Nếu bạn biết rõ về nó, thì các ví dụ trên sẽ không làm bạn vấp ngã chút nào, bởi vì bạn đã biết rằng `&&` có nhiều tiền lệ hơn `||`. Nhưng tôi cá rằng một số lượng lớn độc giả đã phải suy nghĩ về nó một chút.
 
-**Note:** Unfortunately, the JS spec doesn't really have its operator precedence list in a convenient, single location. You have to parse through and understand all the grammar rules. So we'll try to lay out the more common and useful bits here in a more convenient format. For a complete list of operator precedence, see "Operator Precedence" on the MDN site (* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence).
+**Lưu ý:** Thật không may, đặc tả JS không thực sự có danh sách ưu tiên toán tử của nó ở một vị trí duy nhất, thuận tiện. Bạn phải phân tích cú pháp và hiểu tất cả các quy tắc ngữ pháp. Vì vậy, chúng tôi sẽ cố gắng sắp xếp các bit phổ biến và hữu ích hơn ở đây theo định dạng thuận tiện hơn. Để biết danh sách đầy đủ về mức độ ưu tiên của toán tử, hãy xem "Mức độ ưu tiên của toán tử" trên trang web MDN (* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence).
 
 ### Short Circuited
 
-In Chapter 4, we mentioned in a side note the "short circuiting" nature of operators like `&&` and `||`. Let's revisit that in more detail now.
+Trong Chương 4, chúng tôi đã đề cập trong một lưu ý phụ về bản chất "đoản mạch(Short Circuited)" của các toán tử như `&&` và `||`. Bây giờ chúng ta hãy xem lại chi tiết hơn.
 
-For both `&&` and `||` operators, the right-hand operand will **not be evaluated** if the left-hand operand is sufficient to determine the outcome of the operation. Hence, the name "short circuited" (in that if possible, it will take an early shortcut out).
+Đối với cả toán tử `&&` và `||`, toán hạng bên phải sẽ **không được đánh giá** nếu toán hạng bên trái đủ để xác định kết quả của phép toán. Do đó mới có tên gọi "Short Circuited" (ở chỗ nếu có thể thì sẽ đi tắt sớm).
 
-For example, with `a && b`, `b` is not evaluated if `a` is falsy, because the result of the `&&` operand is already certain, so there's no point in bothering to check `b`. Likewise, with `a || b`, if `a` is truthy, the result of the operand is already certain, so there's no reason to check `b`.
+Ví dụ: với `a && b`, `b` không được đánh giá nếu `a` là sai, bởi vì kết quả của toán hạng `&&` đã là chắc chắn, vì vậy không cần bận tâm kiểm tra `b`. Tương tự, với `a || b`, nếu `a` là đúng, thì kết quả của toán hạng đã là chắc chắn, vì vậy không có lý do gì để kiểm tra `b`.
 
-This short circuiting can be very helpful and is commonly used:
+Short circuiting có thể rất hữu ích và thường được sử dụng:
 
 ```js
 function doSomething(opts) {
@@ -670,9 +670,9 @@ function doSomething(opts) {
 }
 ```
 
-The `opts` part of the `opts && opts.cool` test acts as sort of a guard, because if `opts` is unset (or is not an `object`), the expression `opts.cool` would throw an error. The `opts` test failing plus the short circuiting means that `opts.cool` won't even be evaluated, thus no error!
+Phần `opts` của thử nghiệm `opts && opts.cool` hoạt động như một loại bảo vệ, bởi vì nếu `opts` không được đặt (hoặc không phải là `đối tượng`), biểu thức `opts.cool` sẽ báo lỗi . Thử nghiệm `opts` không thành công cộng với đoản mạch có nghĩa là `opts.cool` thậm chí sẽ không được đánh giá, do đó không có lỗi!
 
-Similarly, you can use `||` short circuiting:
+Tương tự, bạn có thể sử dụng `||` short circuiting:
 
 ```js
 function doSomething(opts) {
@@ -682,76 +682,76 @@ function doSomething(opts) {
 }
 ```
 
-Here, we're checking for `opts.cache` first, and if it's present, we don't call the `primeCache()` function, thus avoiding potentially unnecessary work.
+Ở đây, trước tiên, chúng tôi kiểm tra `opts.cache` và nếu có, chúng tôi sẽ không gọi hàm `primeCache()`, do đó tránh được công việc có thể không cần thiết.
 
 ### Tighter Binding
 
-But let's turn our attention back to that earlier complex statement example with all the chained operators, specifically the `? :` ternary operator parts. Does the `? :` operator have more or less precedence than the `&&` and `||` operators?
+Nhưng hãy chuyển sự chú ý của chúng ta trở lại ví dụ về câu lệnh phức tạp trước đó với tất cả các toán tử được xâu chuỗi, cụ thể là `? :` bộ phận toán tử ba ngôi. `? :` có nhiều hay ít quyền ưu tiên hơn các toán tử `&&` và `||`?
 
 ```js
 a && b || c ? c || b ? a : c && b : a
 ```
 
-Is that more like this:
+Có phải như thế này không:
 
 ```js
 a && b || (c ? c || (b ? a : c) && b : a)
 ```
 
-or this?
+hay cái này?
 
 ```js
 (a && b || c) ? (c || b) ? a : (c && b) : a
 ```
 
-The answer is the second one. But why?
+Câu trả lời là cái thứ hai. Nhưng tại sao?
 
-Because `&&` is more precedent than `||`, and `||` is more precedent than `? :`.
+Bởi vì `&&` có nhiều ưu tiên hơn `||` và `||` có nhiều ưu tiên hơn `? :`.
 
-So, the expression `(a && b || c)` is evaluated *first* before the `? :` it participates in. Another way this is commonly explained is that `&&` and `||` "bind more tightly" than `? :`. If the reverse was true, then `c ? c...` would bind more tightly, and it would behave (as the first choice) like `a && b || (c ? c..)`.
+Vì vậy, biểu thức `(a && b || c)` được ước tính *đầu tiên* trước `? :` nó tham gia. Một cách khác mà điều này thường được giải thích là `&&` và `||` "liên kết chặt chẽ hơn" so với `? :`. Nếu điều ngược lại là đúng, thì `c ? c...` sẽ liên kết chặt chẽ hơn và nó sẽ hoạt động (như lựa chọn đầu tiên) như `a && b || (c? c..)`.
 
-### Associativity
+### Associativity (tính liên kết)
 
-So, the `&&` and `||` operators bind first, then the `? :` operator. But what about multiple operators of the same precedence? Do they always process left-to-right or right-to-left?
+Vì vậy, các toán tử `&&` và `||` liên kết trước, sau đó là `? :` toán tử. Nhưng còn nhiều toán tử có cùng mức độ ưu tiên thì sao? Họ luôn xử lý từ trái sang phải hay từ phải sang trái?
 
-In general, operators are either left-associative or right-associative, referring to whether **grouping happens from the left or from the right**.
+Nói chung, các toán tử là liên kết trái hoặc liên kết phải, đề cập đến việc **gom nhóm xảy ra từ bên trái hay từ bên phải**.
 
-It's important to note that associativity is *not* the same thing as left-to-right or right-to-left processing.
+Điều quan trọng cần lưu ý là tính kết hợp *không* giống như xử lý từ trái sang phải hoặc từ phải sang trái.
 
-But why does it matter whether processing is left-to-right or right-to-left? Because expressions can have side effects, like for instance with function calls:
+Nhưng tại sao việc xử lý từ trái sang phải hay từ phải sang trái lại quan trọng? Bởi vì các biểu thức có thể có side effect, chẳng hạn như với các lệnh gọi hàm:
 
 ```js
 var a = foo() && bar();
 ```
 
-Here, `foo()` is evaluated first, and then possibly `bar()` depending on the result of the `foo()` expression. That definitely could result in different program behavior than if `bar()` was called before `foo()`.
+Ở đây, `foo()` được đánh giá trước, sau đó có thể là `bar()` tùy thuộc vào kết quả của biểu thức `foo()`. Điều đó chắc chắn có thể dẫn đến hành vi chương trình khác với nếu `bar()` được gọi trước `foo()`.
 
-But this behavior is *just* left-to-right processing (the default behavior in JavaScript!) -- it has nothing to do with the associativity of `&&`. In that example, since there's only one `&&` and thus no relevant grouping here, associativity doesn't even come into play.
+Nhưng hành vi này *chỉ* xử lý từ trái sang phải (hành vi mặc định trong JavaScript!) -- nó không liên quan gì đến tính kết hợp của `&&`. Trong ví dụ đó, vì chỉ có một `&&` và do đó không có nhóm liên quan nào ở đây, tính kết hợp thậm chí không phát huy tác dụng.
 
-But with an expression like `a && b && c`, grouping *will* happen implicitly, meaning that either `a && b` or `b && c` will be evaluated first.
+Nhưng với một biểu thức như `a && b && c`, việc nhóm *sẽ* diễn ra hoàn toàn, nghĩa là `a && b` hoặc `b && c` sẽ được đánh giá trước.
 
-Technically, `a && b && c` will be handled as `(a && b) && c`, because `&&` is left-associative (so is `||`, by the way). However, the right-associative alternative `a && (b && c)` behaves observably the same way. For the same values, the same expressions are evaluated in the same order.
+Về mặt kỹ thuật, `a && b && c` sẽ được xử lý như `(a && b) && c`, vì `&&` là liên kết trái (nhân tiện, `||` cũng vậy). Tuy nhiên, phương án thay thế liên kết phải `a && (b && c)` hoạt động theo cùng một cách có thể quan sát được. Đối với các giá trị giống nhau, các biểu thức giống nhau được đánh giá theo cùng một thứ tự.
 
-**Note:** If hypothetically `&&` was right-associative, it would be processed the same as if you manually used `( )` to create grouping like `a && (b && c)`. But that still **doesn't mean** that `c` would be processed before `b`. Right-associativity does **not** mean right-to-left evaluation, it means right-to-left **grouping**. Either way, regardless of the grouping/associativity, the strict ordering of evaluation will be `a`, then `b`, then `c` (aka left-to-right).
+**Lưu ý:** Nếu theo giả thuyết `&&` là liên kết đúng, nó sẽ được xử lý giống như khi bạn sử dụng `( )` theo cách thủ công để tạo nhóm như `a && (b && c)`. Nhưng điều đó vẫn **không có nghĩa là** rằng `c` sẽ được xử lý trước `b`. Tính liên kết phải **không** có nghĩa là đánh giá từ phải sang trái, mà có nghĩa là **nhóm** từ phải sang trái. Dù bằng cách nào, bất kể nhóm/liên kết như thế nào, thứ tự nghiêm ngặt của đánh giá sẽ là `a`, sau đó là `b`, sau đó là `c` (còn gọi là từ trái sang phải).
 
-So it doesn't really matter that much that `&&` and `||` are left-associative, other than to be accurate in how we discuss their definitions.
+Vì vậy, việc `&&` và `||` là liên kết trái không thực sự quan trọng, ngoại trừ việc chính xác trong cách chúng ta thảo luận về định nghĩa của chúng.
 
-But that's not always the case. Some operators would behave very differently depending on left-associativity vs. right-associativity.
+Nhưng không phải lúc nào cũng vậy. Một số toán tử sẽ hành xử rất khác nhau tùy thuộc vào tính kết hợp bên trái so với tính kết hợp bên phải.
 
-Consider the `? :` ("ternary" or "conditional") operator:
+Hãy xem xét `? :` toán tử ("ba ngôi" hay "điều kiện"):
 
 ```js
 a ? b : c ? d : e;
 ```
 
-`? :` is right-associative, so which grouping represents how it will be processed?
+`? :` là liên kết phải, vậy nhóm nào biểu thị cách nó sẽ được xử lý?
 
 * `a ? b : (c ? d : e)`
 * `(a ? b : c) ? d : e`
 
-The answer is `a ? b : (c ? d : e)`. Unlike with `&&` and `||` above, the right-associativity here actually matters, as `(a ? b : c) ? d : e` *will* behave differently for some (but not all!) combinations of values.
+Câu trả lời là `a ? b: (c? d: e)`. Không giống như `&&` và `||` ở trên, tính liên kết phải ở đây thực sự quan trọng, vì `(a ? b : c) ? d : e` *will* hoạt động khác đi đối với một số kết hợp giá trị (nhưng không phải tất cả!).
 
-One such example:
+Một ví dụ như vậy:
 
 ```js
 true ? false : true ? true : true;		// false
@@ -760,7 +760,7 @@ true ? false : (true ? true : true);	// false
 (true ? false : true) ? true : true;	// true
 ```
 
-Even more nuanced differences lurk with other value combinations, even if the end result is the same. Consider:
+Thậm chí nhiều sự khác biệt về sắc thái ẩn giấu với các kết hợp giá trị khác, ngay cả khi kết quả cuối cùng là như nhau. Xem xét:
 
 ```js
 true ? false : true ? true : false;		// false
@@ -769,7 +769,7 @@ true ? false : (true ? true : false);	// false
 (true ? false : true) ? true : false;	// false
 ```
 
-From that scenario, the same end result implies that the grouping is moot. However:
+Từ kịch bản đó, kết quả cuối cùng tương tự ngụ ý rằng nhóm đang tranh luận. Tuy nhiên:
 
 ```js
 var a = true, b = false, c = true, d = true, e = false;
@@ -778,9 +778,9 @@ a ? b : (c ? d : e); // false, evaluates only `a` and `b`
 (a ? b : c) ? d : e; // false, evaluates `a`, `b` AND `e`
 ```
 
-So, we've clearly proved that `? :` is right-associative, and that it actually matters with respect to how the operator behaves if chained with itself.
+Vì vậy, chúng tôi đã chứng minh rõ ràng rằng `? :` là liên kết phải và nó thực sự quan trọng đối với cách toán tử hành xử nếu bị chained (chồng) với chính nó.
 
-Another example of right-associativity (grouping) is the `=` operator. Recall the chained assignment example from earlier in the chapter:
+Một ví dụ khác về tính liên kết phải (nhóm) là toán tử `=`. Nhớ lại ví dụ gán chuỗi từ đầu chương:
 
 ```js
 var a, b, c;
@@ -788,9 +788,9 @@ var a, b, c;
 a = b = c = 42;
 ```
 
-We asserted earlier that `a = b = c = 42` is processed by first evaluating the `c = 42` assignment, then `b = ..`, and finally `a = ..`. Why? Because of the right-associativity, which actually treats the statement like this: `a = (b = (c = 42))`.
+Chúng tôi đã khẳng định trước đó rằng `a = b = c = 42` được xử lý bằng cách đánh giá phép gán `c = 42` trước, sau đó là `b = ..` và cuối cùng là `a = ..`. Tại sao? Do tính liên kết phải, cái thực sự xử lý mệnh đề như sau: `a = (b = (c = 42))`.
 
-Remember our running complex assignment expression example from earlier in the chapter?
+Bạn có nhớ ví dụ về biểu thức gán phức tạp đang chạy ở đầu chương này không?
 
 ```js
 var a = 42;
@@ -802,13 +802,13 @@ var d = a && b || c ? c || b ? a : c && b : a;
 d;		// 42
 ```
 
-Armed with our knowledge of precedence and associativity, we should now be able to break down the code into its grouping behavior like this:
+Được trang bị kiến thức về mức độ ưu tiên và tính kết hợp, giờ đây chúng ta có thể chia nhỏ mã thành hành vi nhóm của nó như sau:
 
 ```js
 ((a && b) || c) ? ((c || b) ? a : (c && b)) : a
 ```
 
-Or, to present it indented if that's easier to understand:
+Hoặc, để trình bày nó thụt vào nếu điều đó dễ hiểu hơn:
 
 ```js
 (
@@ -828,7 +828,7 @@ Or, to present it indented if that's easier to understand:
 a
 ```
 
-Let's solve it now:
+Hãy giải quyết nó ngay bây giờ:
 
 1. `(a && b)` is `"foo"`.
 2. `"foo" || c` is `"foo"`.
@@ -837,48 +837,48 @@ Let's solve it now:
 5. For the second `?` test, `"foo"` is truthy.
 6. `a` is `42`.
 
-That's it, we're done! The answer is `42`, just as we saw earlier. That actually wasn't so hard, was it?
+Vậy là xong, chúng ta đã hoàn tất! Câu trả lời là `42`, giống như chúng ta đã thấy trước đó. Điều đó thực sự không quá khó phải không?
 
-### Disambiguation
+### Disambiguation (định hướng)
 
-You should now have a much better grasp on operator precedence (and associativity) and feel much more comfortable understanding how code with multiple chained operators will behave.
+Giờ đây, bạn sẽ hiểu rõ hơn nhiều về mức độ ưu tiên của toán tử (và tính kết hợp) và cảm thấy thoải mái hơn nhiều khi hiểu mã với nhiều toán tử được xâu chuỗi sẽ hoạt động như thế nào.
 
-But an important question remains: should we all write code understanding and perfectly relying on all the rules of operator precedence/associativity? Should we only use `( )` manual grouping when it's necessary to force a different processing binding/order?
+Nhưng vẫn còn một câu hỏi quan trọng: tất cả chúng ta có nên viết code hiểu và dựa hoàn toàn vào tất cả các quy tắc về mức độ ưu tiên/kết hợp của toán tử không? Chúng ta có nên chỉ sử dụng nhóm thủ công `( )` khi cần buộc một ràng buộc/thứ tự xử lý khác không?
 
-Or, on the other hand, should we recognize that even though such rules *are in fact* learnable, there's enough gotchas to warrant ignoring automatic precedence/associativity? If so, should we thus always use `( )` manual grouping and remove all reliance on these automatic behaviors?
+Hoặc, mặt khác, chúng ta có nên nhận ra rằng mặc dù các quy tắc như vậy *trên thực tế* có thể học được, nhưng vẫn có đủ vấn đề để đảm bảo bỏ qua quyền ưu tiên/liên kết tự động? Nếu vậy, chúng ta có nên luôn sử dụng nhóm thủ công `( )` và loại bỏ mọi sự phụ thuộc vào các hành vi tự động này không?
 
-This debate is highly subjective, and heavily symmetrical to the debate in Chapter 4 over *implicit* coercion. Most developers feel the same way about both debates: either they accept both behaviors and code expecting them, or they discard both behaviors and stick to manual/explicit idioms.
+Cuộc tranh luận này mang tính chủ quan cao và rất đối xứng với cuộc tranh luận trong Chương 4 về *implicit* coercion. Hầu hết các nhà phát triển đều cảm thấy giống nhau về cả hai cuộc tranh luận: hoặc họ chấp nhận cả hành vi và mã mong đợi chúng, hoặc họ loại bỏ cả hai hành vi và tuân theo các thành ngữ thủ công/rõ ràng.
 
-Of course, I cannot answer this question definitively for the reader here anymore than I could in Chapter 4. But I've presented you the pros and cons, and hopefully encouraged enough deeper understanding that you can make informed rather than hype-driven decisions.
+Tất nhiên, tôi không thể trả lời câu hỏi này một cách dứt khoát cho độc giả ở đây nhiều hơn những gì tôi có thể làm trong Chương 4. Nhưng tôi đã trình bày cho bạn những ưu và nhược điểm, và hy vọng sẽ khuyến khích đủ hiểu biết sâu sắc hơn để bạn có thể đưa ra những quyết định sáng suốt thay vì những quyết định cường điệu.
 
-In my opinion, there's an important middle ground. We should mix both operator precedence/associativity *and* `( )` manual grouping into our programs -- I argue the same way in Chapter 4 for healthy/safe usage of *implicit* coercion, but certainly don't endorse it exclusively without bounds.
+Theo tôi, có một nền tảng trung gian quan trọng. Chúng ta nên kết hợp cả hai nhóm thủ công ưu tiên/liên kết toán tử *và* `( )` vào các chương trình của mình -- Tôi tranh luận theo cách tương tự trong Chương 4 về việc sử dụng cưỡng chế *ngầm* lành mạnh/an toàn, nhưng chắc chắn không chỉ xác nhận nó mà không có giới hạn.
 
-For example, `if (a && b && c) ..` is perfectly OK to me, and I wouldn't do `if ((a && b) && c) ..` just to explicitly call out the associativity, because I think it's overly verbose.
+Ví dụ: `if (a && b && c) ..` hoàn toàn phù hợp với tôi và tôi sẽ không làm `if ((a && b) && c) ..` chỉ để gọi rõ ràng tính liên kết, bởi vì Tôi nghĩ rằng nó quá dài dòng.
 
-On the other hand, if I needed to chain two `? :` conditional operators together, I'd certainly use `( )` manual grouping to make it absolutely clear what my intended logic is.
+Mặt khác, nếu tôi cần xâu chuỗi hai `? :` các toán tử có điều kiện cùng nhau, tôi chắc chắn sẽ sử dụng cách nhóm thủ công `( )` để làm rõ hoàn toàn logic dự định của tôi là gì.
 
-Thus, my advice here is similar to that of Chapter 4: **use operator precedence/associativity where it leads to shorter and cleaner code, but use `( )` manual grouping in places where it helps create clarity and reduce confusion.**
+Vì vậy, lời khuyên của tôi ở đây tương tự như lời khuyên ở Chương 4: **sử dụng quyền ưu tiên/liên kết toán tử ở những nơi nó dẫn đến mã ngắn hơn và rõ ràng hơn, nhưng sử dụng nhóm thủ công `( )` ở những nơi giúp tạo sự rõ ràng và giảm nhầm lẫn.**
 
 ## Automatic Semicolons
 
-ASI (Automatic Semicolon Insertion) is when JavaScript assumes a `;` in certain places in your JS program even if you didn't put one there.
+ASI (Chèn dấu chấm phẩy tự động) là khi JavaScript giả định một `;` ở một số vị trí nhất định trong chương trình JS của bạn ngay cả khi bạn không đặt một dấu chấm phẩy ở đó.
 
-Why would it do that? Because if you omit even a single required `;` your program would fail. Not very forgiving. ASI allows JS to be tolerant of certain places where `;` aren't commonly thought  to be necessary.
+Tại sao bạn đã làm được điều đó? Bởi vì nếu bạn bỏ qua dù chỉ một dấu `;` bắt buộc, chương trình của bạn sẽ thất bại. Không tha thứ lắm. ASI cho phép JS khoan dung ở một số nơi nhất định mà `;` thường không được cho là cần thiết.
 
-It's important to note that ASI will only take effect in the presence of a newline (aka line break). Semicolons are not inserted in the middle of a line.
+Điều quan trọng cần lưu ý là ASI sẽ chỉ có hiệu lực khi có dòng mới (còn gọi là ngắt dòng). Dấu chấm phẩy không được chèn vào giữa dòng.
 
-Basically, if the JS parser parses a line where a parser error would occur (a missing expected `;`), and it can reasonably insert one, it does so. What's reasonable for insertion? Only if there's nothing but whitespace and/or comments between the end of some statement and that line's newline/line break.
+Về cơ bản, nếu trình phân tích cú pháp JS phân tích cú pháp một dòng nơi sẽ xảy ra lỗi trình phân tích cú pháp (dự kiến là thiếu `;`), và nó có thể chèn một dòng một cách hợp lý, thì nó sẽ làm như vậy. Điều gì hợp lý để chèn? Chỉ khi không có gì ngoài khoảng trắng và/hoặc nhận xét giữa phần cuối của câu lệnh nào đó và dấu xuống dòng/ngắt dòng của dòng đó.
 
-Consider:
+Xem xét:
 
 ```js
 var a = 42, b
 c;
 ```
 
-Should JS treat the `c` on the next line as part of the `var` statement? It certainly would if a `,` had come anywhere (even another line) between `b` and `c`. But since there isn't one, JS assumes instead that there's an implied `;` (at the newline) after `b`. Thus, `c;` is left as a standalone expression statement.
+JS có nên coi `c` trên dòng tiếp theo là một phần của câu lệnh `var` không? Nó chắc chắn sẽ xảy ra nếu một `,` xuất hiện ở bất kỳ đâu (thậm chí là một dòng khác) giữa `b` và `c`. Nhưng vì không có cái nào, thay vào đó, JS giả định rằng có một `;` ngụ ý (ở dòng mới) sau `b`. Do đó, `c;` được để lại như một câu lệnh biểu thức độc lập.
 
-Similarly:
+Tương tự:
 
 ```js
 var a = 42, b = "foo";
@@ -887,9 +887,9 @@ a
 b	// "foo"
 ```
 
-That's still a valid program without error, because expression statements also accept ASI.
+Đó vẫn là một chương trình hợp lệ không có lỗi, bởi vì các câu lệnh biểu thức cũng chấp nhận ASI.
 
-There's certain places where ASI is helpful, like for instance:
+Có một số nơi mà ASI hữu ích, chẳng hạn như:
 
 ```js
 var a = 42;
@@ -900,9 +900,9 @@ do {
 a;
 ```
 
-The grammar requires a `;` after a `do..while` loop, but not after `while` or `for` loops. But most developers don't remember that! So, ASI helpfully steps in and inserts one.
+Ngữ pháp yêu cầu dấu `;` sau vòng lặp `do..while`, nhưng không phải sau vòng lặp `while` hoặc `for`. Nhưng hầu hết các nhà phát triển không nhớ điều đó! Vì vậy, ASI đã bước vào và chèn một cách hữu ích.
 
-As we said earlier in the chapter, statement blocks do not require `;` termination, so ASI isn't necessary:
+Như chúng ta đã nói trước đó trong chương, các khối câu lệnh không yêu cầu chấm dứt `;`, vì vậy ASI là không cần thiết:
 
 ```js
 var a = 42;
@@ -913,7 +913,7 @@ while (a) {
 a;
 ```
 
-The other major case where ASI kicks in is with the `break`, `continue`, `return`, and (ES6) `yield` keywords:
+Trường hợp chính khác mà ASI khởi động là với các từ khóa `break`, `continue`, `return` và (ES6) `yield`:
 
 ```js
 function foo(a) {
@@ -923,7 +923,7 @@ function foo(a) {
 }
 ```
 
-The `return` statement doesn't carry across the newline to the `a *= 2` expression, as ASI assumes the `;` terminating the `return` statement. Of course, `return` statements *can* easily break across multiple lines, just not when there's nothing after `return` but the newline/line break.
+Câu lệnh `return` không chuyển qua dòng mới sang biểu thức `a *= 2`, vì ASI giả định `;` kết thúc câu lệnh `return`. Tất nhiên, các câu lệnh `return` *có thể* dễ dàng ngắt giữa nhiều dòng, chỉ khi không có gì sau `return` ngoài dấu ngắt dòng/dòng mới.
 
 ```js
 function foo(a) {
@@ -933,39 +933,39 @@ function foo(a) {
 }
 ```
 
-Identical reasoning applies to `break`, `continue`, and `yield`.
+Lập luận giống hệt nhau áp dụng cho `break`, `tiếp tục` và `yield`.
 
-### Error Correction
+### Error Correction (Sửa Lỗi)
 
-One of the most hotly contested *religious wars* in the JS community (besides tabs vs. spaces) is whether to rely heavily/exclusively on ASI or not.
+Một trong những *cuộc chiến quan điểm* gây tranh cãi gay gắt nhất trong cộng đồng JS (bên cạnh các tab so với khoảng trắng) là liệu có nên phụ thuộc nhiều/độc quyền vào ASI hay không.
 
-Most, but not all, semicolons are optional, but the two `;`s in the `for ( .. ) ..` loop header are required.
+Hầu hết, nhưng không phải tất cả, dấu chấm phẩy là tùy chọn, nhưng hai dấu `;` trong header vòng lặp `for ( .. ) ..` là bắt buộc.
 
-On the pro side of this debate, many developers believe that ASI is a useful mechanism that allows them to write more terse (and more "beautiful") code by omitting all but the strictly required `;`s (which are very few). It is often asserted that ASI makes many `;`s optional, so a correctly written program *without them* is no different than a correctly written program *with them*.
+Về phía ủng hộ cuộc tranh luận này, nhiều nhà phát triển tin rằng ASI là một cơ chế hữu ích cho phép họ viết mã ngắn gọn hơn (và "đẹp" hơn) bằng cách bỏ qua tất cả trừ các dấu `;` được yêu cầu nghiêm ngặt (rất ít). Người ta thường khẳng định rằng ASI tạo ra nhiều `;` tùy chọn, do đó, một chương trình được viết chính xác *không có chúng* không khác gì một chương trình được viết chính xác *có chúng*.
 
-On the con side of the debate, many other developers will assert that there are *too many* places that can be accidental gotchas, especially for newer, less experienced developers, where unintended `;`s being magically inserted change the meaning. Similarly, some developers will argue that if they omit a semicolon, it's a flat-out mistake, and they want their tools (linters, etc.) to catch it before the JS engine *corrects* the mistake under the covers.
+Về mặt trái của cuộc tranh luận, nhiều nhà phát triển khác sẽ khẳng định rằng có *quá nhiều* chỗ có thể là sự cố ngẫu nhiên, đặc biệt là đối với các nhà phát triển mới hơn, ít kinh nghiệm hơn, nơi mà `;` được chèn vào một cách kỳ diệu sẽ thay đổi ý nghĩa. Tương tự như vậy, một số nhà phát triển sẽ lập luận rằng nếu họ bỏ qua dấu chấm phẩy, thì đó là một lỗi rõ ràng và họ muốn các công cụ của mình (linters, v.v.) bắt được nó trước khi công cụ JS *sửa chữa* lỗi dưới vỏ bọc.
 
-Let me just share my perspective. A strict reading of the spec implies that ASI is an "error correction" routine. What kind of error, you may ask? Specifically, a **parser error**. In other words, in an attempt to have the parser fail less, ASI lets it be more tolerant.
+Hãy để tôi chỉ chia sẻ quan điểm của tôi. Việc đọc kỹ thông số kỹ thuật nghiêm ngặt ngụ ý rằng ASI là một thói quen "sửa lỗi". Những loại lỗi, bạn có thể yêu cầu? Cụ thể, một **parser error (lỗi trình phân tích cú pháp)**. Nói cách khác, trong nỗ lực làm cho trình phân tích cú pháp ít bị lỗi hơn, ASI cho phép nó trở nên khoan dung hơn.
 
-But tolerant of what? In my view, the only way a **parser error** occurs is if it's given an incorrect/errored program to parse. So, while ASI is strictly correcting parser errors, the only way it can get such errors is if there were first program authoring errors -- omitting semicolons where the grammar rules require them.
+Nhưng khoan dung cái gì? Theo quan điểm của tôi, cách duy nhất xảy ra **lỗi trình phân tích cú pháp** là nếu nó được cung cấp một chương trình không chính xác/bị lỗi để phân tích cú pháp. Vì vậy, trong khi ASI đang sửa lỗi trình phân tích cú pháp một cách nghiêm ngặt, thì cách duy nhất để nó có thể nhận được các lỗi như vậy là nếu có lỗi tác giả chương trình đầu tiên -- bỏ qua dấu chấm phẩy khi các quy tắc ngữ pháp yêu cầu chúng.
 
-So, to put it more bluntly, when I hear someone claim that they want to omit "optional semicolons," my brain translates that claim to "I want to write the most parser-broken program I can that will still work."
+Vì vậy, nói một cách thẳng thắn hơn, khi tôi nghe ai đó tuyên bố rằng họ muốn bỏ qua "dấu chấm phẩy tùy chọn", bộ não của tôi dịch tuyên bố đó thành "Tôi muốn viết chương trình bị hỏng trình phân tích cú pháp nhất mà tôi có thể vẫn hoạt động."
 
-I find that to be a ludicrous position to take and the arguments of saving keystrokes and having more "beautiful code" to be weak at best.
+Tôi thấy đó là một vị trí lố bịch và các lập luận về việc tiết kiệm các lần gõ phím và có nhiều "mã đẹp" hơn là yếu nhất.
 
-Furthermore, I don't agree that this is the same thing as the spaces vs tabs debate -- that it's purely cosmetic -- but rather I believe it's a fundamental question of writing code that adheres to grammar requirements vs. code that relies on grammar exceptions to just barely skate through.
+Hơn nữa, tôi không đồng ý rằng đây cũng giống như cuộc tranh luận về dấu cách và tab -- rằng đó hoàn toàn là vấn đề trình bày code -- nhưng đúng hơn, tôi tin rằng đó là một câu hỏi cơ bản về việc viết code tuân thủ các yêu cầu ngữ pháp so với viết code dựa vào ngữ pháp ngoại lệ để vừa đủ trượt qua.
 
-Another way of looking at it is that relying on ASI is essentially considering newlines to be significant "whitespace." Other languages like Python have true significant whitespace. But is it really appropriate to think of JavaScript as having significant newlines as it stands today?
+Một cách nhìn khác là việc dựa vào ASI về cơ bản coi các dòng mới là "khoảng trắng" quan trọng. Các ngôn ngữ khác như Python có khoảng trắng thực sự quan trọng. Nhưng có thực sự phù hợp khi nghĩ rằng JavaScript có các dòng mới quan trọng như ngày nay không?
 
-My take: **use semicolons wherever you know they are "required," and limit your assumptions about ASI to a minimum.**
+Quan điểm của tôi: **sử dụng dấu chấm phẩy ở bất cứ nơi nào bạn biết chúng là "bắt buộc" và hạn chế các giả định của bạn về ASI ở mức tối thiểu.**
 
-But don't just take my word for it. Back in 2012, creator of JavaScript Brendan Eich said (http://brendaneich.com/2012/04/the-infernal-semicolon/) the following:
+Nhưng đừng tin lời tôi nói. Trở lại năm 2012, người tạo ra JavaScript Brendan Eich đã nói (http://brendaneich.com/2012/04/the-infernal-semiacolon/) như sau:
 
-> The moral of this story: ASI is (formally speaking) a syntactic error correction procedure. If you start to code as if it were a universal significant-newline rule, you will get into trouble.
+> Đạo đức của câu chuyện này: ASI (nói một cách chính thức) là một quy trình sửa lỗi cú pháp. Nếu bạn bắt đầu viết mã như thể đó là quy tắc dòng mới có ý nghĩa chung, thì bạn sẽ gặp rắc rối.
 > ..
-> I wish I had made newlines more significant in JS back in those ten days in May, 1995.
+> Tôi ước tôi đã làm cho các dòng mới trở nên quan trọng hơn trong JS trong mười ngày đó vào tháng 5 năm 1995.
 > ..
-> Be careful not to use ASI as if it gave JS significant newlines.
+> Hãy cẩn thận không sử dụng ASI như thể nó mang lại cho JS những dòng mới quan trọng.
 
 ## Errors
 
