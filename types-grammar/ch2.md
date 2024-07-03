@@ -156,7 +156,7 @@ If the value/expression resolves to a number outside the integer range of `0` - 
 
 ### Character Iteration
 
-Strings are not arrays, but they certainly mimick arrays closely in many ways. One such behavior is that, like arrays, strings are iterables. This means that the characters (code-units) of a string can be iterated individually:
+Strings are not arrays, but they certainly mimic arrays closely in many ways. One such behavior is that, like arrays, strings are iterables. This means that the characters (code-units) of a string can be iterated individually:
 
 ```js
 myName = "Kyle";
@@ -578,7 +578,7 @@ String values provide a whole slew of additional string-specific methods (as pro
 
 * `split(..)`: produces an array of string values as split at the specified string or regular-expression boundaries
 
-* `padStart(..)` / `padEnd(..)`: produces a new string value with padding (default " " whitespace, but can be overriden) applied to either the start (left in LTR locales, right in RTL locales) or the end (right in LTR locales), left in RTL locales), so that the final string result is at least of a specified length
+* `padStart(..)` / `padEnd(..)`: produces a new string value with padding (default " " whitespace, but can be overridden) applied to either the start (left in LTR locales, right in RTL locales) or the end (right in LTR locales), left in RTL locales), so that the final string result is at least of a specified length
 
 * `startsWith(..)` / `endsWith(..)`: checks either the start (left in LTR locales, right in RTL locales) or the end (right in LTR locales) of the original string for the string value argument; returns a boolean result
 
@@ -608,7 +608,7 @@ greeting;                               // Hello!
 
 ### Static `String` Helpers
 
-The following string utility functions are proviced directly on the `String` object, rather than as methods on individual string values:
+The following string utility functions are provided directly on the `String` object, rather than as methods on individual string values:
 
 * `String.fromCharCode(..)` / `String.fromCodePoint(..)`: produce a string from one or more arguments representing the code-units (`fromCharCode(..)`) or whole code-points (`fromCodePoint(..)`)
 
@@ -988,7 +988,7 @@ Values of `bigint` type cannot have decimals, so the parsing is unambiguous that
 
 * `Number.isNaN(..)`: The bug-fixed version of the global `isNaN(..)` utility, which identifies if the argument provided is the special `NaN` value
 
-* `Number.parseFloat(..)` / `Number.parseInt(..)`: utilties to parse string values for numeric digits, left-to-right, until the end of the string or the first non-float (or non-integer) character is encountered
+* `Number.parseFloat(..)` / `Number.parseInt(..)`: utilities to parse string values for numeric digits, left-to-right, until the end of the string or the first non-float (or non-integer) character is encountered
 
 ### Static `Math` Namespace
 
